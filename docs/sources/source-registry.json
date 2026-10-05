@@ -1,0 +1,77 @@
+{
+  "schema": "resonarch.toolfabric.sources/v1",
+  "sources": [
+    {
+      "repository": "Hazy142/rsgt-solver-sdk",
+      "revision": "bb086d7105a755bb4eae3c123527221c7b706a13",
+      "path": "AGENTS.md",
+      "role": "authority-contract"
+    },
+    {
+      "repository": "Hazy142/genesis-delta-lambda",
+      "revision": "aefca96fdbc04eff1be0c3934bc3c37fb81c6217",
+      "path": "AGENTS.md",
+      "role": "evidence-claim-discipline"
+    },
+    {
+      "repository": "Hazy142/genesis-delta-lambda-n",
+      "revision": "bec1ac3d4befd596514bc4e50a5292aebadf1d74",
+      "path": "AGENTS.md",
+      "role": "identity-lineage-evidence"
+    },
+    {
+      "repository": "Hazy142/genesis-delta-lambda-n-kindergarten",
+      "revision": "7281ac781225cd2c3e0c5e4fd16ecb7ef796dfc3",
+      "path": "AGENTS.md",
+      "role": "authority-determinism"
+    },
+    {
+      "repository": "Hazy142/hecht.accounting",
+      "revision": "e36ec32ba64c4b9370632bc611245ea7e326fe48",
+      "path": "AGENTS.md",
+      "role": "hitl-domain-boundary"
+    },
+    {
+      "repository": "Hazy142/resonarch-ARCHY",
+      "revision": "2ea8272670393160c52521805f2cb892bed577fc",
+      "path": "src/agent.cjs",
+      "role": "untrusted-tool-output"
+    },
+    {
+      "repository": "Hazy142/sentinel-agent",
+      "revision": "a5d1bdb6a961471ebe96b8fe69a736c2303254d5",
+      "path": "src/sentinel/llm/prompts.py",
+      "role": "trust-routing-budgets"
+    },
+    {
+      "repository": "Hazy142/nLM-Peer-Agent",
+      "revision": "0f8124005251021073ab9a3e0ddc41cf7e0af333",
+      "path": "src/agent.ts",
+      "role": "session-provider-pattern"
+    },
+    {
+      "repository": "Hazy142/synology-desktop-client",
+      "revision": "8db8c4d8fb85337676d8abb4c694dd8d39ee4919",
+      "path": "CLAUDE.md",
+      "role": "repo-instruction-precedence"
+    },
+    {
+      "repository": "Hazy142/resonArch.devFlow",
+      "revision": "a4afe07dd64c225680f4eedf4ba31d68f151b909",
+      "path": "README.md",
+      "role": "idempotent-instruction-integration"
+    },
+    {
+      "repository": "Hazy142/resonarch-context-gateway",
+      "revision": "b95820349a258033f6ea8349de1bfc9d6aeb25a1",
+      "path": "README.md",
+      "role": "context-compaction-retrieval"
+    },
+    {
+      "repository": "obra/superpowers",
+      "revision": "8ca22dba9a94f28898bbce59f2537ff4d87c747d",
+      "path": "skills/using-superpowers/SKILL.md",
+      "role": "external-workflow-reference"
+    }
+  ]
+}
