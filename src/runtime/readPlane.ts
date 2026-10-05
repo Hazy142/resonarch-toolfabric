@@ -11,6 +11,7 @@ import {loadRegistry} from "../registry/load.js";
 import {RuntimeExecutionError} from "./errors.js";
 import {discoverInstructions, fsList, fsRead, fsReadMany, fsSearch, fsStat} from "./fsRead.js";
 import {gitDiff, gitLog, gitStatus} from "./gitRead.js";
+import {codeDependencies, codeSymbols, contextPack, instructionsResolve, testDiscover} from "./localInspect.js";
 import {isWithinPath, WorkspaceBoundary} from "./workspace.js";
 
 export interface ToolCall {
@@ -54,6 +55,11 @@ const IMPLEMENTED = new Set([
   "registry.list",
   "registry.describe",
   "instructions.discover",
+  "instructions.resolve",
+  "context.pack",
+  "code.symbols",
+  "code.dependencies",
+  "test.discover",
   "fs.read",
   "fs.read_many",
   "fs.list",
@@ -152,7 +158,8 @@ export class ReadPlaneRuntime {
   readonly artifactStore: ArtifactStore;
   private readonly tools: Map<string, ToolDescriptor>;
   private readonly inlineOutputLimitBytes: number;
-  private readonly previousReceiptHash: string;
+  private readonly initialReceiptHash: string;
+  private readonly receiptTails = new Map<string, string>();
 
   private constructor(registry: ToolDescriptor[], options: ReadPlaneOptions) {
     this.tools = new Map(registry.map(tool => [tool.id, tool]));
@@ -161,7 +168,7 @@ export class ReadPlaneRuntime {
     if (!Number.isInteger(this.inlineOutputLimitBytes) || this.inlineOutputLimitBytes < 64) {
       throw new RuntimeExecutionError("INVALID_RUNTIME_CONFIG", "inlineOutputLimitBytes must be an integer >= 64", "denied");
     }
-    this.previousReceiptHash = options.previousReceiptHash ?? "sha256:GENESIS";
+    this.initialReceiptHash = options.previousReceiptHash ?? "sha256:GENESIS";
   }
 
   static async create(options: ReadPlaneOptions): Promise<ReadPlaneRuntime> {
@@ -201,6 +208,21 @@ export class ReadPlaneRuntime {
         }
         case "instructions.discover":
           output = await discoverInstructions(boundary, call.arguments);
+          break;
+        case "instructions.resolve":
+          output = instructionsResolve(call.arguments);
+          break;
+        case "context.pack":
+          output = contextPack(call.arguments);
+          break;
+        case "code.symbols":
+          output = await codeSymbols(boundary, call.arguments);
+          break;
+        case "code.dependencies":
+          output = await codeDependencies(boundary, call.arguments);
+          break;
+        case "test.discover":
+          output = await testDiscover(boundary, call.arguments);
           break;
         case "fs.read":
           output = await fsRead(boundary, call.arguments);
@@ -257,6 +279,7 @@ export class ReadPlaneRuntime {
       result = this.makeResult(call.call_id, known.status, null, [], {code: known.code, message: known.message}, started);
     }
 
+    const previousReceiptHash = this.receiptTails.get(call.task_id) ?? this.initialReceiptHash;
     const receipt = createReceipt({
       schema: "resonarch.toolfabric.receipt/v1",
       receipt_id: `${call.call_id}:receipt`,
@@ -269,9 +292,10 @@ export class ReadPlaneRuntime {
       result_digest: canonicalDigest(result),
       side_effect: descriptor?.side_effect ?? "none",
       status: result.status,
-      previous_receipt_hash: this.previousReceiptHash,
+      previous_receipt_hash: previousReceiptHash,
       artifact_refs: result.artifacts,
     });
+    this.receiptTails.set(call.task_id, receipt.receipt_hash);
     return {result, receipt};
   }
 
