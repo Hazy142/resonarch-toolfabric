@@ -1,0 +1,37 @@
+{
+  "schema": "resonarch.toolfabric.conformance-vector/v1",
+  "id": "p1d-network-fetch",
+  "implemented_tools": [
+    "network.authorize",
+    "web.fetch"
+  ],
+  "required_behaviors": [
+    "network read is deny-by-default when host policy is absent",
+    "host policy cannot be widened by call arguments",
+    "authorization is task-url-method bound, single-use, expiring and budgeted",
+    "network read descriptors use network:web_read without write side effects",
+    "research and audit workflows declare network:web_read and compiled workflows preserve that requirement",
+    "only HTTPS GET/HEAD on port 443 are accepted by the reference transport",
+    "embedded credentials and unauthorized query strings are denied",
+    "private and reserved IPv4/IPv6 targets are denied",
+    "IPv4-mapped IPv6 addresses are classified by their underlying IPv4 address",
+    "DNS answers are checked before a pinned TLS connection",
+    "response byte budgets are enforced even when a custom transport ignores them",
+    "redirects are exposed as metadata and never silently followed",
+    "custom transports cannot substitute or silently follow the authorized URL",
+    "response body bytes are content-addressed and included in result/receipt artifacts",
+    "physical native-HTTPS smoke produces a chained authorization and fetch receipt"
+  ],
+  "non_claims": [
+    "web.search implementation",
+    "docs.resolve implementation",
+    "package.resolve implementation",
+    "vulnerability.search implementation",
+    "credentialed HTTP",
+    "private network access",
+    "redirect following",
+    "P1_READ_PLANE_PASS",
+    "P2 mutation capability",
+    "production readiness"
+  ]
+}

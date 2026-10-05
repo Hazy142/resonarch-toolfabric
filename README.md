@@ -11,10 +11,10 @@ authority boundaries, risk classes, receipts, and verification gates.
 ## Status
 
 **Early implementation / contracts + execution preview.** The architecture defines 112 backend
-primitives and 20 standard user tools. P1A/P1B/P1C now provide real read-only local execution for
+primitives and 20 standard user tools. P1A–P1D now provide real read-only execution for
 filesystem, Git, environment, registry, instruction resolution, TypeScript/JavaScript symbol
-inspection, dependency/test discovery, deterministic context packing, and immutable exact/lexical
-memory retrieval. The full
+inspection, dependency/test discovery, deterministic context packing, immutable exact/lexical
+memory retrieval, and explicitly authorized content-addressed HTTPS fetches. The full
 `P1_READ_PLANE_PASS` gate is not yet claimed, and production readiness remains gated by the
 normative conformance plan.
 

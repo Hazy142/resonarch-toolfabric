@@ -4,7 +4,8 @@ version: 1.0.0
 intent: Compile the research user intent into a provider-independent execution DAG.
 preflight:
   - provider.health
-required_capabilities: []
+required_capabilities:
+  - network:web_read
 graph:
   - web.search
   - web.fetch

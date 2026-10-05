@@ -1,7 +1,7 @@
 {
   "schema": "resonarch.toolfabric.tool/v1",
   "id": "network.authorize",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "title": "network.authorize",
   "summary": "Canonical ToolFabric primitive: network.authorize.",
   "input_schema": {
@@ -13,13 +13,13 @@
     "additionalProperties": true
   },
   "capabilities": [
-    "network:write"
+    "network:authorize"
   ],
   "authority_scope": [
     "workspace"
   ],
-  "risk_class": "R2",
-  "side_effect": "local",
+  "risk_class": "R0",
+  "side_effect": "none",
   "idempotency": "conditional",
   "network": "forbidden",
   "receipt": "required",

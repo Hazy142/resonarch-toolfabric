@@ -22,10 +22,14 @@ const workflows={
  document:["source.compare","claim.classify","manifest.create","report.render"],
  delegate:["task.decompose","task.graph","model.catalog","model.route","capability.resolve","task.dispatch","task.status"]
 };
+const requiredCapabilities={
+ research:["network:web_read"],
+ audit:["network:web_read"],
+};
 fs.mkdirSync("user-tools",{recursive:true});
 for(const [id,graph] of Object.entries(workflows)){
  const reviewGate=["implement","fix","refactor","migrate","release","ship"].includes(id);
- const spec={schema:"resonarch.toolfabric.user-tool/v1",id,version:"1.0.0",intent:"Compile the "+id+" user intent into a provider-independent execution DAG.",preflight:id==="research"?["provider.health"]:["instructions.discover","git.status"],required_capabilities:[],graph,required_gates:["receipt_chain_valid",...(reviewGate?["review_verdict"]:[])],failure_routes:["blocked","denied","uncertain","budget_exhausted"],default_budget:{tool_calls:64,wall_seconds:3600},completion:{require:["evidence_bound_to_current_scope","no_open_uncertain_side_effects"]}};
+ const spec={schema:"resonarch.toolfabric.user-tool/v1",id,version:"1.0.0",intent:"Compile the "+id+" user intent into a provider-independent execution DAG.",preflight:id==="research"?["provider.health"]:["instructions.discover","git.status"],required_capabilities:requiredCapabilities[id]??[],graph,required_gates:["receipt_chain_valid",...(reviewGate?["review_verdict"]:[])],failure_routes:["blocked","denied","uncertain","budget_exhausted"],default_budget:{tool_calls:64,wall_seconds:3600},completion:{require:["evidence_bound_to_current_scope","no_open_uncertain_side_effects"]}};
  fs.writeFileSync("user-tools/"+id+".yaml",YAML.stringify(spec));
 }
 if(Object.keys(workflows).length!==20)throw new Error("USER_TOOL_COUNT:"+Object.keys(workflows).length);

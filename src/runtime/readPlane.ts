@@ -2,7 +2,7 @@ import {access, realpath} from "node:fs/promises";
 import {constants} from "node:fs";
 import {basename, delimiter, dirname, extname, join, resolve} from "node:path";
 import {platform, arch} from "node:os";
-import {canonicalDigest, canonicalJson} from "../contracts/canonical.js";
+import {canonicalDigest, canonicalJson, sha256} from "../contracts/canonical.js";
 import type {ResultStatus, ToolDescriptor} from "../contracts/types.js";
 import {ArtifactStore} from "../evidence/artifacts.js";
 import {createReceipt, type Receipt} from "../evidence/receipt.js";
@@ -14,6 +14,12 @@ import {gitDiff, gitLog, gitStatus} from "./gitRead.js";
 import type {ReadMemoryRecord} from "../context/retrieval.js";
 import {ExactMemorySnapshot} from "./exactMemory.js";
 import {codeDependencies, codeSymbols, contextPack, instructionsResolve, testDiscover} from "./localInspect.js";
+import {
+  isInlineTextContentType,
+  NetworkReadBroker,
+  type NetworkReadPolicy,
+  type NetworkReadTransport,
+} from "./networkRead.js";
 import {isWithinPath, WorkspaceBoundary} from "./workspace.js";
 
 export interface ToolCall {
@@ -52,6 +58,8 @@ export interface ReadPlaneOptions {
   inlineOutputLimitBytes?: number;
   previousReceiptHash?: string;
   memoryRecords?: readonly ReadMemoryRecord[];
+  networkReadPolicy?: NetworkReadPolicy;
+  networkTransport?: NetworkReadTransport;
 }
 
 const IMPLEMENTED = new Set([
@@ -62,6 +70,8 @@ const IMPLEMENTED = new Set([
   "context.pack",
   "memory.get",
   "memory.search_exact",
+  "network.authorize",
+  "web.fetch",
   "code.symbols",
   "code.dependencies",
   "test.discover",
@@ -166,6 +176,7 @@ export class ReadPlaneRuntime {
   private readonly initialReceiptHash: string;
   private readonly receiptTails = new Map<string, string>();
   private readonly memory: ExactMemorySnapshot;
+  private readonly network: NetworkReadBroker;
 
   private constructor(registry: ToolDescriptor[], options: ReadPlaneOptions) {
     this.tools = new Map(registry.map(tool => [tool.id, tool]));
@@ -176,6 +187,7 @@ export class ReadPlaneRuntime {
     }
     this.initialReceiptHash = options.previousReceiptHash ?? "sha256:GENESIS";
     this.memory = new ExactMemorySnapshot(options.memoryRecords ?? []);
+    this.network = new NetworkReadBroker(options.networkReadPolicy, options.networkTransport);
   }
 
   static async create(options: ReadPlaneOptions): Promise<ReadPlaneRuntime> {
@@ -201,6 +213,7 @@ export class ReadPlaneRuntime {
 
       const boundary = await WorkspaceBoundary.create(call.scope.workspace_root);
       await assertArtifactStoreOutsideWorkspace(boundary.root, this.artifactStore.root);
+      const artifacts: string[] = [];
       let output: unknown;
       switch (descriptor.id) {
         case "registry.list":
@@ -228,6 +241,37 @@ export class ReadPlaneRuntime {
         case "memory.search_exact":
           output = this.memory.search(call.arguments);
           break;
+        case "network.authorize":
+          output = this.network.authorize(call.task_id, call.arguments);
+          break;
+        case "web.fetch": {
+          const fetched = await this.network.fetch(call.task_id, call.arguments, timeoutMs);
+          const artifactRef = await this.artifactStore.put(fetched.body);
+          artifacts.push(artifactRef);
+          const digest = sha256(fetched.body);
+          if (artifactRef !== "artifact://" + digest) {
+            throw new RuntimeExecutionError("ARTIFACT_DIGEST_MISMATCH", "network body artifact digest mismatch");
+          }
+          const source = {
+            url: fetched.requested_url,
+            final_url: fetched.final_url,
+            status: fetched.status,
+            content_type: fetched.content_type,
+            etag: fetched.etag,
+            last_modified: fetched.last_modified,
+            redirect_location: fetched.redirect_location,
+            retrieved_at: fetched.retrieved_at,
+            bytes: fetched.body.byteLength,
+            sha256: digest,
+            artifact_ref: artifactRef,
+          };
+          const inlineText = isInlineTextContentType(fetched.content_type)
+            && fetched.body.byteLength <= Math.min(this.inlineOutputLimitBytes, 64 * 1024)
+            ? new TextDecoder().decode(fetched.body)
+            : null;
+          output = inlineText === null ? {source} : {source, text: inlineText};
+          break;
+        }
         case "code.symbols":
           output = await codeSymbols(boundary, call.arguments);
           break;
@@ -277,7 +321,6 @@ export class ReadPlaneRuntime {
           throw new RuntimeExecutionError("P1_TOOL_NOT_IMPLEMENTED", `${descriptor.id} is not implemented`);
       }
 
-      const artifacts: string[] = [];
       const canonicalBytes = new TextEncoder().encode(canonicalJson(output));
       const limit = Math.min(this.inlineOutputLimitBytes, descriptor.max_output_bytes);
       if (canonicalBytes.byteLength > limit) {
