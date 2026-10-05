@@ -1,0 +1,28 @@
+{
+  "schema": "resonarch.toolfabric.conformance-vector/v1",
+  "id": "p1c-exact-retrieval",
+  "implemented_tools": [
+    "memory.get",
+    "memory.search_exact"
+  ],
+  "required_behaviors": [
+    "memory snapshot input is validated and deterministically digested",
+    "memory.get resolves exact record ids without network or workspace writes",
+    "exact mode matches only case-sensitive ids or declared keys",
+    "exact mode never silently falls back to lexical or semantic retrieval",
+    "lexical mode uses whole normalized terms and deterministic phrase-first ranking",
+    "kind filters and result limits are explicit and deterministic",
+    "seed order does not change snapshot digest or hit ordering",
+    "returned records cannot mutate the internal snapshot by reference",
+    "duplicate record ids fail before calls are served",
+    "semantic retrieval is not invoked by this slice"
+  ],
+  "non_claims": [
+    "persistent memory write path",
+    "sqlite fts5 backend",
+    "semantic retrieval",
+    "durable memory database",
+    "P1_READ_PLANE_PASS",
+    "production readiness"
+  ]
+}
