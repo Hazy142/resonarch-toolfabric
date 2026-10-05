@@ -1,0 +1,10 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {parallelBatch} from "../src/orchestrator/scheduler.js";
+import {LeaseBook} from "../src/orchestrator/leases.js";
+import {compactClosedTools} from "../src/context/compaction.js";
+import {requiresRawReload,RETRIEVAL_ORDER} from "../src/context/retrieval.js";
+test("scheduler avoids conflicting write surfaces",()=>{const nodes:any[]=[{id:"a",depends_on:[],write_surfaces:["repo/src"],state:"ready"},{id:"b",depends_on:[],write_surfaces:["repo/src/x"],state:"ready"},{id:"c",depends_on:[],write_surfaces:["repo/docs"],state:"ready"}];assert.deepEqual(parallelBatch(nodes).map(x=>x.id),["a","c"]);});
+test("stale fencing tokens are rejected",()=>{const book=new LeaseBook();const old=book.claim("n","w1");book.claim("n","w2");assert.throws(()=>book.assertCurrent(old),/STALE_FENCING_TOKEN/);});
+test("only closed calls enter WARM compaction",()=>{const result=compactClosedTools([{call_id:"1",tool:"fs.read",state:"closed",args_digest:"a",result_digest:"r",artifact_refs:[]},{call_id:"2",tool:"process.start",state:"open",args_digest:"b",artifact_refs:[]}]);assert.equal(result.warm.length,1);assert.equal(result.hot[0]?.call_id,"2");});
+test("semantic retrieval is last and requires raw reload before action",()=>{assert.equal(RETRIEVAL_ORDER.at(-1),"semantic");assert.equal(requiresRawReload("semantic",true),true);assert.equal(requiresRawReload("exact",true),false);});
