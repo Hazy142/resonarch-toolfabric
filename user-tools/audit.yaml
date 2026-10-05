@@ -1,0 +1,31 @@
+schema: resonarch.toolfabric.user-tool/v1
+id: audit
+version: 1.0.0
+intent: Compile the audit user intent into a provider-independent execution DAG.
+preflight:
+  - instructions.discover
+  - git.status
+required_capabilities: []
+graph:
+  - policy.compile
+  - secret.scan
+  - license.inspect
+  - vulnerability.search
+  - code.dependencies
+  - sandbox.boundary
+  - receipt.verify
+  - report.render
+required_gates:
+  - receipt_chain_valid
+failure_routes:
+  - blocked
+  - denied
+  - uncertain
+  - budget_exhausted
+default_budget:
+  tool_calls: 64
+  wall_seconds: 3600
+completion:
+  require:
+    - evidence_bound_to_current_scope
+    - no_open_uncertain_side_effects
