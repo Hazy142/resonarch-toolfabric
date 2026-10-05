@@ -13,7 +13,8 @@
     "test": "node scripts/run-tests.mjs",
     "check": "npm run build && npm test && npm run registry:generate && npm run workflows:check",
     "registry:generate": "node scripts/generate-registry.mjs",
-    "workflows:check": "node scripts/check-workflows.mjs"
+    "workflows:check": "node scripts/check-workflows.mjs",
+    "sources:discover": "node scripts/discover-agent-prompts.mjs"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

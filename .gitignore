@@ -10,3 +10,4 @@ coverage/
 .idea/
 /artifacts/
 evidence/local/
+docs/sources/agent-prompt-discovery.generated.json
