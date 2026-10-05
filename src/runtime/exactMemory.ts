@@ -1,18 +1,14 @@
 import {canonicalDigest, canonicalJson} from "../contracts/canonical.js";
+import type {ReadMemoryRecord} from "../context/retrieval.js";
 import {RuntimeExecutionError} from "./errors.js";
+
+export type {ReadMemoryRecord} from "../context/retrieval.js";
 
 const MAX_RECORDS = 10_000;
 const MAX_TOTAL_BYTES = 32 * 1024 * 1024;
 const MAX_TEXT_BYTES = 1024 * 1024;
 const MAX_KEYS = 64;
-
-export interface ReadMemoryRecord {
-  id: string;
-  kind: string;
-  text: string;
-  keys?: readonly string[];
-  metadata?: Readonly<Record<string, unknown>>;
-}
+const MAX_QUERY_TERMS = 64;
 
 interface StoredMemoryRecord {
   id: string;
@@ -22,7 +18,11 @@ interface StoredMemoryRecord {
   metadata: Record<string, unknown> | null;
 }
 
-interface SearchHit extends StoredMemoryRecord {
+interface SearchHit {
+  id: string;
+  kind: string;
+  keys: string[];
+  record_digest: string;
   match: "id" | "key" | "phrase" | "all_terms";
   score: number;
 }
@@ -103,7 +103,7 @@ function modeArgument(input: Record<string, unknown>): "exact" | "lexical" {
 
 function kindArgument(input: Record<string, unknown>): string | undefined {
   if (input.kind === undefined) return undefined;
-  if (typeof input.kind !== "string" || input.kind.length === 0 || input.kind.length > 128) {
+  if (typeof input.kind !== "string" || input.kind.length === 0 || input.kind.length > 128 || input.kind.includes("\0")) {
     throw new RuntimeExecutionError("INVALID_ARGUMENT", "memory.search_exact kind must be a non-empty string <= 128 chars", "denied");
   }
   return input.kind;
@@ -139,37 +139,101 @@ function cloneRecord(record: StoredMemoryRecord): StoredMemoryRecord {
   };
 }
 
+function candidateHit(
+  record: StoredMemoryRecord,
+  match: SearchHit["match"],
+  score: number,
+): SearchHit {
+  return {
+    id: record.id,
+    kind: record.kind,
+    keys: [...record.keys],
+    record_digest: canonicalDigest(record),
+    match,
+    score,
+  };
+}
+
 export class ExactMemorySnapshot {
   private readonly records: StoredMemoryRecord[];
   private readonly byId: Map<string, StoredMemoryRecord>;
+  private readonly byKey: Map<string, StoredMemoryRecord[]>;
+  private readonly lexicalIndex: Map<string, Set<string>>;
+  private readonly lexicalTokensById: Map<string, string[]>;
+  private readonly normalizedSearchableById: Map<string, string>;
   readonly digest: string;
 
   constructor(records: readonly ReadMemoryRecord[] = []) {
     if (!Array.isArray(records) || records.length > MAX_RECORDS) {
       throw new RuntimeExecutionError("INVALID_RUNTIME_CONFIG", `memoryRecords must contain at most ${MAX_RECORDS} entries`, "denied");
     }
-    this.records = records.map(normalizeRecord).sort((a, b) => compareCodeUnits(a.id, b.id));
+    const normalizedRecords: StoredMemoryRecord[] = [];
+    let totalBytes = 0;
+    for (let index = 0; index < records.length; index += 1) {
+      const normalized = normalizeRecord(records[index]!, index);
+      totalBytes += new TextEncoder().encode(canonicalJson(normalized)).byteLength;
+      if (totalBytes > MAX_TOTAL_BYTES) {
+        throw new RuntimeExecutionError("INVALID_RUNTIME_CONFIG", "memory snapshot exceeds 32 MiB", "denied");
+      }
+      normalizedRecords.push(normalized);
+    }
+    this.records = normalizedRecords.sort((a, b) => compareCodeUnits(a.id, b.id));
     this.byId = new Map<string, StoredMemoryRecord>();
+    this.byKey = new Map<string, StoredMemoryRecord[]>();
+    this.lexicalIndex = new Map<string, Set<string>>();
+    this.lexicalTokensById = new Map<string, string[]>();
+    this.normalizedSearchableById = new Map<string, string>();
     for (const record of this.records) {
       if (this.byId.has(record.id)) {
         throw new RuntimeExecutionError("DUPLICATE_MEMORY_ID", `DUPLICATE_MEMORY_ID: ${record.id}`, "denied");
       }
       this.byId.set(record.id, record);
-    }
-    const serialized = canonicalJson(this.records);
-    if (new TextEncoder().encode(serialized).byteLength > MAX_TOTAL_BYTES) {
-      throw new RuntimeExecutionError("INVALID_RUNTIME_CONFIG", "memory snapshot exceeds 32 MiB", "denied");
+      for (const key of record.keys) {
+        const keyed = this.byKey.get(key) ?? [];
+        keyed.push(record);
+        this.byKey.set(key, keyed);
+      }
+      const searchable = [record.id, ...record.keys, record.text].join("\n");
+      const normalized = lexicalNormalize(searchable);
+      const tokens = lexicalTokens(searchable);
+      this.normalizedSearchableById.set(record.id, normalized);
+      this.lexicalTokensById.set(record.id, tokens);
+      for (const token of new Set(tokens)) {
+        const ids = this.lexicalIndex.get(token) ?? new Set<string>();
+        ids.add(record.id);
+        this.lexicalIndex.set(token, ids);
+      }
     }
     this.digest = canonicalDigest(this.records);
   }
 
   get(input: Record<string, unknown>): Record<string, unknown> {
-    if (typeof input.id !== "string" || input.id.length === 0 || input.id.length > 512 || input.id.includes("\0")) {
-      throw new RuntimeExecutionError("INVALID_ARGUMENT", "memory.get requires a non-empty id <= 512 chars", "denied");
+    const hasId = input.id !== undefined;
+    const hasKey = input.key !== undefined;
+    if (hasId === hasKey) {
+      throw new RuntimeExecutionError("INVALID_ARGUMENT", "memory.get requires exactly one of id or key", "denied");
     }
-    const record = this.byId.get(input.id);
-    if (!record) throw new RuntimeExecutionError("MEMORY_NOT_FOUND", `memory record not found: ${input.id}`);
-    return {record: cloneRecord(record), snapshot_digest: this.digest};
+    let record: StoredMemoryRecord | undefined;
+    if (hasId) {
+      if (typeof input.id !== "string" || input.id.length === 0 || input.id.length > 512 || input.id.includes("\0")) {
+        throw new RuntimeExecutionError("INVALID_ARGUMENT", "memory.get id must be a non-empty string <= 512 chars", "denied");
+      }
+      record = this.byId.get(input.id);
+      if (!record) throw new RuntimeExecutionError("MEMORY_NOT_FOUND", `memory record not found: ${input.id}`);
+    } else {
+      if (typeof input.key !== "string" || input.key.length === 0 || input.key.length > 1024 || input.key.includes("\0")) {
+        throw new RuntimeExecutionError("INVALID_ARGUMENT", "memory.get key must be a non-empty string <= 1024 chars", "denied");
+      }
+      const matches = this.byKey.get(input.key) ?? [];
+      if (matches.length === 0) throw new RuntimeExecutionError("MEMORY_NOT_FOUND", `memory key not found: ${input.key}`);
+      if (matches.length > 1) throw new RuntimeExecutionError("MEMORY_KEY_AMBIGUOUS", `memory key is ambiguous: ${input.key}`);
+      record = matches[0]!;
+    }
+    return {
+      record: cloneRecord(record),
+      record_digest: canonicalDigest(record),
+      snapshot_digest: this.digest,
+    };
   }
 
   search(input: Record<string, unknown>): Record<string, unknown> {
@@ -196,10 +260,10 @@ export class ExactMemorySnapshot {
     const hits: SearchHit[] = [];
     for (const record of records) {
       if (record.id === query) {
-        hits.push({...cloneRecord(record), match: "id", score: 2});
+        hits.push(candidateHit(record, "id", 2));
         continue;
       }
-      if (record.keys.includes(query)) hits.push({...cloneRecord(record), match: "key", score: 1});
+      if (record.keys.includes(query)) hits.push(candidateHit(record, "key", 1));
     }
     return hits.sort((a, b) => b.score - a.score || compareCodeUnits(a.id, b.id));
   }
@@ -209,20 +273,28 @@ export class ExactMemorySnapshot {
     if (terms.length === 0) {
       throw new RuntimeExecutionError("INVALID_ARGUMENT", "lexical query contains no searchable terms", "denied");
     }
+    if (terms.length > MAX_QUERY_TERMS) {
+      throw new RuntimeExecutionError("INVALID_ARGUMENT", `lexical query exceeds ${MAX_QUERY_TERMS} terms`, "denied");
+    }
+    const postingLists = terms.map(term => this.lexicalIndex.get(term));
+    if (postingLists.some(list => list === undefined)) return [];
+    const [first, ...rest] = postingLists as Set<string>[];
+    const candidateIds = [...first].filter(id => rest.every(list => list.has(id)));
+    const allowed = new Set(records.map(record => record.id));
     const phrase = lexicalNormalize(query).trim().replace(/\s+/g, " ");
     const hits: SearchHit[] = [];
-    for (const record of records) {
-      const searchable = [record.id, ...record.keys, record.text].join("\n");
-      const normalized = lexicalNormalize(searchable);
-      const tokens = lexicalTokens(searchable);
-      if (!terms.every(term => tokens.includes(term))) continue;
+    for (const id of candidateIds) {
+      if (!allowed.has(id)) continue;
+      const record = this.byId.get(id)!;
+      const normalized = this.normalizedSearchableById.get(id)!;
+      const tokens = this.lexicalTokensById.get(id)!;
       const phraseMatch = normalized.includes(phrase);
       const frequency = terms.reduce((sum, term) => sum + countToken(tokens, term), 0);
-      hits.push({
-        ...cloneRecord(record),
-        match: phraseMatch ? "phrase" : "all_terms",
-        score: (phraseMatch ? 1000 : 0) + frequency,
-      });
+      hits.push(candidateHit(
+        record,
+        phraseMatch ? "phrase" : "all_terms",
+        (phraseMatch ? 1000 : 0) + frequency,
+      ));
     }
     return hits.sort((a, b) => b.score - a.score || compareCodeUnits(a.id, b.id));
   }

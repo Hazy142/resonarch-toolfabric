@@ -11,7 +11,8 @@ import {loadRegistry} from "../registry/load.js";
 import {RuntimeExecutionError} from "./errors.js";
 import {discoverInstructions, fsList, fsRead, fsReadMany, fsSearch, fsStat} from "./fsRead.js";
 import {gitDiff, gitLog, gitStatus} from "./gitRead.js";
-import {ExactMemorySnapshot, type ReadMemoryRecord} from "./exactMemory.js";
+import type {ReadMemoryRecord} from "../context/retrieval.js";
+import {ExactMemorySnapshot} from "./exactMemory.js";
 import {codeDependencies, codeSymbols, contextPack, instructionsResolve, testDiscover} from "./localInspect.js";
 import {isWithinPath, WorkspaceBoundary} from "./workspace.js";
 
