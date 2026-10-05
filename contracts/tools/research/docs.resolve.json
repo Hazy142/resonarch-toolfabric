@@ -1,0 +1,28 @@
+{
+  "schema": "resonarch.toolfabric.tool/v1",
+  "id": "docs.resolve",
+  "version": "1.0.0",
+  "title": "docs.resolve",
+  "summary": "Canonical ToolFabric primitive: docs.resolve.",
+  "input_schema": {
+    "type": "object",
+    "additionalProperties": true
+  },
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": true
+  },
+  "capabilities": [
+    "docs:write"
+  ],
+  "authority_scope": [
+    "workspace"
+  ],
+  "risk_class": "R2",
+  "side_effect": "external",
+  "idempotency": "conditional",
+  "network": "required",
+  "receipt": "required",
+  "default_timeout_ms": 30000,
+  "max_output_bytes": 1048576
+}

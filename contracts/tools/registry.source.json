@@ -1,0 +1,145 @@
+{
+  "schema": "resonarch.toolfabric.registry-source/v1",
+  "families": {
+    "registry": [
+      "registry.list",
+      "registry.describe",
+      "capability.snapshot",
+      "capability.resolve",
+      "provider.list",
+      "provider.health",
+      "model.catalog",
+      "model.route"
+    ],
+    "context": [
+      "instructions.discover",
+      "instructions.resolve",
+      "policy.compile",
+      "context.capture",
+      "context.canonicalize",
+      "context.budget",
+      "context.pack",
+      "context.diff"
+    ],
+    "fs": [
+      "fs.list",
+      "fs.stat",
+      "fs.read",
+      "fs.read_many",
+      "fs.write",
+      "fs.patch",
+      "fs.move",
+      "fs.search"
+    ],
+    "process": [
+      "process.start",
+      "process.output",
+      "process.input",
+      "process.stop",
+      "process.list",
+      "env.snapshot",
+      "command.which",
+      "port.probe"
+    ],
+    "git": [
+      "git.status",
+      "git.diff",
+      "git.log",
+      "git.branch",
+      "git.worktree",
+      "git.commit",
+      "git.rebase",
+      "git.merge"
+    ],
+    "forge": [
+      "forge.repo",
+      "forge.issue",
+      "forge.pr",
+      "forge.review",
+      "forge.merge",
+      "ci.status",
+      "ci.logs",
+      "ci.rerun"
+    ],
+    "code": [
+      "code.symbols",
+      "code.search",
+      "code.references",
+      "code.dependencies",
+      "code.ast_query",
+      "code.edit",
+      "code.format",
+      "code.diagnostics"
+    ],
+    "verify": [
+      "test.discover",
+      "test.run",
+      "test.target",
+      "test.coverage",
+      "lint.run",
+      "typecheck.run",
+      "build.run",
+      "gate.evaluate"
+    ],
+    "research": [
+      "web.search",
+      "web.fetch",
+      "docs.resolve",
+      "package.resolve",
+      "license.inspect",
+      "vulnerability.search",
+      "source.compare",
+      "research.bundle"
+    ],
+    "tasks": [
+      "task.decompose",
+      "task.graph",
+      "task.claim",
+      "task.dispatch",
+      "task.status",
+      "task.handoff",
+      "review.dispatch",
+      "escalation.route"
+    ],
+    "memory": [
+      "session.state",
+      "ledger.append",
+      "memory.put",
+      "memory.get",
+      "memory.search_exact",
+      "memory.search_semantic",
+      "history.compact",
+      "checkpoint.resume"
+    ],
+    "security": [
+      "policy.check",
+      "capability.request",
+      "approval.request",
+      "secret.scan",
+      "secret.redact",
+      "network.authorize",
+      "action.classify",
+      "sandbox.boundary"
+    ],
+    "evidence": [
+      "hash.compute",
+      "manifest.create",
+      "receipt.create",
+      "receipt.verify",
+      "attestation.sign",
+      "attestation.verify",
+      "benchmark.record",
+      "claim.classify"
+    ],
+    "artifacts": [
+      "json.validate",
+      "schema.validate",
+      "structured.diff",
+      "archive.pack",
+      "archive.unpack",
+      "artifact.store",
+      "artifact.fetch",
+      "report.render"
+    ]
+  }
+}

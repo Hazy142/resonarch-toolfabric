@@ -1,0 +1,28 @@
+{
+  "schema": "resonarch.toolfabric.tool/v1",
+  "id": "escalation.route",
+  "version": "1.0.0",
+  "title": "escalation.route",
+  "summary": "Canonical ToolFabric primitive: escalation.route.",
+  "input_schema": {
+    "type": "object",
+    "additionalProperties": true
+  },
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": true
+  },
+  "capabilities": [
+    "escalation:read"
+  ],
+  "authority_scope": [
+    "workspace"
+  ],
+  "risk_class": "R0",
+  "side_effect": "none",
+  "idempotency": "pure",
+  "network": "forbidden",
+  "receipt": "required",
+  "default_timeout_ms": 30000,
+  "max_output_bytes": 1048576
+}
