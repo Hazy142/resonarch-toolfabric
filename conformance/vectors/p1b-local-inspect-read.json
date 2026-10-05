@@ -19,6 +19,8 @@
     "dependency and build trees excluded from test discovery",
     "context pack deterministic across input order",
     "context pack honors byte budget and reports omissions",
+    "multi-call task receipts form a valid hash chain",
+    "receipt tails are isolated by task",
     "composed local inspect core leaves git worktree unchanged"
   ],
   "non_claims": [

@@ -5,6 +5,7 @@ import {promisify} from "node:util";
 import {mkdir, mkdtemp, readFile, writeFile} from "node:fs/promises";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
+import {verifyChain} from "../src/evidence/receipt.js";
 import {ReadPlaneRuntime, type ToolCall} from "../src/runtime/readPlane.js";
 
 const execFile = promisify(execFileCallback);
@@ -224,9 +225,11 @@ test("P1B local inspect core composes real read primitives without workspace mut
     ],
   }, workspace, "e2e-pack"));
 
-  for (const executed of [discovery, resolution, status, list, symbols, deps, tests, pack]) {
+  const executedCalls = [discovery, resolution, status, list, symbols, deps, tests, pack];
+  for (const executed of executedCalls) {
     assert.equal(executed.result.status, "succeeded");
   }
+  assert.equal(verifyChain(executedCalls.map(executed => executed.receipt)), true);
   const after = (await execFile("git", ["status", "--porcelain=v1", "-z"], {
     cwd: workspace,
     encoding: "utf8",

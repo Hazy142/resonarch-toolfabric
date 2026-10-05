@@ -158,7 +158,8 @@ export class ReadPlaneRuntime {
   readonly artifactStore: ArtifactStore;
   private readonly tools: Map<string, ToolDescriptor>;
   private readonly inlineOutputLimitBytes: number;
-  private readonly previousReceiptHash: string;
+  private readonly initialReceiptHash: string;
+  private readonly receiptTails = new Map<string, string>();
 
   private constructor(registry: ToolDescriptor[], options: ReadPlaneOptions) {
     this.tools = new Map(registry.map(tool => [tool.id, tool]));
@@ -167,7 +168,7 @@ export class ReadPlaneRuntime {
     if (!Number.isInteger(this.inlineOutputLimitBytes) || this.inlineOutputLimitBytes < 64) {
       throw new RuntimeExecutionError("INVALID_RUNTIME_CONFIG", "inlineOutputLimitBytes must be an integer >= 64", "denied");
     }
-    this.previousReceiptHash = options.previousReceiptHash ?? "sha256:GENESIS";
+    this.initialReceiptHash = options.previousReceiptHash ?? "sha256:GENESIS";
   }
 
   static async create(options: ReadPlaneOptions): Promise<ReadPlaneRuntime> {
@@ -278,6 +279,7 @@ export class ReadPlaneRuntime {
       result = this.makeResult(call.call_id, known.status, null, [], {code: known.code, message: known.message}, started);
     }
 
+    const previousReceiptHash = this.receiptTails.get(call.task_id) ?? this.initialReceiptHash;
     const receipt = createReceipt({
       schema: "resonarch.toolfabric.receipt/v1",
       receipt_id: `${call.call_id}:receipt`,
@@ -290,9 +292,10 @@ export class ReadPlaneRuntime {
       result_digest: canonicalDigest(result),
       side_effect: descriptor?.side_effect ?? "none",
       status: result.status,
-      previous_receipt_hash: this.previousReceiptHash,
+      previous_receipt_hash: previousReceiptHash,
       artifact_refs: result.artifacts,
     });
+    this.receiptTails.set(call.task_id, receipt.receipt_hash);
     return {result, receipt};
   }
 

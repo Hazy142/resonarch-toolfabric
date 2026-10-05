@@ -67,6 +67,7 @@ Fixture integration tests execute real filesystem and Git operations and verify:
 - malformed package JSON and non-string script values are rejected as `MANIFEST_INVALID`;
 - dependency/build output trees are excluded from test discovery;
 - context packing is order-independent and budget bounded;
+- multi-call receipts advance as a valid task-local hash chain, while separate task tails remain isolated;
 - the composed local inspect core leaves `git status --porcelain -z` byte-identical before and after.
 
 ## Non-claims
