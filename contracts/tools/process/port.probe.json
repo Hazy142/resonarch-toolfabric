@@ -1,0 +1,28 @@
+{
+  "schema": "resonarch.toolfabric.tool/v1",
+  "id": "port.probe",
+  "version": "1.0.0",
+  "title": "port.probe",
+  "summary": "Canonical ToolFabric primitive: port.probe.",
+  "input_schema": {
+    "type": "object",
+    "additionalProperties": true
+  },
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": true
+  },
+  "capabilities": [
+    "port:read"
+  ],
+  "authority_scope": [
+    "workspace"
+  ],
+  "risk_class": "R0",
+  "side_effect": "none",
+  "idempotency": "pure",
+  "network": "forbidden",
+  "receipt": "required",
+  "default_timeout_ms": 30000,
+  "max_output_bytes": 1048576
+}

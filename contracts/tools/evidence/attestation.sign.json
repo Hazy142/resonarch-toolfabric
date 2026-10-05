@@ -1,0 +1,28 @@
+{
+  "schema": "resonarch.toolfabric.tool/v1",
+  "id": "attestation.sign",
+  "version": "1.0.0",
+  "title": "attestation.sign",
+  "summary": "Canonical ToolFabric primitive: attestation.sign.",
+  "input_schema": {
+    "type": "object",
+    "additionalProperties": true
+  },
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": true
+  },
+  "capabilities": [
+    "attestation:write"
+  ],
+  "authority_scope": [
+    "workspace"
+  ],
+  "risk_class": "R2",
+  "side_effect": "external",
+  "idempotency": "non_idempotent",
+  "network": "forbidden",
+  "receipt": "required",
+  "default_timeout_ms": 30000,
+  "max_output_bytes": 1048576
+}

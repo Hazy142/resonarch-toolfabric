@@ -1,0 +1,28 @@
+{
+  "schema": "resonarch.toolfabric.tool/v1",
+  "id": "task.dispatch",
+  "version": "1.0.0",
+  "title": "task.dispatch",
+  "summary": "Canonical ToolFabric primitive: task.dispatch.",
+  "input_schema": {
+    "type": "object",
+    "additionalProperties": true
+  },
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": true
+  },
+  "capabilities": [
+    "task:write"
+  ],
+  "authority_scope": [
+    "workspace"
+  ],
+  "risk_class": "R1",
+  "side_effect": "local",
+  "idempotency": "conditional",
+  "network": "forbidden",
+  "receipt": "required",
+  "default_timeout_ms": 30000,
+  "max_output_bytes": 1048576
+}

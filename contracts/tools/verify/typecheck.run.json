@@ -1,0 +1,28 @@
+{
+  "schema": "resonarch.toolfabric.tool/v1",
+  "id": "typecheck.run",
+  "version": "1.0.0",
+  "title": "typecheck.run",
+  "summary": "Canonical ToolFabric primitive: typecheck.run.",
+  "input_schema": {
+    "type": "object",
+    "additionalProperties": true
+  },
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": true
+  },
+  "capabilities": [
+    "typecheck:write"
+  ],
+  "authority_scope": [
+    "workspace"
+  ],
+  "risk_class": "R1",
+  "side_effect": "local",
+  "idempotency": "conditional",
+  "network": "forbidden",
+  "receipt": "required",
+  "default_timeout_ms": 30000,
+  "max_output_bytes": 1048576
+}
