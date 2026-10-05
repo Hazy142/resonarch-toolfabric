@@ -37,3 +37,39 @@ test("prompt inventory lineage fails closed when an external hit is lost", async
   };
   assert.throws(() => assertPromptInventoryLineage(inventory.baseline, mutated), /PROMPT_INVENTORY_BASELINE_DRIFT/);
 });
+
+test("prompt inventory validation rejects an unknown runtime classification", async () => {
+  const inventory = await loadPromptInventory();
+  const mutated = structuredClone(inventory.live);
+  (mutated.items[0] as {classification: string}).classification = "unknown_class";
+  assert.throws(
+    () => assertPromptInventoryLineage(inventory.baseline, mutated),
+    /PROMPT_INVENTORY_CLASSIFICATION:live/,
+  );
+});
+
+test("prompt inventory lineage rejects per-URL classification swaps", async () => {
+  const inventory = await loadPromptInventory();
+  const mutated = structuredClone(inventory.live);
+  const first = mutated.items.find(item =>
+    item.repository !== "Hazy142/resonarch-toolfabric" &&
+    item.classification === "canonical_instruction_candidate"
+  )!;
+  const second = mutated.items.find(item =>
+    item.repository !== "Hazy142/resonarch-toolfabric" &&
+    item.classification === "reference_or_derivative"
+  )!;
+  [first.classification, second.classification] = [second.classification, first.classification];
+  assert.throws(
+    () => assertPromptInventoryLineage(inventory.baseline, mutated),
+    /PROMPT_INVENTORY_BASELINE_DRIFT:classification/,
+  );
+});
+
+test("historical baseline excerpts exactly match the revision-bound live records", async () => {
+  const inventory = await loadPromptInventory();
+  const liveByUrl = new Map(inventory.external_live_items.map(item => [item.url, item]));
+  for (const baselineItem of inventory.baseline.items) {
+    assert.equal(baselineItem.excerpt, liveByUrl.get(baselineItem.url)?.excerpt, baselineItem.url);
+  }
+});

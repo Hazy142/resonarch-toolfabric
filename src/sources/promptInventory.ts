@@ -58,6 +58,11 @@ function validateSnapshot(snapshot: PromptDiscoverySnapshot, label: string): voi
   if (snapshot.items.length !== snapshot.unique_result_urls) {
     throw new Error(`PROMPT_INVENTORY_COUNT:${label}`);
   }
+  for (const [index, item] of snapshot.items.entries()) {
+    if (!CLASSES.includes(item.classification)) {
+      throw new Error(`PROMPT_INVENTORY_CLASSIFICATION:${label}:${index}:${String(item.classification)}`);
+    }
+  }
   const urls = new Set(snapshot.items.map(item => item.url));
   if (urls.size !== snapshot.items.length) {
     throw new Error(`PROMPT_INVENTORY_DUPLICATE_URL:${label}`);
@@ -86,6 +91,14 @@ export function assertPromptInventoryLineage(
   const externalUrls = new Set(external.map(item => item.url));
   if (baselineUrls.size !== externalUrls.size || [...baselineUrls].some(url => !externalUrls.has(url))) {
     throw new Error("PROMPT_INVENTORY_BASELINE_DRIFT:urls");
+  }
+
+  const baselineByUrl = new Map(baseline.items.map(item => [item.url, item]));
+  for (const item of external) {
+    const baselineItem = baselineByUrl.get(item.url);
+    if (!baselineItem || baselineItem.classification !== item.classification) {
+      throw new Error(`PROMPT_INVENTORY_BASELINE_DRIFT:classification:${item.url}`);
+    }
   }
 
   const baselineCounts = countClasses(baseline.items);
