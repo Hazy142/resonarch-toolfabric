@@ -11,6 +11,7 @@ import {loadRegistry} from "../registry/load.js";
 import {RuntimeExecutionError} from "./errors.js";
 import {discoverInstructions, fsList, fsRead, fsReadMany, fsSearch, fsStat} from "./fsRead.js";
 import {gitDiff, gitLog, gitStatus} from "./gitRead.js";
+import {codeDependencies, codeSymbols, contextPack, instructionsResolve, testDiscover} from "./localInspect.js";
 import {isWithinPath, WorkspaceBoundary} from "./workspace.js";
 
 export interface ToolCall {
@@ -54,6 +55,11 @@ const IMPLEMENTED = new Set([
   "registry.list",
   "registry.describe",
   "instructions.discover",
+  "instructions.resolve",
+  "context.pack",
+  "code.symbols",
+  "code.dependencies",
+  "test.discover",
   "fs.read",
   "fs.read_many",
   "fs.list",
@@ -201,6 +207,21 @@ export class ReadPlaneRuntime {
         }
         case "instructions.discover":
           output = await discoverInstructions(boundary, call.arguments);
+          break;
+        case "instructions.resolve":
+          output = instructionsResolve(call.arguments);
+          break;
+        case "context.pack":
+          output = contextPack(call.arguments);
+          break;
+        case "code.symbols":
+          output = await codeSymbols(boundary, call.arguments);
+          break;
+        case "code.dependencies":
+          output = await codeDependencies(boundary, call.arguments);
+          break;
+        case "test.discover":
+          output = await testDiscover(boundary, call.arguments);
           break;
         case "fs.read":
           output = await fsRead(boundary, call.arguments);
