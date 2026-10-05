@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema",
+    "call_id",
+    "task_id",
+    "trace_id",
+    "tool",
+    "arguments",
+    "scope",
+    "deadline"
+  ],
+  "properties": {
+    "schema": {
+      "const": "resonarch.toolfabric.call/v1"
+    },
+    "call_id": {
+      "type": "string"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "tool": {
+      "type": "object"
+    },
+    "arguments": {
+      "type": "object"
+    },
+    "scope": {
+      "type": "object"
+    },
+    "expected_state": {
+      "type": "object"
+    },
+    "approval_ref": {},
+    "idempotency_key": {},
+    "deadline": {
+      "type": "string"
+    }
+  }
+}

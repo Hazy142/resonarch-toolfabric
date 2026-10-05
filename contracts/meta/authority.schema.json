@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "authority_domain",
+    "owner",
+    "may_propose",
+    "may_execute",
+    "required_gates",
+    "promotion_rule"
+  ],
+  "properties": {
+    "authority_domain": {
+      "type": "string"
+    },
+    "owner": {
+      "type": "string"
+    },
+    "may_propose": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "may_execute": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "required_gates": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "promotion_rule": {
+      "type": "string"
+    }
+  }
+}

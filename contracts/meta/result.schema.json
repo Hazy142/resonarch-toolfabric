@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema",
+    "call_id",
+    "status",
+    "output",
+    "artifacts",
+    "diagnostics",
+    "timing",
+    "error"
+  ],
+  "properties": {
+    "schema": {
+      "const": "resonarch.toolfabric.result/v1"
+    },
+    "call_id": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "succeeded",
+        "failed",
+        "denied",
+        "cancelled",
+        "partial",
+        "uncertain"
+      ]
+    },
+    "output": {},
+    "artifacts": {
+      "type": "array"
+    },
+    "diagnostics": {
+      "type": "array"
+    },
+    "timing": {
+      "type": "object"
+    },
+    "receipt_ref": {},
+    "error": {}
+  }
+}

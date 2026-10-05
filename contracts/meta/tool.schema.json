@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ToolFabric Tool Descriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "version",
+    "title",
+    "summary",
+    "input_schema",
+    "output_schema",
+    "capabilities",
+    "authority_scope",
+    "risk_class",
+    "side_effect",
+    "idempotency",
+    "network",
+    "receipt",
+    "default_timeout_ms",
+    "max_output_bytes"
+  ],
+  "properties": {
+    "schema": {
+      "const": "resonarch.toolfabric.tool/v1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+$"
+    },
+    "version": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "input_schema": {
+      "type": "object"
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "authority_scope": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risk_class": {
+      "enum": [
+        "R0",
+        "R1",
+        "R2",
+        "R3",
+        "R4"
+      ]
+    },
+    "side_effect": {
+      "enum": [
+        "none",
+        "local",
+        "process",
+        "filesystem",
+        "repository",
+        "external",
+        "release",
+        "projection"
+      ]
+    },
+    "idempotency": {
+      "enum": [
+        "pure",
+        "idempotent",
+        "conditional",
+        "non_idempotent"
+      ]
+    },
+    "network": {
+      "enum": [
+        "forbidden",
+        "optional",
+        "required"
+      ]
+    },
+    "receipt": {
+      "enum": [
+        "required",
+        "optional",
+        "forbidden"
+      ]
+    },
+    "default_timeout_ms": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "max_output_bytes": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}
