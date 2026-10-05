@@ -7,14 +7,13 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "node --test dist/tests/*.test.js",
-    "check": "npm run build && npm test",
+    "test": "node scripts/run-tests.mjs",
+    "check": "npm run build && npm test && npm run registry:generate && npm run workflows:check",
     "registry:generate": "node scripts/generate-registry.mjs",
     "workflows:check": "node scripts/check-workflows.mjs"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
-    "ajv": "^8.17.1",
     "typescript": "^5.9.0",
     "yaml": "^2.8.1"
   }
