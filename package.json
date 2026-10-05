@@ -5,6 +5,9 @@
   "description": "ToolFabric - Open execution infrastructure for AI agents.",
   "license": "Apache-2.0",
   "type": "module",
+  "bin": {
+    "toolfabric": "dist/src/cli.js"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "node scripts/run-tests.mjs",
