@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "id",
+    "resource",
+    "operations",
+    "risk_ceiling",
+    "delegable"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "resource": {
+      "type": "string"
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risk_ceiling": {
+      "enum": [
+        "R0",
+        "R1",
+        "R2",
+        "R3",
+        "R4"
+      ]
+    },
+    "delegable": {
+      "type": "boolean"
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "max_calls": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    }
+  }
+}
