@@ -1,0 +1,11 @@
+{
+  "schema": "resonarch.toolfabric.conformance/v1",
+  "required": [
+    "succeeded",
+    "failed",
+    "denied",
+    "cancelled",
+    "partial",
+    "uncertain"
+  ]
+}
