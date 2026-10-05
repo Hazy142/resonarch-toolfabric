@@ -127,6 +127,17 @@ test("P1 artifactizes large canonical output outside the workspace", async () =>
   assert.equal(stored.content.length, 4096);
 });
 
+test("P1 refuses artifact storage inside the workspace before creating it", async () => {
+  const {workspace} = await makeFixture();
+  const artifactRoot = join(workspace, ".toolfabric-artifacts");
+  await writeFile(join(workspace, "src", "large.txt"), "x".repeat(4096), "utf8");
+  const runtime = await ReadPlaneRuntime.create({artifactRoot, inlineOutputLimitBytes: 128});
+  const executed = await runtime.execute(call("fs.read", {path: "src/large.txt"}, workspace));
+  assert.equal(executed.result.status, "denied");
+  assert.equal((executed.result.error as {code: string}).code, "ARTIFACT_STORE_SCOPE");
+  await assert.rejects(() => lstat(artifactRoot), /ENOENT/);
+});
+
 test("P1 runs read-only git commands against a real fixture repository without workspace writes", async () => {
   const {workspace, artifacts} = await makeFixture();
   await writeFile(join(workspace, "src", "hello.txt"), "alpha\nchanged\n", "utf8");

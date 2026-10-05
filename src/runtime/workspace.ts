@@ -2,7 +2,7 @@ import {realpath, stat} from "node:fs/promises";
 import {isAbsolute, relative, resolve, sep} from "node:path";
 import {RuntimeExecutionError} from "./errors.js";
 
-function inside(root: string, target: string): boolean {
+export function isWithinPath(root: string, target: string): boolean {
   const rel = relative(root, target);
   return rel === "" || (rel !== ".." && !rel.startsWith(".." + sep) && !isAbsolute(rel));
 }
@@ -26,12 +26,12 @@ export class WorkspaceBoundary {
     }
     if (isAbsolute(inputPath)) throw new RuntimeExecutionError("WORKSPACE_ESCAPE", "absolute paths are outside the workspace contract", "denied");
     const lexical = resolve(this.root, inputPath || ".");
-    if (!inside(this.root, lexical)) throw new RuntimeExecutionError("WORKSPACE_ESCAPE", "path escapes workspace", "denied");
+    if (!isWithinPath(this.root, lexical)) throw new RuntimeExecutionError("WORKSPACE_ESCAPE", "path escapes workspace", "denied");
     const canonical = await realpath(lexical).catch((error: NodeJS.ErrnoException) => {
       if (error.code === "ENOENT") throw new RuntimeExecutionError("PATH_NOT_FOUND", "path does not exist");
       throw new RuntimeExecutionError("PATH_RESOLUTION_FAILED", error.message);
     });
-    if (!inside(this.root, canonical)) throw new RuntimeExecutionError("WORKSPACE_ESCAPE", "resolved path escapes workspace", "denied");
+    if (!isWithinPath(this.root, canonical)) throw new RuntimeExecutionError("WORKSPACE_ESCAPE", "resolved path escapes workspace", "denied");
     return canonical;
   }
 

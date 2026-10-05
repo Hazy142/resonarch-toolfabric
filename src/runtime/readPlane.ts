@@ -1,6 +1,6 @@
-import {access} from "node:fs/promises";
+import {access, realpath} from "node:fs/promises";
 import {constants} from "node:fs";
-import {delimiter, extname, join} from "node:path";
+import {basename, delimiter, dirname, extname, join, resolve} from "node:path";
 import {platform, arch} from "node:os";
 import {canonicalDigest, canonicalJson} from "../contracts/canonical.js";
 import type {ResultStatus, ToolDescriptor} from "../contracts/types.js";
@@ -11,7 +11,7 @@ import {loadRegistry} from "../registry/load.js";
 import {RuntimeExecutionError} from "./errors.js";
 import {discoverInstructions, fsList, fsRead, fsReadMany, fsSearch, fsStat} from "./fsRead.js";
 import {gitDiff, gitLog, gitStatus} from "./gitRead.js";
-import {WorkspaceBoundary} from "./workspace.js";
+import {isWithinPath, WorkspaceBoundary} from "./workspace.js";
 
 export interface ToolCall {
   schema: "resonarch.toolfabric.call/v1";
@@ -90,6 +90,41 @@ function safeEnv(input: Record<string, unknown>): Record<string, unknown> {
   }) as Record<string, unknown>;
 }
 
+async function resolveProspectivePath(inputPath: string): Promise<string> {
+  let current = resolve(inputPath);
+  const tail: string[] = [];
+  while (true) {
+    try {
+      const existing = await realpath(current);
+      return resolve(existing, ...tail);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+        throw new RuntimeExecutionError("ARTIFACT_STORE_SCOPE", "artifact root cannot be resolved safely", "denied");
+      }
+      const parent = dirname(current);
+      if (parent === current) {
+        throw new RuntimeExecutionError("ARTIFACT_STORE_SCOPE", "artifact root has no resolvable ancestor", "denied");
+      }
+      tail.unshift(basename(current));
+      current = parent;
+    }
+  }
+}
+
+async function assertArtifactStoreOutsideWorkspace(workspaceRoot: string, artifactRoot: string): Promise<void> {
+  if (!artifactRoot || artifactRoot.includes("\0")) {
+    throw new RuntimeExecutionError("ARTIFACT_STORE_SCOPE", "artifact root is invalid", "denied");
+  }
+  const lexical = resolve(artifactRoot);
+  if (isWithinPath(workspaceRoot, lexical)) {
+    throw new RuntimeExecutionError("ARTIFACT_STORE_SCOPE", "artifact root must be outside the workspace", "denied");
+  }
+  const prospective = await resolveProspectivePath(lexical);
+  if (isWithinPath(workspaceRoot, prospective)) {
+    throw new RuntimeExecutionError("ARTIFACT_STORE_SCOPE", "artifact root resolves inside the workspace", "denied");
+  }
+}
+
 async function commandWhich(input: Record<string, unknown>): Promise<Record<string, unknown>> {
   if (typeof input.command !== "string" || !/^[A-Za-z0-9_.+-]+$/.test(input.command)) {
     throw new RuntimeExecutionError("INVALID_ARGUMENT", "command.which requires a bare command name", "denied");
@@ -151,6 +186,7 @@ export class ReadPlaneRuntime {
       }
 
       const boundary = await WorkspaceBoundary.create(call.scope.workspace_root);
+      await assertArtifactStoreOutsideWorkspace(boundary.root, this.artifactStore.root);
       let output: unknown;
       switch (descriptor.id) {
         case "registry.list":

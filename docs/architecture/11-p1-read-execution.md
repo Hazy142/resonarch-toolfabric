@@ -42,9 +42,11 @@ policy/capability/approval and intent/completion handling.
 ## Large output
 
 Canonical output larger than the configured inline limit is written to the content-addressed
-Artifact Store outside the workspace. The result contains only the artifact reference and byte
-count. Artifact refs are strict `artifact://sha256:<64 hex>` identifiers; writes use a synced
-temporary file followed by rename.
+Artifact Store outside the workspace. The runtime validates the prospective Artifact-Store path
+before execution and denies roots that are lexically inside the workspace or resolve there through
+an existing symlink ancestor. The result contains only the artifact reference and byte count.
+Artifact refs are strict `artifact://sha256:<64 hex>` identifiers; writes use a synced temporary
+file followed by rename.
 
 ## Evidence boundary
 
@@ -58,7 +60,8 @@ Integration tests use a real temporary filesystem and a real Git repository. The
 - byte/mtime tree equality before and after the read-only Git sequence;
 - scoped instruction discovery;
 - exact literal filesystem search;
-- environment redaction;
+- environment redaction, including secret/private/access-key names;
+- Artifact-Store scope denial before any workspace-local artifact directory can be created;
 - command discovery;
 - expired-call cancellation;
 - malformed input and Git option-injection rejection.

@@ -8,7 +8,10 @@ import {createReceipt,sideEffectOutcome,verifyChain} from "../src/evidence/recei
 import {redact} from "../src/evidence/redact.js";
 import {ArtifactStore} from "../src/evidence/artifacts.js";
 test("capability cannot authorize above its risk ceiling",()=>assert.equal(authorize({operation:"merge",resource:"repo:a",risk:"R3"},[{id:"c",resource:"repo:a",operations:["merge"],risk_ceiling:"R2",delegable:false}]).allowed,false));
-test("nested credentials and bearer text are redacted",()=>assert.deepEqual(redact({token:"abc",message:"Bearer abc.def"}),{token:"[REDACTED]",message:"Bearer [REDACTED]"}));
+test("nested credentials and bearer text are redacted",()=>assert.deepEqual(
+  redact({token:"abc",AWS_SECRET_ACCESS_KEY:"secret",private_key:"pem",message:"Bearer abc.def"}),
+  {token:"[REDACTED]",AWS_SECRET_ACCESS_KEY:"[REDACTED]",private_key:"[REDACTED]",message:"Bearer [REDACTED]"},
+));
 test("receipt chain detects tampering",()=>{const a=createReceipt({schema:"resonarch.toolfabric.receipt/v1",receipt_id:"1",trace_id:"t",task_id:"x",call_id:"c1",tool_id:"fs.read",tool_version:"1.0.0",request_digest:"q",result_digest:"r",side_effect:"none",status:"succeeded",previous_receipt_hash:"sha256:GENESIS",artifact_refs:[]});const b=createReceipt({schema:"resonarch.toolfabric.receipt/v1",receipt_id:"2",trace_id:"t",task_id:"x",call_id:"c2",tool_id:"fs.read",tool_version:"1.0.0",request_digest:"q2",result_digest:"r2",side_effect:"none",status:"succeeded",previous_receipt_hash:a.receipt_hash,artifact_refs:[]});assert.equal(verifyChain([a,b]),true);assert.equal(verifyChain([a,{...b,result_digest:"changed"}]),false);});
 test("ambiguous side effects remain uncertain",()=>assert.equal(sideEffectOutcome({committed:false,knownFailure:false}),"uncertain"));
 test("artifact store verifies content address",async()=>{const dir=await mkdtemp(join(tmpdir(),"toolfabric-"));const store=new ArtifactStore(dir);const ref=await store.put(new TextEncoder().encode("evidence"));assert.equal(new TextDecoder().decode(await store.get(ref)),"evidence");assert.equal(await store.put(new TextEncoder().encode("evidence")),ref);});

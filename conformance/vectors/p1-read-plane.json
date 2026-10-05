@@ -22,6 +22,7 @@
     "mutating descriptor denied before dispatch",
     "deadline checked before execution",
     "large canonical output artifactized outside workspace",
+    "artifact store scope cannot resolve inside workspace",
     "git executed without shell",
     "git diff disables external diff and textconv",
     "git host redirection variables stripped",
