@@ -81,6 +81,20 @@ test("P1 executes real fs reads and emits a verifiable receipt", async () => {
   assert.equal(verifyChain([executed.receipt]), true);
 });
 
+test("P1 runtime advances receipt chains per task without cross-task tail leakage", async () => {
+  const {workspace, artifacts} = await makeFixture();
+  const runtime = await ReadPlaneRuntime.create({artifactRoot: artifacts});
+  const first = await runtime.execute(call("fs.stat", {path: "src/hello.txt"}, workspace));
+  const second = await runtime.execute(call("fs.list", {path: "src"}, workspace));
+  const otherRequest = call("registry.list", {}, workspace);
+  otherRequest.task_id = "task-p1-other";
+  otherRequest.call_id = "call-registry-list-other";
+  const other = await runtime.execute(otherRequest);
+  assert.equal(verifyChain([first.receipt, second.receipt]), true);
+  assert.equal(other.receipt.previous_receipt_hash, "sha256:GENESIS");
+});
+
+
 test("P1 workspace boundary denies traversal and mutating primitives", async () => {
   const {workspace, artifacts} = await makeFixture();
   const outside = join(dirname(workspace), "outside.txt");

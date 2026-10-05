@@ -1,0 +1,32 @@
+{
+  "schema": "resonarch.toolfabric.conformance-vector/v1",
+  "id": "p1b-local-inspect-read",
+  "implemented_tools": [
+    "instructions.resolve",
+    "code.symbols",
+    "code.dependencies",
+    "test.discover",
+    "context.pack"
+  ],
+  "required_behaviors": [
+    "instruction precedence deterministic",
+    "retrieved data remains non-authoritative",
+    "instruction digest mismatch denied",
+    "typescript javascript symbols use compiler AST",
+    "unsupported source languages explicitly reported",
+    "dependency manifests never execute package scripts",
+    "malformed package manifests and non-string scripts fail closed",
+    "dependency and build trees excluded from test discovery",
+    "context pack deterministic across input order",
+    "context pack honors byte budget and reports omissions",
+    "multi-call task receipts form a valid hash chain",
+    "receipt tails are isolated by task",
+    "composed local inspect core leaves git worktree unchanged"
+  ],
+  "non_claims": [
+    "complete inspect user-tool pass",
+    "P1_READ_PLANE_PASS",
+    "P2_LOCAL_ACTION_PASS",
+    "production readiness"
+  ]
+}

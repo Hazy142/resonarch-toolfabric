@@ -16,9 +16,11 @@
     "workflows:check": "node scripts/check-workflows.mjs",
     "sources:discover": "node scripts/discover-agent-prompts.mjs"
   },
-  "devDependencies": {
-    "@types/node": "^24.0.0",
+  "dependencies": {
     "typescript": "^5.9.0",
     "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0"
   }
 }
