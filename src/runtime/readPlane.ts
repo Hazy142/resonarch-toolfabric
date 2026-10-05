@@ -11,6 +11,8 @@ import {loadRegistry} from "../registry/load.js";
 import {RuntimeExecutionError} from "./errors.js";
 import {discoverInstructions, fsList, fsRead, fsReadMany, fsSearch, fsStat} from "./fsRead.js";
 import {gitDiff, gitLog, gitStatus} from "./gitRead.js";
+import type {ReadMemoryRecord} from "../context/retrieval.js";
+import {ExactMemorySnapshot} from "./exactMemory.js";
 import {codeDependencies, codeSymbols, contextPack, instructionsResolve, testDiscover} from "./localInspect.js";
 import {isWithinPath, WorkspaceBoundary} from "./workspace.js";
 
@@ -49,6 +51,7 @@ export interface ReadPlaneOptions {
   registryRoot?: string;
   inlineOutputLimitBytes?: number;
   previousReceiptHash?: string;
+  memoryRecords?: readonly ReadMemoryRecord[];
 }
 
 const IMPLEMENTED = new Set([
@@ -57,6 +60,8 @@ const IMPLEMENTED = new Set([
   "instructions.discover",
   "instructions.resolve",
   "context.pack",
+  "memory.get",
+  "memory.search_exact",
   "code.symbols",
   "code.dependencies",
   "test.discover",
@@ -160,6 +165,7 @@ export class ReadPlaneRuntime {
   private readonly inlineOutputLimitBytes: number;
   private readonly initialReceiptHash: string;
   private readonly receiptTails = new Map<string, string>();
+  private readonly memory: ExactMemorySnapshot;
 
   private constructor(registry: ToolDescriptor[], options: ReadPlaneOptions) {
     this.tools = new Map(registry.map(tool => [tool.id, tool]));
@@ -169,6 +175,7 @@ export class ReadPlaneRuntime {
       throw new RuntimeExecutionError("INVALID_RUNTIME_CONFIG", "inlineOutputLimitBytes must be an integer >= 64", "denied");
     }
     this.initialReceiptHash = options.previousReceiptHash ?? "sha256:GENESIS";
+    this.memory = new ExactMemorySnapshot(options.memoryRecords ?? []);
   }
 
   static async create(options: ReadPlaneOptions): Promise<ReadPlaneRuntime> {
@@ -214,6 +221,12 @@ export class ReadPlaneRuntime {
           break;
         case "context.pack":
           output = contextPack(call.arguments);
+          break;
+        case "memory.get":
+          output = this.memory.get(call.arguments);
+          break;
+        case "memory.search_exact":
+          output = this.memory.search(call.arguments);
           break;
         case "code.symbols":
           output = await codeSymbols(boundary, call.arguments);
