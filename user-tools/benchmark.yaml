@@ -1,0 +1,28 @@
+schema: resonarch.toolfabric.user-tool/v1
+id: benchmark
+version: 1.0.0
+intent: Compile the benchmark user intent into a provider-independent execution DAG.
+preflight:
+  - instructions.discover
+  - git.status
+required_capabilities: []
+graph:
+  - env.snapshot
+  - manifest.create
+  - benchmark.record
+  - structured.diff
+  - report.render
+required_gates:
+  - receipt_chain_valid
+failure_routes:
+  - blocked
+  - denied
+  - uncertain
+  - budget_exhausted
+default_budget:
+  tool_calls: 64
+  wall_seconds: 3600
+completion:
+  require:
+    - evidence_bound_to_current_scope
+    - no_open_uncertain_side_effects

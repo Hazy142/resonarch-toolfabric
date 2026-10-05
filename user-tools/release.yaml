@@ -1,0 +1,32 @@
+schema: resonarch.toolfabric.user-tool/v1
+id: release
+version: 1.0.0
+intent: Compile the release user intent into a provider-independent execution DAG.
+preflight:
+  - instructions.discover
+  - git.status
+required_capabilities: []
+graph:
+  - git.status
+  - manifest.create
+  - test.run
+  - build.run
+  - review.dispatch
+  - approval.request
+  - attestation.sign
+  - report.render
+required_gates:
+  - receipt_chain_valid
+  - review_verdict
+failure_routes:
+  - blocked
+  - denied
+  - uncertain
+  - budget_exhausted
+default_budget:
+  tool_calls: 64
+  wall_seconds: 3600
+completion:
+  require:
+    - evidence_bound_to_current_scope
+    - no_open_uncertain_side_effects
