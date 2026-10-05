@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema",
+    "receipt_id",
+    "trace_id",
+    "task_id",
+    "call_id",
+    "tool_id",
+    "tool_version",
+    "request_digest",
+    "result_digest",
+    "side_effect",
+    "status",
+    "previous_receipt_hash",
+    "receipt_hash"
+  ],
+  "properties": {
+    "schema": {
+      "const": "resonarch.toolfabric.receipt/v1"
+    },
+    "receipt_id": {
+      "type": "string"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "call_id": {
+      "type": "string"
+    },
+    "tool_id": {
+      "type": "string"
+    },
+    "tool_version": {
+      "type": "string"
+    },
+    "request_digest": {
+      "type": "string"
+    },
+    "result_digest": {
+      "type": "string"
+    },
+    "side_effect": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "previous_receipt_hash": {
+      "type": "string"
+    },
+    "receipt_hash": {
+      "type": "string"
+    },
+    "approval_ref": {},
+    "exit_code": {},
+    "artifact_refs": {
+      "type": "array"
+    }
+  }
+}
