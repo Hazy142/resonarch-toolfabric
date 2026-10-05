@@ -22,7 +22,7 @@
     "open or incomplete gateway history remains excluded from retrieval snapshots",
     "gateway artifact refs are revalidated at the retrieval projection boundary",
     "gateway-projected memory records are retrievable by canonical artifact ref and lexical tool id",
-    "candidate retrieval requires exact raw reload before claim or action unless the source is already an explicit immutable ref",
+    "every retrieval path including explicit ids or artifact refs requires exact raw reload before claim or action",
     "semantic retrieval is not invoked by this slice"
   ],
   "non_claims": [

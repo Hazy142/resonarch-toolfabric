@@ -28,7 +28,7 @@ The architecture requires explicit reference / exact retrieval before lexical re
 1. `memory.get` resolves one exact record ID or one unique declared key; ambiguous keys fail closed.
 2. `memory.search_exact mode=exact` matches only a case-sensitive record ID or declared key.
 3. `memory.search_exact mode=lexical` performs deterministic whole-term lexical matching through an in-memory inverted index.
-4. Candidate retrieval (`exact`, `lexical`, `structured`, `semantic`) requires an exact raw reload before a claim or action; only an explicit immutable ref is already raw.
+4. Every retrieval path, including an explicit ID or artifact reference, requires an exact raw reload before a claim or action.
 5. No semantic lookup is performed; every search result reports `semantic_used: false`.
 
 An exact miss stays an exact miss. The runtime never auto-falls back from exact to lexical or semantic.
@@ -81,7 +81,7 @@ Behavioral tests verify:
 - snapshot digest and hit order are independent of seed order;
 - explicit kind filters and result windows;
 - duplicate IDs fail during runtime construction;
-- claim/action paths require raw reload for exact/lexical/structured/semantic candidates;
+- claim/action paths require exact raw reload for every retrieval path, including explicit IDs/artifact refs;
 - closed Gateway WARM history projects into canonical memory records while open/incomplete calls are excluded and artifact refs are revalidated.
 
 ## Non-claims
