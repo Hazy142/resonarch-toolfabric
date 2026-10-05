@@ -168,10 +168,10 @@ export class ExactMemorySnapshot {
       throw new RuntimeExecutionError("INVALID_RUNTIME_CONFIG", `memoryRecords must contain at most ${MAX_RECORDS} entries`, "denied");
     }
     const normalizedRecords: StoredMemoryRecord[] = [];
-    let totalBytes = 0;
+    let totalBytes = 2; // Canonical JSON array brackets.
     for (let index = 0; index < records.length; index += 1) {
       const normalized = normalizeRecord(records[index]!, index);
-      totalBytes += new TextEncoder().encode(canonicalJson(normalized)).byteLength;
+      totalBytes += (index === 0 ? 0 : 1) + new TextEncoder().encode(canonicalJson(normalized)).byteLength;
       if (totalBytes > MAX_TOTAL_BYTES) {
         throw new RuntimeExecutionError("INVALID_RUNTIME_CONFIG", "memory snapshot exceeds 32 MiB", "denied");
       }
