@@ -10,9 +10,11 @@ authority boundaries, risk classes, receipts, and verification gates.
 
 ## Status
 
-**Early implementation / contracts preview.** The architecture defines 112 backend primitives
-and 20 standard user tools. This repository implements that contract incrementally and does
-not claim production readiness before its conformance gates pass.
+**Early implementation / contracts + execution preview.** The architecture defines 112 backend
+primitives and 20 standard user tools. P1A now includes a real read-only local execution core
+for a focused subset of filesystem, Git, environment, instruction and registry primitives.
+The full `P1_READ_PLANE_PASS` gate is not yet claimed, and production readiness remains gated
+by the normative conformance plan.
 
 ## Core ideas
 

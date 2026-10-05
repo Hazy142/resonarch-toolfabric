@@ -1,0 +1,39 @@
+{
+  "schema": "resonarch.toolfabric.conformance-vector/v1",
+  "id": "p1a-read-execution-core",
+  "implemented_tools": [
+    "registry.list",
+    "registry.describe",
+    "instructions.discover",
+    "fs.read",
+    "fs.read_many",
+    "fs.list",
+    "fs.stat",
+    "fs.search",
+    "git.status",
+    "git.log",
+    "git.diff",
+    "env.snapshot",
+    "command.which"
+  ],
+  "required_behaviors": [
+    "workspace traversal denied",
+    "resolved symlink escape denied",
+    "mutating descriptor denied before dispatch",
+    "deadline checked before execution",
+    "large canonical output artifactized outside workspace",
+    "artifact store scope cannot resolve inside workspace",
+    "git executed without shell",
+    "git diff disables external diff and textconv",
+    "git host redirection variables stripped",
+    "git cannot discover a parent repository outside workspace scope",
+    "read-only git sequence leaves workspace tree unchanged",
+    "receipt binds request and result digests",
+    "environment secrets redacted"
+  ],
+  "non_claims": [
+    "P1_READ_PLANE_PASS",
+    "P2_LOCAL_ACTION_PASS",
+    "production readiness"
+  ]
+}
