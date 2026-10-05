@@ -42,7 +42,7 @@ Other ecosystems remain explicit future adapters rather than heuristic claims.
 
 ## Test discovery
 
-`test.discover` scans the authorized workspace without following symlinks and excludes dependency/build/cache trees. It returns source test files plus declared `test` / `test:*` package scripts as data only; commands are never executed in P1.
+`test.discover` scans the authorized workspace without following symlinks and excludes dependency/build/cache trees. It returns source test files plus declared `test` / `test:*` package scripts as data only; commands are never executed in P1. Malformed `package.json` content and non-string script values fail closed with `MANIFEST_INVALID` rather than being silently ignored or normalized as generic execution failures.
 
 ## Deterministic context packing
 
@@ -64,6 +64,7 @@ Fixture integration tests execute real filesystem and Git operations and verify:
 - TypeScript symbols are parsed by an AST, not regex;
 - unsupported source languages are explicit;
 - npm dependency manifests are read without executing scripts;
+- malformed package JSON and non-string script values are rejected as `MANIFEST_INVALID`;
 - dependency/build output trees are excluded from test discovery;
 - context packing is order-independent and budget bounded;
 - the composed local inspect core leaves `git status --porcelain -z` byte-identical before and after.

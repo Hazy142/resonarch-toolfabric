@@ -347,13 +347,27 @@ export async function testDiscover(
     const packagePath = await boundary.resolveExisting(boundary.relative(join(root, "package.json")));
     const packageStat = await stat(packagePath);
     if (packageStat.size > 1024 * 1024) throw new RuntimeExecutionError("MANIFEST_TOO_LARGE", "package.json exceeds 1 MiB");
-    const manifest = JSON.parse(await readFile(packagePath, "utf8")) as PackageManifest;
+    let manifest: PackageManifest;
+    try {
+      manifest = JSON.parse(await readFile(packagePath, "utf8")) as PackageManifest;
+    } catch (error) {
+      throw new RuntimeExecutionError("MANIFEST_INVALID", error instanceof Error ? error.message : String(error));
+    }
+    if (!manifest || typeof manifest !== "object" || Array.isArray(manifest)) {
+      throw new RuntimeExecutionError("MANIFEST_INVALID", "package.json must contain an object");
+    }
     if (manifest.scripts !== undefined) {
       if (!manifest.scripts || typeof manifest.scripts !== "object" || Array.isArray(manifest.scripts)) {
         throw new RuntimeExecutionError("MANIFEST_INVALID", "scripts must be an object");
       }
-      scripts = Object.entries(manifest.scripts as Record<string, unknown>)
-        .filter(([name, command]) => /^test(?::|$)/.test(name) && typeof command === "string")
+      const scriptEntries = Object.entries(manifest.scripts as Record<string, unknown>);
+      for (const [name, command] of scriptEntries) {
+        if (typeof command !== "string") {
+          throw new RuntimeExecutionError("MANIFEST_INVALID", `scripts.${name} must be a string`);
+        }
+      }
+      scripts = scriptEntries
+        .filter(([name]) => /^test(?::|$)/.test(name))
         .map(([name, command]) => ({name, command: command as string}))
         .sort((a, b) => a.name.localeCompare(b.name));
     }

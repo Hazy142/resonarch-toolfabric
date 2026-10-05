@@ -153,6 +153,27 @@ test("P1B test.discover returns declared test scripts and source tests but ignor
   assert.equal(output.scripts[0]?.command, "node --test");
 });
 
+test("P1B test.discover fails closed on malformed package JSON", async () => {
+  const {workspace, artifacts} = await makeInspectFixture();
+  await writeFile(join(workspace, "package.json"), "{ not-json", "utf8");
+  const runtime = await ReadPlaneRuntime.create({artifactRoot: artifacts});
+  const executed = await runtime.execute(call("test.discover", {path: "."}, workspace, "invalid-package-json"));
+  assert.equal(executed.result.status, "failed");
+  assert.equal((executed.result.error as {code: string}).code, "MANIFEST_INVALID");
+});
+
+test("P1B test.discover rejects non-string package scripts instead of silently omitting them", async () => {
+  const {workspace, artifacts} = await makeInspectFixture();
+  await writeFile(join(workspace, "package.json"), JSON.stringify({
+    name: "fixture",
+    scripts: {test: 42, build: "tsc"},
+  }) + "\n", "utf8");
+  const runtime = await ReadPlaneRuntime.create({artifactRoot: artifacts});
+  const executed = await runtime.execute(call("test.discover", {path: "."}, workspace, "invalid-test-script"));
+  assert.equal(executed.result.status, "failed");
+  assert.equal((executed.result.error as {code: string}).code, "MANIFEST_INVALID");
+});
+
 test("P1B context.pack is deterministic, budgeted and reports omitted items", async () => {
   const {workspace, artifacts} = await makeInspectFixture();
   const runtime = await ReadPlaneRuntime.create({artifactRoot: artifacts});

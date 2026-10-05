@@ -15,6 +15,7 @@
     "typescript javascript symbols use compiler AST",
     "unsupported source languages explicitly reported",
     "dependency manifests never execute package scripts",
+    "malformed package manifests and non-string scripts fail closed",
     "dependency and build trees excluded from test discovery",
     "context pack deterministic across input order",
     "context pack honors byte budget and reports omissions",
