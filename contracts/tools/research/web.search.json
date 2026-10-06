@@ -1,7 +1,7 @@
 {
   "schema": "resonarch.toolfabric.tool/v1",
   "id": "web.search",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "title": "web.search",
   "summary": "Canonical ToolFabric primitive: web.search.",
   "input_schema": {
@@ -13,13 +13,13 @@
     "additionalProperties": true
   },
   "capabilities": [
-    "web:write"
+    "network:web_read"
   ],
   "authority_scope": [
     "workspace"
   ],
   "risk_class": "R2",
-  "side_effect": "external",
+  "side_effect": "none",
   "idempotency": "conditional",
   "network": "required",
   "receipt": "required",

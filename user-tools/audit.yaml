@@ -5,7 +5,8 @@ intent: Compile the audit user intent into a provider-independent execution DAG.
 preflight:
   - instructions.discover
   - git.status
-required_capabilities: []
+required_capabilities:
+  - network:web_read
 graph:
   - policy.compile
   - secret.scan
