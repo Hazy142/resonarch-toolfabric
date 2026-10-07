@@ -1,12 +1,35 @@
 {
   "schema": "resonarch.toolfabric.tool/v1",
   "id": "fs.patch",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "title": "fs.patch",
   "summary": "Canonical ToolFabric primitive: fs.patch.",
   "input_schema": {
     "type": "object",
-    "additionalProperties": true
+    "additionalProperties": false,
+    "required": [
+      "path",
+      "old_text",
+      "new_text"
+    ],
+    "properties": {
+      "path": {
+        "type": "string",
+        "minLength": 1
+      },
+      "old_text": {
+        "type": "string",
+        "minLength": 1
+      },
+      "new_text": {
+        "type": "string"
+      },
+      "expected_replacements": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000
+      }
+    }
   },
   "output_schema": {
     "type": "object",

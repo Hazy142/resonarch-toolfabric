@@ -1,12 +1,26 @@
 {
   "schema": "resonarch.toolfabric.tool/v1",
   "id": "fs.move",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "title": "fs.move",
   "summary": "Canonical ToolFabric primitive: fs.move.",
   "input_schema": {
     "type": "object",
-    "additionalProperties": true
+    "additionalProperties": false,
+    "required": [
+      "source",
+      "destination"
+    ],
+    "properties": {
+      "source": {
+        "type": "string",
+        "minLength": 1
+      },
+      "destination": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
   },
   "output_schema": {
     "type": "object",

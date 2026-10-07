@@ -1,0 +1,35 @@
+{
+  "schema": "resonarch.toolfabric.conformance-vector/v1",
+  "id": "p2a-filesystem-mutation-slice",
+  "implemented_tools": [
+    "fs.write",
+    "fs.patch",
+    "fs.move"
+  ],
+  "required_behaviors": [
+    "fs:write capability is required before intent",
+    "approval_ref is host-authorized by default before intent",
+    "every mutation binds an explicit expected pre-state",
+    "workspace traversal and symlink mutation targets fail closed",
+    "ToolFabric writers are fenced by per-surface leases",
+    "expired deadlines cancel before filesystem side effects",
+    "existing file modes are preserved by write and patch replacement",
+    "intent receipt is emitted before the first filesystem side effect",
+    "write and patch commit through same-directory temp sync and rename",
+    "move uses a bounded same-workspace rename",
+    "post-state is independently re-probed before completion",
+    "ambiguous outcomes reconcile to succeeded, failed, or uncertain without guessing",
+    "completion receipt chains to the exact intent receipt"
+  ],
+  "claims": [
+    "P2A_FILESYSTEM_MUTATION_SLICE"
+  ],
+  "non_claims": [
+    "P2_LOCAL_ACTION_PASS",
+    "P2_WRITE_PLANE_PASS",
+    "production readiness",
+    "crash-durable receipt ledger",
+    "cross-process expected-state compare-and-swap",
+    "cross-device move support"
+  ]
+}

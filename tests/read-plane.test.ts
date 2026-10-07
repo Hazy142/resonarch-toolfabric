@@ -103,7 +103,9 @@ test("P1 workspace boundary denies traversal and mutating primitives", async () 
   const traversal = await runtime.execute(call("fs.read", {path: "../outside.txt"}, workspace));
   assert.equal(traversal.result.status, "denied");
   assert.equal((traversal.result.error as {code: string}).code, "WORKSPACE_ESCAPE");
-  const write = await runtime.execute(call("fs.patch", {path: "src/hello.txt", patch: "anything"}, workspace));
+  const writeCall = call("fs.patch", {path: "src/hello.txt", patch: "anything"}, workspace);
+  writeCall.tool.version = "2.0.0";
+  const write = await runtime.execute(writeCall);
   assert.equal(write.result.status, "denied");
   assert.equal((write.result.error as {code: string}).code, "P1_WRITE_FORBIDDEN");
   assert.equal(await readFile(join(workspace, "src", "hello.txt"), "utf8"), "alpha\nbeta\nneedle\n");
