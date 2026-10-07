@@ -9,7 +9,7 @@
     "toolfabric": "dist/src/cli.js"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node scripts/build-process-host.mjs",
     "test": "node scripts/run-tests.mjs",
     "check": "npm run build && npm test && npm run registry:generate && npm run workflows:check",
     "registry:generate": "node scripts/generate-registry.mjs",

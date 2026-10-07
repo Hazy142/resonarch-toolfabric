@@ -1,0 +1,22 @@
+{
+  "schema": "resonarch.toolfabric.conformance-vector/v1",
+  "id": "p2c-process-lifecycle",
+  "implemented_tools": ["process.start", "process.input", "process.output", "process.stop", "process.list", "test.run"],
+  "required_behaviors": [
+    "host-user execution requires explicit host-owned command plans and process:host_execution authority",
+    "model arguments cannot register plans or select executable argv environment or workspace authority",
+    "v2 launch input and test contracts explicitly permit host-user network authority rather than claiming an OS sandbox",
+    "mutations require host-approved approval_ref and expected plan or session state",
+    "executable cwd declared input hashes and optional repository HEAD are rechecked after intent",
+    "sessions are task and workspace scoped and opaque session IDs never authorize arbitrary PID kill",
+    "leases and expected session revisions are revalidated before mutation",
+    "Windows job and POSIX process-group lifetime controls terminate ordinary descendants",
+    "deadline and unconfirmed termination handling are bounded and preserve uncertain outcomes",
+    "stdin acknowledgement does not imply command completion and ambiguous input is not replayed",
+    "stdout and stderr share one bounded exact-byte output budget and excess output is drained",
+    "real failing and passing tests retain content-addressed stdout stderr and execution manifests",
+    "real isolated branch worktree failing-test patch passing-test commit fixture forms one verified receipt chain"
+  ],
+  "claims": ["P2C_PROCESS_LIFECYCLE_SLICE", "P2_ISOLATED_CHANGE_TEST_RECEIPT_FIXTURE"],
+  "non_claims": ["OS filesystem/network sandbox", "hermetic dependency capture", "P2_LOCAL_ACTION_PASS", "P1_READ_PLANE_PASS", "general user-tool workflow executor", "crash-durable receipt ledger", "exactly-once effects", "installed MCP server", "remote execution", "production readiness"]
+}

@@ -1,12 +1,34 @@
 {
   "schema": "resonarch.toolfabric.tool/v1",
   "id": "process.output",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "title": "process.output",
   "summary": "Canonical ToolFabric primitive: process.output.",
   "input_schema": {
     "type": "object",
-    "additionalProperties": true
+    "additionalProperties": false,
+    "required": [
+      "session_id"
+    ],
+    "properties": {
+      "session_id": {
+        "type": "string",
+        "minLength": 1
+      },
+      "stdout_offset": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "stderr_offset": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "max_bytes": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 32768
+      }
+    }
   },
   "output_schema": {
     "type": "object",
@@ -20,7 +42,7 @@
   ],
   "risk_class": "R0",
   "side_effect": "none",
-  "idempotency": "pure",
+  "idempotency": "conditional",
   "network": "forbidden",
   "receipt": "required",
   "default_timeout_ms": 30000,
