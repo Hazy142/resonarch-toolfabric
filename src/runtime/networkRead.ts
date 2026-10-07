@@ -271,6 +271,8 @@ export class NetworkReadBroker{
     this.transport=transport;
   }
 
+  get hasPolicy():boolean{return this.policy!==undefined;}
+
   authorize(taskId:string,input:Record<string,unknown>):Record<string,unknown>{
     const policy=this.requirePolicy();
     if(Date.now()>=policy.expires_ms)throw new RuntimeExecutionError("DENIED_NETWORK_POLICY","network read policy expired","denied");

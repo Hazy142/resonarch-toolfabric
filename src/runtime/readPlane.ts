@@ -20,6 +20,17 @@ import {
   type NetworkReadPolicy,
   type NetworkReadTransport,
 } from "./networkRead.js";
+import {
+  codeAstQuery,
+  codeDiagnostics,
+  codeReferences,
+  codeSearch,
+  licenseInspect,
+  policyCompile,
+  receiptVerify,
+  researchBundle,
+  secretScan,
+} from "./readExtensions.js";
 import {isWithinPath, WorkspaceBoundary} from "./workspace.js";
 
 export interface ToolCall {
@@ -61,31 +72,6 @@ export interface ReadPlaneOptions {
   networkReadPolicy?: NetworkReadPolicy;
   networkTransport?: NetworkReadTransport;
 }
-
-const IMPLEMENTED = new Set([
-  "registry.list",
-  "registry.describe",
-  "instructions.discover",
-  "instructions.resolve",
-  "context.pack",
-  "memory.get",
-  "memory.search_exact",
-  "network.authorize",
-  "web.fetch",
-  "code.symbols",
-  "code.dependencies",
-  "test.discover",
-  "fs.read",
-  "fs.read_many",
-  "fs.list",
-  "fs.stat",
-  "fs.search",
-  "git.status",
-  "git.log",
-  "git.diff",
-  "env.snapshot",
-  "command.which",
-]);
 
 function deadlineBudget(deadline: string, defaultMs: number): number {
   const parsed = Date.parse(deadline);
@@ -207,9 +193,6 @@ export class ReadPlaneRuntime {
       if (descriptor.side_effect !== "none") {
         throw new RuntimeExecutionError("P1_WRITE_FORBIDDEN", `${descriptor.id} is not permitted by the P1 read plane`, "denied");
       }
-      if (!IMPLEMENTED.has(descriptor.id)) {
-        throw new RuntimeExecutionError("P1_TOOL_NOT_IMPLEMENTED", `${descriptor.id} is not implemented in this P1 slice`);
-      }
 
       const boundary = await WorkspaceBoundary.create(call.scope.workspace_root);
       await assertArtifactStoreOutsideWorkspace(boundary.root, this.artifactStore.root);
@@ -272,11 +255,38 @@ export class ReadPlaneRuntime {
           output = inlineText === null ? {source} : {source, text: inlineText};
           break;
         }
+        case "research.bundle":
+          output = researchBundle(call.arguments);
+          break;
+        case "policy.compile":
+          output = policyCompile(call.arguments);
+          break;
+        case "secret.scan":
+          output = await secretScan(boundary, call.arguments);
+          break;
+        case "license.inspect":
+          output = await licenseInspect(boundary, call.arguments);
+          break;
+        case "receipt.verify":
+          output = receiptVerify(call.arguments);
+          break;
         case "code.symbols":
           output = await codeSymbols(boundary, call.arguments);
           break;
         case "code.dependencies":
           output = await codeDependencies(boundary, call.arguments);
+          break;
+        case "code.ast_query":
+          output = await codeAstQuery(boundary, call.arguments);
+          break;
+        case "code.diagnostics":
+          output = await codeDiagnostics(boundary, call.arguments);
+          break;
+        case "code.references":
+          output = await codeReferences(boundary, call.arguments);
+          break;
+        case "code.search":
+          output = await codeSearch(boundary, call.arguments);
           break;
         case "test.discover":
           output = await testDiscover(boundary, call.arguments);
@@ -318,7 +328,7 @@ export class ReadPlaneRuntime {
           output = await commandWhich(call.arguments);
           break;
         default:
-          throw new RuntimeExecutionError("P1_TOOL_NOT_IMPLEMENTED", `${descriptor.id} is not implemented`);
+          throw new RuntimeExecutionError("UNSUPPORTED", `${descriptor.id} is declared but its executor is unsupported or incomplete in this environment`);
       }
 
       const canonicalBytes = new TextEncoder().encode(canonicalJson(output));
