@@ -417,6 +417,7 @@ export class GitIsolationRuntime {
         head: expectedHead,
       }),
       assertPreState: async () => {
+        await assertSafeRepositoryConfig(repo, context);
         const head = await readRef(repo.root, context, branchRef);
         const record = await findWorktree(repo.root, context, target);
         if (head !== expectedHead || record !== null || await pathExists(target)) {
@@ -491,6 +492,7 @@ export class GitIsolationRuntime {
     ];
 
     const assertSnapshot = async (): Promise<SelectionSnapshot> => {
+      await assertSafeRepositoryConfig(repo, context);
       const head = await repositoryHead(repo.root, context);
       const branch = (await runGit(repo.root, context, ["symbolic-ref", "-q", "HEAD"], {allowExitCodes: [1]}));
       const now = await selectionSnapshot(repo.root, context, paths);

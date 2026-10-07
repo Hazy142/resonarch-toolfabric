@@ -587,3 +587,24 @@ test("P2B denies repositories whose Git metadata escapes the authorized workspac
   assert.equal(executed.result.error?.code, "REPOSITORY_METADATA_ESCAPE");
   await assert.rejects(git(external.repo, ["rev-parse", "--verify", "refs/heads/feature/should-not-mutate-external"]));
 });
+
+
+test("P2B rechecks filter safety after intent before checkout side effects", async () => {
+  const {workspace, repo, head} = await fixture();
+  await git(repo, ["branch", "feature/filter-race", head]);
+  const r = await runtime({
+    before_mutation: async () => {
+      await git(repo, ["config", "filter.race.smudge", "node -e process.exit(99)"]);
+    },
+  });
+  const executed = await r.execute(call(
+    "git.worktree",
+    {repo_path: "repo", branch: "feature/filter-race", path: "filter-race-wt"},
+    {branch_head: head, target_absent: true},
+    workspace,
+  ));
+  assert.equal(executed.result.status, "denied");
+  assert.equal(executed.result.error?.code, "UNSAFE_GIT_FILTER_CONFIG");
+  assert.equal(executed.receipts.length, 2);
+  await assert.rejects(readFile(join(workspace, "filter-race-wt", "a.txt")));
+});
