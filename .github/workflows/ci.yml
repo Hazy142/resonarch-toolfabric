@@ -20,6 +20,7 @@ jobs:
       - name: Generated-tree cleanliness
         run: git diff --exit-code
       - name: Retain local-action execution evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: p2c-local-action-${{ matrix.os }}

@@ -2,9 +2,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {mkdir, mkdtemp, readFile, writeFile} from "node:fs/promises";
 import {tmpdir} from "node:os";
-import {join} from "node:path";
+import {join, resolve} from "node:path";
 import {setTimeout as delay} from "node:timers/promises";
-import {bindProcessPlan} from "../src/runtime/processPlan.js";
+import {bindProcessPlan, processFileDigest} from "../src/runtime/processPlan.js";
+import {ProcessSessions} from "../src/runtime/processSessions.js";
 import {ProcessLifecycleRuntime} from "../src/runtime/processLifecycle.js";
 import type {ToolCall} from "../src/runtime/readPlane.js";
 import {verifyChain} from "../src/evidence/receipt.js";
@@ -317,4 +318,31 @@ test("P2C escaped POSIX pipes produce bounded uncertainty instead of a hanging t
     assert.equal(outcome.result.status, "uncertain");
     assert.equal((outcome.result.output as any).session.state, "uncertain");
   } finally { if (timer) clearTimeout(timer); }
+});
+
+test("P2C simultaneous distinct-task launches cannot exceed the active session limit", async t => {
+  const f = await fixture('setInterval(() => {}, 1000);');
+  t.after(() => f.runtime.close());
+  const second = await bindProcessPlan({id: "second-plan", workspace_root: f.workspace, cwd: ".", executable: process.execPath,
+    argv: ["program.cjs"], input_paths: ["program.cjs"], grant: "host-user", purpose: "command", max_runtime_ms: 5000});
+  const runtime = await ProcessLifecycleRuntime.create({workspace_root: f.workspace, artifact_root: f.artifacts,
+    plans: [f.plan, second], authority: {capabilities, approved_refs: ["approval:fixture"]}, max_active_sessions: 1, max_retained_sessions: 4});
+  t.after(() => runtime.close());
+  const outcomes = await Promise.all([f.plan, second].map((plan, index) => runtime.execute(
+    call("process.start", f.workspace, {plan_id: plan.id}, {plan_digest: plan.digest}, `capacity-task-${index}`))));
+  assert.deepEqual(outcomes.map(outcome => outcome.result.status).sort(), ["denied", "succeeded"]);
+  assert.equal(outcomes.find(outcome => outcome.result.status === "denied")!.result.error?.code, "PROCESS_CAPACITY_EXCEEDED");
+});
+
+test("P2C shutdown during Windows supervisor validation prevents the pending launch", {skip: process.platform !== "win32"}, async t => {
+  const f = await fixture('setInterval(() => {}, 1000);');
+  t.after(() => f.runtime.close());
+  const path = resolve("dist/native/toolfabric-process-host.exe");
+  const sessions = new ProcessSessions({path, digest: await processFileDigest(path)}, 1, 4);
+  t.after(() => sessions.close());
+  const pending = sessions.start(f.plan, "shutdown-task", new Date(Date.now() + 10_000).toISOString());
+  const shutdown = sessions.close();
+  await assert.rejects(pending, {code: "PROCESS_RUNTIME_CLOSED"});
+  await shutdown;
+  assert.deepEqual(sessions.list("shutdown-task", f.workspace), []);
 });

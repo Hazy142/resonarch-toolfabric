@@ -22,8 +22,6 @@ interface Session {
   stopReason?: "stop" | "deadline";
 }
 
-function terminal(state: ProcessState): boolean { return !["starting", "running"].includes(state); }
-
 export class ProcessSessions {
   private readonly sessions = new Map<string, Session>();
   private closed = false;
@@ -65,23 +63,31 @@ export class ProcessSessions {
     return {session: {...session.snapshot}, ...session.output.read(stdoutOffset, stderrOffset, bytes)};
   }
 
-  async start(plan: BoundProcessPlan, task: string, deadline: string): Promise<SessionSnapshot> {
+  private assertAdmission(): void {
     if (this.closed) throw new RuntimeExecutionError("PROCESS_RUNTIME_CLOSED", "runtime is closed", "denied");
     if ([...this.sessions.values()].filter(s => !s.snapshot.finished_at).length >= this.maxActive) {
       throw new RuntimeExecutionError("PROCESS_CAPACITY_EXCEEDED", "active session limit reached", "denied");
     }
-    if (this.sessions.size >= this.maxRetained) {
-      const oldest = [...this.sessions.entries()].find(([, s]) => s.snapshot.finished_at);
-      if (!oldest) throw new RuntimeExecutionError("PROCESS_CAPACITY_EXCEEDED", "retained session limit reached", "denied");
-      this.sessions.delete(oldest[0]);
-    }
+  }
+
+  async start(plan: BoundProcessPlan, task: string, deadline: string): Promise<SessionSnapshot> {
+    this.assertAdmission();
     if (process.platform === "win32") {
       if (!this.windowsHost || await processFileDigest(this.windowsHost.path) !== this.windowsHost.digest) {
         throw new RuntimeExecutionError("PROCESS_HOST_DRIFT", "Windows supervisor is missing or changed", "denied");
       }
     }
+    // Admission and session reservation must have no async gap. close() or another start may
+    // have run during supervisor hashing; do not spawn after shutdown or above the capacity.
+    this.assertAdmission();
+    if (this.sessions.size >= this.maxRetained) {
+      const oldest = [...this.sessions.entries()].find(([, s]) => s.snapshot.finished_at);
+      if (!oldest) throw new RuntimeExecutionError("PROCESS_CAPACITY_EXCEEDED", "retained session limit reached", "denied");
+      this.sessions.delete(oldest[0]);
+    }
     const lifetime = Math.min(plan.max_runtime_ms, Date.parse(deadline) - Date.now());
     if (lifetime <= 0) throw new RuntimeExecutionError("DEADLINE_EXCEEDED", "launch deadline elapsed", "cancelled");
+    const captured = new BoundedProcessOutput(plan.max_output_bytes);
     const launchId = randomUUID();
     const command = process.platform === "win32" ? this.windowsHost!.path : plan.executable;
     const argv = process.platform === "win32" ? [launchId, plan.executable, ...plan.argv] : [...plan.argv];
@@ -92,7 +98,7 @@ export class ProcessSessions {
     const ready = new Promise<void>((resolve, reject) => { readyResolve = resolve; readyReject = reject; });
     let doneResolve!: () => void;
     const done = new Promise<void>(resolve => { doneResolve = resolve; });
-    const session: Session = {plan, child, done, settle: doneResolve, output: new BoundedProcessOutput(plan.max_output_bytes), snapshot: {
+    const session: Session = {plan, child, done, settle: doneResolve, output: captured, snapshot: {
       session_id: randomUUID(), revision: 1, state: "starting", task_id: task, workspace_root: plan.workspace_root,
       plan_id: plan.id, plan_digest: plan.digest, execution_grant: "host-user", supervisor_pid: child.pid ?? null,
       process_pid: process.platform === "win32" ? null : child.pid ?? null, exit_code: null, signal: null,
