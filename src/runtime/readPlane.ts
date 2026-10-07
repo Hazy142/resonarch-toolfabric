@@ -20,6 +20,24 @@ import {
   type NetworkReadPolicy,
   type NetworkReadTransport,
 } from "./networkRead.js";
+import {
+  claimClassify,
+  codeAstQuery,
+  codeDiagnostics,
+  codeReferences,
+  codeSearch,
+  licenseInspect,
+  policyCompile,
+  providerHealth,
+  receiptVerify,
+  reportRender,
+  researchBundle,
+  sandboxBoundary,
+  secretScan,
+  sourceCompare,
+  vulnerabilitySearch,
+  webSearch,
+} from "./readExtensions.js";
 import {isWithinPath, WorkspaceBoundary} from "./workspace.js";
 
 export interface ToolCall {
@@ -72,8 +90,24 @@ const IMPLEMENTED = new Set([
   "memory.search_exact",
   "network.authorize",
   "web.fetch",
+  "web.search",
+  "source.compare",
+  "research.bundle",
+  "claim.classify",
+  "policy.compile",
+  "secret.scan",
+  "license.inspect",
+  "vulnerability.search",
+  "sandbox.boundary",
+  "receipt.verify",
+  "report.render",
+  "provider.health",
   "code.symbols",
   "code.dependencies",
+  "code.ast_query",
+  "code.diagnostics",
+  "code.references",
+  "code.search",
   "test.discover",
   "fs.read",
   "fs.read_many",
@@ -204,7 +238,7 @@ export class ReadPlaneRuntime {
       if (!descriptor) throw new RuntimeExecutionError("TOOL_NOT_FOUND", `unknown tool: ${call.tool?.id ?? ""}`, "denied");
       if (call.tool.version !== descriptor.version) throw new RuntimeExecutionError("TOOL_VERSION_MISMATCH", "tool version does not match registry", "denied");
       const timeoutMs = deadlineBudget(call.deadline, descriptor.default_timeout_ms);
-      if (descriptor.side_effect !== "none") {
+      if (descriptor.side_effect !== "none" && descriptor.side_effect !== "projection") {
         throw new RuntimeExecutionError("P1_WRITE_FORBIDDEN", `${descriptor.id} is not permitted by the P1 read plane`, "denied");
       }
       if (!IMPLEMENTED.has(descriptor.id)) {
@@ -272,11 +306,59 @@ export class ReadPlaneRuntime {
           output = inlineText === null ? {source} : {source, text: inlineText};
           break;
         }
+        case "report.render":
+          output = reportRender(call.arguments);
+          break;
+        case "provider.health":
+          output = providerHealth(call.arguments, this.network);
+          break;
+        case "web.search":
+          output = webSearch(call.arguments, this.network);
+          break;
+        case "source.compare":
+          output = sourceCompare(call.arguments);
+          break;
+        case "research.bundle":
+          output = researchBundle(call.arguments);
+          break;
+        case "claim.classify":
+          output = claimClassify(call.arguments);
+          break;
+        case "policy.compile":
+          output = policyCompile(call.arguments);
+          break;
+        case "secret.scan":
+          output = await secretScan(boundary, call.arguments);
+          break;
+        case "license.inspect":
+          output = await licenseInspect(boundary, call.arguments);
+          break;
+        case "vulnerability.search":
+          output = await vulnerabilitySearch(boundary, call.arguments);
+          break;
+        case "sandbox.boundary":
+          output = sandboxBoundary(boundary);
+          break;
+        case "receipt.verify":
+          output = receiptVerify(call.arguments);
+          break;
         case "code.symbols":
           output = await codeSymbols(boundary, call.arguments);
           break;
         case "code.dependencies":
           output = await codeDependencies(boundary, call.arguments);
+          break;
+        case "code.ast_query":
+          output = await codeAstQuery(boundary, call.arguments);
+          break;
+        case "code.diagnostics":
+          output = await codeDiagnostics(boundary, call.arguments);
+          break;
+        case "code.references":
+          output = await codeReferences(boundary, call.arguments);
+          break;
+        case "code.search":
+          output = await codeSearch(boundary, call.arguments);
           break;
         case "test.discover":
           output = await testDiscover(boundary, call.arguments);
