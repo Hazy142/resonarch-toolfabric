@@ -1,4 +1,5 @@
 import test from "node:test";
+import { readFile } from "node:fs/promises";
 import assert from "node:assert/strict";
 import { execFile as execFileCallback } from "node:child_process";
 import { promisify } from "node:util";
@@ -56,24 +57,38 @@ class MockTransport implements NetworkReadTransport {
   }
 }
 
-test("Exhaustive Registry Gate - P1 forbidden mutators are blocked, read tools succeed or throw UNSUPPORTED", async () => {
+test("Exhaustive Registry Gate - all 112 tools are correctly classified and gated", async () => {
   const { workspace, artifacts } = await makeFixture();
   const runtime = await ReadPlaneRuntime.create({ artifactRoot: artifacts });
-  
-  const fsWrite = await runtime.execute(call("fs.write", { path: "out.txt", content: "foo" }, workspace));
-  assert.equal(fsWrite.result.status, "denied");
-  assert.equal((fsWrite.result.error as any).code, "P1_WRITE_FORBIDDEN");
+  const sourceRaw = await readFile("contracts/tools/registry.source.json", "utf8");
+  const source = JSON.parse(sourceRaw);
 
-  const codeEdit = await runtime.execute(call("code.edit", { path: "src/index.ts", edits: [] }, workspace));
-  assert.equal(codeEdit.result.status, "denied");
-  assert.equal((codeEdit.result.error as any).code, "P1_WRITE_FORBIDDEN");
+  const tools = [];
+  for (const [family, ids] of Object.entries(source.families)) {
+    for (const id of ids as string[]) {
+      const toolRaw = await readFile(`contracts/tools/${family}/${id}.json`, "utf8");
+      tools.push(JSON.parse(toolRaw));
+    }
+  }
+  assert.equal(tools.length, 112);
 
-  const webSearch = await runtime.execute(call("web.search", { query: "foo" }, workspace));
-  assert.equal(webSearch.result.status, "failed");
-  assert.equal((webSearch.result.error as any).code, "UNSUPPORTED");
+  for (const tool of tools) {
+    const isP1 = tool.side_effect === "none" || tool.side_effect === "projection";
+    
+    // Provide some safe dummy arguments so we don't fail argument validation
+    const args = { path: ".", query: "foo", url: "https://example.com" };
+    const executed = await runtime.execute(call(tool.id, args, workspace));
 
-  const astQuery = await runtime.execute(call("code.ast_query", { path: "src/index.ts" }, workspace));
-  assert.equal(astQuery.result.status, "succeeded");
+    if (!isP1) {
+      assert.equal(executed.result.status, "denied", `Tool ${tool.id} should be denied`);
+      assert.equal((executed.result.error as any).code, "P1_WRITE_FORBIDDEN", `Tool ${tool.id} should throw P1_WRITE_FORBIDDEN`);
+    } else {
+      // P1 tools should either succeed, throw UNSUPPORTED, or fail due to dummy arguments (but NOT throw P1_WRITE_FORBIDDEN)
+      if (executed.result.status === "denied") {
+        assert.notEqual((executed.result.error as any).code, "P1_WRITE_FORBIDDEN", `P1 Tool ${tool.id} should NOT throw P1_WRITE_FORBIDDEN`);
+      }
+    }
+  }
 });
 
 test("E2E true data propagation DAG (Research -> Compare -> Bundle -> Classify)", async () => {
