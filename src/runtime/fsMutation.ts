@@ -15,6 +15,7 @@ export interface ProbedFile {
   target: string;
   relative: string;
   state: FileState;
+  mode: number | null;
 }
 
 export interface MutationFsOps {
@@ -35,11 +36,12 @@ export async function probeFile(boundary: WorkspaceBoundary, inputPath: string):
       target,
       relative: boundary.relative(target),
       state: {exists: true, sha256: sha256(bytes), bytes: bytes.byteLength},
+      mode: info.mode & 0o7777,
     };
   } catch (error) {
     if (error instanceof RuntimeExecutionError) throw error;
     if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      return {target, relative: boundary.relative(target), state: {exists: false, sha256: null, bytes: 0}};
+      return {target, relative: boundary.relative(target), state: {exists: false, sha256: null, bytes: 0}, mode: null};
     }
     throw new RuntimeExecutionError("FILE_STATE_FAILED", error instanceof Error ? error.message : String(error));
   }
@@ -51,7 +53,12 @@ export function stateMatches(actual: FileState, expected: FileState): boolean {
     && actual.bytes === expected.bytes;
 }
 
-export async function atomicWrite(target: string, content: Uint8Array, ops: MutationFsOps): Promise<void> {
+export async function atomicWrite(
+  target: string,
+  content: Uint8Array,
+  ops: MutationFsOps,
+  preserveMode: number | null = null,
+): Promise<void> {
   const parent = dirname(target);
   const parentInfo = await stat(parent).catch((error: NodeJS.ErrnoException) => {
     if (error.code === "ENOENT") throw new RuntimeExecutionError("PARENT_NOT_FOUND", "target parent directory does not exist", "denied");
@@ -64,6 +71,7 @@ export async function atomicWrite(target: string, content: Uint8Array, ops: Muta
   try {
     handle = await open(temporary, "wx", 0o600);
     await handle.writeFile(content);
+    if (preserveMode !== null) await handle.chmod(preserveMode & 0o7777);
     await handle.sync();
     await handle.close();
     handle = null;

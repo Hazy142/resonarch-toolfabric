@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {mkdir, mkdtemp, readFile, rename, symlink, writeFile} from "node:fs/promises";
+import {chmod, mkdir, mkdtemp, readFile, rename, stat, symlink, writeFile} from "node:fs/promises";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {sha256} from "../src/contracts/canonical.js";
@@ -235,4 +235,45 @@ test("direct symbolic-link mutation targets fail closed when symlinks are availa
   assert.equal(executed.result.status, "denied");
   assert.equal(executed.result.error?.code, "SYMLINK_MUTATION_FORBIDDEN");
   assert.equal(await readFile(outside, "utf8"), "outside");
+});
+
+
+test("expired deadlines cancel before intent and preserve the filesystem", async () => {
+  const {workspace} = await fixture();
+  const r = await runtime();
+  const request = call("fs.write", {path: "a.txt", content: "hello"}, {exists: false}, workspace);
+  request.deadline = new Date(Date.now() - 1000).toISOString();
+  const executed = await r.execute(request);
+  assert.equal(executed.result.status, "cancelled");
+  assert.equal(executed.result.error?.code, "DEADLINE_EXCEEDED");
+  assert.equal(executed.receipts.length, 1);
+  await assert.rejects(readFile(join(workspace, "a.txt")));
+});
+
+test("replacing an existing file preserves its POSIX mode", async t => {
+  if (process.platform === "win32") {
+    t.skip("POSIX mode preservation is not meaningful on Windows");
+    return;
+  }
+  const {workspace} = await fixture();
+  const target = join(workspace, "script.sh");
+  await writeFile(target, "#!/bin/sh\necho before\n");
+  await chmod(target, 0o755);
+  const r = await runtime();
+  const executed = await r.execute(call(
+    "fs.write",
+    {path: "script.sh", content: "#!/bin/sh\necho after\n"},
+    {exists: true, sha256: sha256("#!/bin/sh\necho before\n")},
+    workspace,
+  ));
+  assert.equal(executed.result.status, "succeeded");
+  assert.equal((await stat(target)).mode & 0o777, 0o755);
+});
+
+test("sequential P2A calls extend one canonical task receipt chain", async () => {
+  const {workspace} = await fixture();
+  const r = await runtime();
+  const first = await r.execute(call("fs.write", {path: "a.txt", content: "a"}, {exists: false}, workspace));
+  const second = await r.execute(call("fs.write", {path: "b.txt", content: "b"}, {exists: false}, workspace));
+  assert.equal(verifyChain([...first.receipts, ...second.receipts]), true);
 });

@@ -64,6 +64,12 @@ interface PreparedMutation {
   reconcile(): Promise<"pre" | "post" | "unknown">;
 }
 
+function assertDeadline(deadline: string): void {
+  const parsed = Date.parse(deadline);
+  if (!Number.isFinite(parsed)) throw new RuntimeExecutionError("INVALID_DEADLINE", "deadline must be an ISO date", "denied");
+  if (parsed <= Date.now()) throw new RuntimeExecutionError("DEADLINE_EXCEEDED", "call deadline has elapsed", "cancelled");
+}
+
 function pathArg(input: Record<string, unknown>, key: string): string {
   const value = input[key];
   if (typeof value !== "string" || value.length === 0) {
@@ -161,6 +167,7 @@ export class WritePlaneRuntime {
       if (call.schema !== "resonarch.toolfabric.call/v1") {
         throw new RuntimeExecutionError("INVALID_CALL_SCHEMA", "invalid call schema", "denied");
       }
+      assertDeadline(call.deadline);
       descriptor = this.tools.get(call.tool?.id);
       if (!descriptor) throw new RuntimeExecutionError("TOOL_NOT_FOUND", "unknown tool", "denied");
       if (call.tool.version !== descriptor.version) {
@@ -205,8 +212,11 @@ export class WritePlaneRuntime {
       if (this.beforeCommit) {
         await this.beforeCommit({tool_id: descriptor.id, surfaces: prepared.surfaces, leases: heldLeases});
       }
+      assertDeadline(call.deadline);
       for (const lease of heldLeases) this.assertLease(lease);
       await prepared.assertPreState();
+      assertDeadline(call.deadline);
+      for (const lease of heldLeases) this.assertLease(lease);
 
       try {
         await prepared.mutate();
@@ -300,7 +310,7 @@ export class WritePlaneRuntime {
       surfaces: [`fs/${before.relative}`],
       intent: {operation: "fs.write", path: before.relative, pre_state: before.state, post_state: post},
       output: {path: before.relative, pre_state: before.state, post_state: post},
-      mutate: () => atomicWrite(before.target, content, this.fsOps),
+      mutate: () => atomicWrite(before.target, content, this.fsOps, before.mode),
       assertPreState: async () => {
         const current = await probeFile(boundary, path);
         if (!stateMatches(current.state, before.state)) {
@@ -336,7 +346,7 @@ export class WritePlaneRuntime {
       surfaces: [`fs/${before.relative}`],
       intent: {operation: "fs.patch", path: before.relative, pre_state: before.state, post_state: post},
       output: {path: before.relative, pre_state: before.state, post_state: post},
-      mutate: () => atomicWrite(before.target, content, this.fsOps),
+      mutate: () => atomicWrite(before.target, content, this.fsOps, before.mode),
       assertPreState: async () => {
         const current = await probeFile(boundary, path);
         if (!stateMatches(current.state, before.state)) {

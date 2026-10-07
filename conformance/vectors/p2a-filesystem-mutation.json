@@ -12,6 +12,8 @@
     "every mutation binds an explicit expected pre-state",
     "workspace traversal and symlink mutation targets fail closed",
     "ToolFabric writers are fenced by per-surface leases",
+    "expired deadlines cancel before filesystem side effects",
+    "existing file modes are preserved by write and patch replacement",
     "intent receipt is emitted before the first filesystem side effect",
     "write and patch commit through same-directory temp sync and rename",
     "move uses a bounded same-workspace rename",

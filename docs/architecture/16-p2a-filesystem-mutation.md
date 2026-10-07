@@ -55,13 +55,13 @@ P2A does not create missing parent directories. The immediate target parent must
 
 Each write surface is leased through the existing `LeaseBook`. `fs.move` acquires both source and destination surfaces in stable order. The runtime re-validates every fencing token immediately before mutation.
 
-A stale fencing token stops the operation before commit.
+A stale fencing token stops the operation before commit. The call deadline is also validated before preparation and re-checked immediately before mutation; an elapsed deadline cancels the call without starting a filesystem side effect.
 
 This coordinates ToolFabric writers that share the same lease book. It is not an operating-system transaction lock against arbitrary external processes.
 
 ## Atomic mutation path
 
-`fs.write` and `fs.patch` write a same-directory temporary file, sync the temporary file, close it, then rename it into the target path. Temporary files are cleaned on failure.
+`fs.write` and `fs.patch` write a same-directory temporary file, preserve the existing target mode when replacing a file, sync the temporary file, close it, then rename it into the target path. Temporary files are cleaned on failure.
 
 `fs.patch` is deliberately exact rather than fuzzy: it accepts `old_text`, `new_text`, and an optional bounded `expected_replacements`. A replacement-count mismatch is denied before intent.
 
