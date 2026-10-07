@@ -1,12 +1,25 @@
 {
   "schema": "resonarch.toolfabric.tool/v1",
   "id": "fs.write",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "title": "fs.write",
   "summary": "Canonical ToolFabric primitive: fs.write.",
   "input_schema": {
     "type": "object",
-    "additionalProperties": true
+    "additionalProperties": false,
+    "required": [
+      "path",
+      "content"
+    ],
+    "properties": {
+      "path": {
+        "type": "string",
+        "minLength": 1
+      },
+      "content": {
+        "type": "string"
+      }
+    }
   },
   "output_schema": {
     "type": "object",
