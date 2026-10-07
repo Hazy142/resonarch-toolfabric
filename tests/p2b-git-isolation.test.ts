@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {execFile as execFileCallback} from "node:child_process";
 import {promisify} from "node:util";
-import {chmod, mkdir, mkdtemp, readFile, writeFile} from "node:fs/promises";
+import {chmod, lstat, mkdir, mkdtemp, readFile, writeFile} from "node:fs/promises";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {verifyChain} from "../src/evidence/receipt.js";
@@ -587,8 +587,6 @@ test("P2B denies repositories whose Git metadata escapes the authorized workspac
   assert.equal(executed.result.error?.code, "REPOSITORY_METADATA_ESCAPE");
   await assert.rejects(git(external.repo, ["rev-parse", "--verify", "refs/heads/feature/should-not-mutate-external"]));
 });
-
-
 test("P2B rechecks filter safety after intent before checkout side effects", async () => {
   const {workspace, repo, head} = await fixture();
   await git(repo, ["branch", "feature/filter-race", head]);
@@ -606,5 +604,42 @@ test("P2B rechecks filter safety after intent before checkout side effects", asy
   assert.equal(executed.result.status, "denied");
   assert.equal(executed.result.error?.code, "UNSAFE_GIT_FILTER_CONFIG");
   assert.equal(executed.receipts.length, 2);
-  await assert.rejects(readFile(join(workspace, "filter-race-wt", "a.txt")));
+  assert.equal(executed.receipts[0]?.phase, "intent");
+  assert.equal(executed.receipts[1]?.status, "denied");
+  assert.equal(verifyChain(executed.receipts), true);
+  assert.equal(await git(repo, ["rev-parse", "refs/heads/feature/filter-race"]), head);
+  assert.equal((await git(repo, ["worktree", "list", "--porcelain"])).includes("filter-race-wt"), false);
+  await assert.rejects(lstat(join(workspace, "filter-race-wt")), {code: "ENOENT"});
+});
+
+test("P2B rechecks filter safety after intent before commit side effects", async () => {
+  const {workspace, worktree, head} = await linkedFixture();
+  await writeFile(join(worktree, "a.txt"), "changed alpha\n");
+  await writeFile(join(worktree, "b.txt"), "staged bravo\n");
+  await git(worktree, ["add", "--", "b.txt"]);
+  const indexTree = await git(worktree, ["write-tree"]);
+  await writeFile(join(worktree, ".gitattributes"), "a.txt filter=race\n");
+  await writeFile(join(worktree, "filter.cjs"),
+    'require("node:fs").writeFileSync("filter-ran.txt", "executed\\n"); process.stdin.pipe(process.stdout);\n');
+  const r = await runtime({
+    before_mutation: async () => {
+      await git(worktree, ["config", "filter.race.clean", "node filter.cjs"]);
+    },
+  });
+  const executed = await r.execute(call(
+    "git.commit",
+    {repo_path: "linked-wt", message: "must deny filter race", paths: ["a.txt"]},
+    {head},
+    workspace,
+  ));
+  assert.equal(executed.result.status, "denied");
+  assert.equal(executed.result.error?.code, "UNSAFE_GIT_FILTER_CONFIG");
+  assert.equal(executed.receipts.length, 2);
+  assert.equal(executed.receipts[0]?.phase, "intent");
+  assert.equal(executed.receipts[1]?.status, "denied");
+  assert.equal(verifyChain(executed.receipts), true);
+  assert.equal(await git(worktree, ["rev-parse", "HEAD"]), head);
+  assert.equal(await git(worktree, ["write-tree"]), indexTree);
+  assert.equal(await readFile(join(worktree, "a.txt"), "utf8"), "changed alpha\n");
+  await assert.rejects(lstat(join(worktree, "filter-ran.txt")), {code: "ENOENT"});
 });

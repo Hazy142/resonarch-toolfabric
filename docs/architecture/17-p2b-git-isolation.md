@@ -200,6 +200,7 @@ The P2B fixture suite uses real temporary Git repositories and linked worktrees.
 - isolated linked-worktree creation;
 - nested target denial;
 - direct and included filter-driver denial;
+- filter configuration introduced after intent denies checkout and commit before filter execution, preserving branch and index state;
 - selected-path-only commit;
 - detached-HEAD denial;
 - expected-state drift after intent;
