@@ -39,7 +39,7 @@ POSIX uses a dedicated process group and sends SIGKILL to that group on stop, de
 
 Session IDs are opaque and runtime-local. Every session is bound to its task and canonical workspace. Listing filters to the current task; output/input/stop reject foreign session access. Tools never accept an arbitrary PID. Input and stop bind the current revision and revalidate their fence after intent.
 
-Start success means an accepted managed session, not a completed successful program. Output exposes observed state, PID identities, exit code, signal and revision. Input success acknowledges delivery to stdin, not completion of a command written to stdin. A lost input acknowledgement is `uncertain`, with no automatic replay. Call identities cannot be reused.
+Start success means an accepted managed session, not a completed successful program. Output exposes observed state, PID identities, exit code, signal and revision. Input success acknowledges delivery to stdin, not completion of a command written to stdin. An EOF callback coinciding with stop/deadline or a failed stream is not accepted as a positive acknowledgement; it remains `uncertain`. A lost input acknowledgement is `uncertain`, with no automatic replay. Call identities cannot be reused.
 
 The host can close the runtime to stop its owned sessions. Stop is forceful. Limits are 1–16 active sessions (default 4), up to 256 retained sessions (default 32), 64 plans, 4096 calls and 256 task tails per runtime instance. Expired retained sessions may be evicted. Host plans allow 100–120000 ms runtime and 1–1048576 retained output bytes. The call deadline can shorten the plan lifetime. Cleanup has a separate bounded five-second containment allowance.
 

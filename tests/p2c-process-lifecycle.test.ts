@@ -291,7 +291,7 @@ test("P2C executable byte drift prevents launch", async t => {
 });
 
 test("P2C EOF input cannot report accepted bytes after the program closed stdin", async t => {
-  const f = await fixture('process.stdin.destroy(); console.log("stdin-closed"); setInterval(() => {}, 1000);');
+  const f = await fixture('process.stdin.once("close", () => { try { require("node:fs").closeSync(0); } catch (e) { if (e.code !== "EBADF") throw e; } console.log("stdin-closed"); }); process.stdin.destroy(); setInterval(() => {}, 1000);');
   t.after(() => f.runtime.close());
   const started = await f.runtime.execute(call("process.start", f.workspace, {plan_id: f.plan.id}, {plan_digest: f.plan.digest}));
   assert.equal(started.result.status, "succeeded");
@@ -299,6 +299,19 @@ test("P2C EOF input cannot report accepted bytes after the program closed stdin"
   const observed = await outputUntil(f.runtime, f.workspace, s.session_id, out => Buffer.from(out.stdout_base64, "base64").toString().includes("stdin-closed"));
   const delivered = await f.runtime.execute(call("process.input", f.workspace, {session_id: s.session_id, data: "must not report accepted", eof: true}, {revision: observed.output.session.revision}));
   assert.notEqual(delivered.result.status, "succeeded");
+});
+
+test("P2C EOF input confirms a live reader and exposes its actual received bytes", async t => {
+  const f = await fixture('let data = ""; process.stdin.on("data", b => data += b); process.stdin.on("end", () => console.log("received:" + data)); setInterval(() => {}, 1000);');
+  t.after(() => f.runtime.close());
+  const started = await f.runtime.execute(call("process.start", f.workspace, {plan_id: f.plan.id}, {plan_digest: f.plan.digest}));
+  assert.equal(started.result.status, "succeeded");
+  const s = (started.result.output as any).session;
+  const delivered = await f.runtime.execute(call("process.input", f.workspace, {session_id: s.session_id, data: "payload", eof: true}, {revision: s.revision}));
+  assert.equal(delivered.result.status, "succeeded");
+  assert.equal((delivered.result.output as any).accepted_bytes, 7);
+  const observed = await outputUntil(f.runtime, f.workspace, s.session_id, out => Buffer.from(out.stdout_base64, "base64").toString().includes("received:payload"));
+  assert.equal(Buffer.from(observed.output.stdout_base64, "base64").toString(), "received:payload\n");
 });
 
 test("P2C escaped POSIX pipes produce bounded uncertainty instead of a hanging test", {skip: process.platform !== "linux"}, async t => {

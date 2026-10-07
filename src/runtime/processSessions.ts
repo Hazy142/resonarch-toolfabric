@@ -195,6 +195,11 @@ export class ProcessSessions {
         if (eof) session.child.stdin.end(bytes, (error?: Error | null) => error ? reject(error) : resolve());
         else session.child.stdin.write(bytes, error => error ? reject(error) : resolve());
       }), new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error("PROCESS_INPUT_ACK_TIMEOUT")), remaining); })]);
+      // Some stream/OS versions finish end() while a deadline/stop is destroying the pipe,
+      // without passing an error to its callback. That cannot confirm delivery to a live session.
+      if (session.stopReason || session.child.stdin.errored || (eof && !session.child.stdin.writableFinished)) {
+        throw new Error("PROCESS_INPUT_ACK_UNCONFIRMED");
+      }
       session.snapshot.revision++;
       return bytes.byteLength;
     } finally { if (timer) clearTimeout(timer); }
