@@ -11,11 +11,13 @@ authority boundaries, risk classes, receipts, and verification gates.
 ## Status
 
 **Early implementation / contracts + execution preview.** The architecture defines 112 backend
-primitives and 20 standard user tools. P1A–P1E provide full read-only and projection execution across
-all declared Read primitives, including AST/symbol code inspection, security scanning, policy compilation,
-research bundling, and verified receipt chains. The E2E User-Tool DAGs for `inspect`, `research`, and
-read-only `audit` execute with full receipt-chain continuity. The `P1_READ_PLANE_PASS` gate is now
-verified and claimed. Production readiness for mutating primitives remains gated by the P2 plan.
+primitives and 20 standard user tools. P1A–P1D provide real read-only execution for
+filesystem, Git, environment, registry, instruction resolution, TypeScript/JavaScript symbol
+inspection, dependency/test discovery, deterministic context packing, immutable exact/lexical
+memory retrieval, and explicitly authorized content-addressed HTTPS fetches. P1E adds the
+remote-relay contract/client foundation and deterministic in-memory reference counterpart;
+real network transports remain a subsequent slice. The full `P1_READ_PLANE_PASS` gate is not yet
+claimed, and production readiness remains gated by the normative conformance plan.
 
 ## Core ideas
 

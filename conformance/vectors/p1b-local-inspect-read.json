@@ -25,7 +25,6 @@
   ],
   "non_claims": [
     "complete inspect user-tool pass",
-    "P1_READ_PLANE_PASS",
     "P2_LOCAL_ACTION_PASS",
     "production readiness"
   ]

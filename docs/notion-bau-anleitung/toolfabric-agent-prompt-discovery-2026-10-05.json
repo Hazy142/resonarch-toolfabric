@@ -1,0 +1,866 @@
+{
+  "schema": "resonarch.toolfabric.agent-prompt-discovery/v1",
+  "generated_at": "2026-10-05",
+  "scope": "GitHub code search over repositories accessible under owner/org Hazy142",
+  "queries": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    "SYSTEM_PROMPT",
+    "systemPrompt",
+    "system_instruction",
+    "AGENT_PROMPT"
+  ],
+  "unique_result_urls": 106,
+  "caveat": "A search hit is not automatically a canonical instruction or normative source. Tests, manifests, transcripts, generated copies and references are retained as discovery evidence and classified separately.",
+  "items": [
+    {
+      "discovery_query": "CLAUDE.md",
+      "path": "CLAUDE.md",
+      "url": "https://github.com/Hazy142/desktop-mcp/blob/9aa780d236865ab7311128a90f4a10b549bd06d4/CLAUDE.md",
+      "repository": "Hazy142/desktop-mcp",
+      "excerpt": "| `docker_logs` | `BashTool` (docker) | | `memory_write` | `memdir` | | `memory_read` | `memdir` | | `workspace_context` | `CLAUDE.md` + `.claw.json` reader | ## Deployment-Pfade ",
+      "classification": "canonical_instruction_candidate"
+    },
+    {
+      "discovery_query": "CLAUDE.md",
+      "path": "README.md",
+      "url": "https://github.com/Hazy142/desktop-mcp/blob/9aa780d236865ab7311128a90f4a10b549bd06d4/README.md",
+      "repository": "Hazy142/desktop-mcp",
+      "excerpt": " ├── git_ops ├── docker_ops ├── memory_store (claw-code memdir) └── workspace_context (CLAUDE.md, .claw.json) ``` ## Deployment",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "CLAUDE.md",
+      "path": "server.py",
+      "url": "https://github.com/Hazy142/desktop-mcp/blob/9aa780d236865ab7311128a90f4a10b549bd06d4/server.py",
+      "repository": "Hazy142/desktop-mcp",
+      "excerpt": "async def workspace_context() -> dict[str, Any]: \"\"\"Get the full claw-code workspace context (CLAUDE.md, .claw.json, port sessions). files = { \"CLAUDE.md\": \"CLAUDE.md\", \".claw.json\": \".claw.json\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "SYSTEM_PROMPT",
+      "path": "dawmind/llm/claude.py",
+      "url": "https://github.com/Hazy142/flstudio-ai-agent/blob/3248a11d68ce00a4ee4f3cffaac45a95640e3e35/dawmind/llm/claude.py",
+      "repository": "Hazy142/flstudio-ai-agent",
+      "excerpt": "# System prompt for the DAWMind planning agent SYSTEM_PROMPT = \"\"\"\\ You are DAWMind, an AI agent that controls FL Studio through tool calls. \"max_tokens\": 4096, \"system\": system or SYSTEM_PROMPT, \"messages\": messages,",
+      "classification": "runtime_prompt_candidate"
+    },
+    {
+      "discovery_query": "SYSTEM_PROMPT",
+      "path": "dawmind/llm/gemini_client.py",
+      "url": "https://github.com/Hazy142/flstudio-ai-agent/blob/3248a11d68ce00a4ee4f3cffaac45a95640e3e35/dawmind/llm/gemini_client.py",
+      "repository": "Hazy142/flstudio-ai-agent",
+      "excerpt": " VISION_SYSTEM_PROMPT = \"\"\"\\ You are DAWMind's vision module. You analyze screenshots of FL Studio and model_name=self._model_name, system_instruction=VISION_SYSTEM_PROMPT, )",
+      "classification": "runtime_prompt_candidate"
+    },
+    {
+      "discovery_query": "SYSTEM_PROMPT",
+      "path": "tests/test_claude_tooluse.py",
+      "url": "https://github.com/Hazy142/flstudio-ai-agent/blob/3248a11d68ce00a4ee4f3cffaac45a95640e3e35/tests/test_claude_tooluse.py",
+      "repository": "Hazy142/flstudio-ai-agent",
+      "excerpt": "def test_system_prompt_contains_domain_knowledge(): assert \"DAWMind\" in SYSTEM_PROMPT assert \"FL Studio\" in SYSTEM_PROMPT def test_system_prompt_contains_tool_categories(): assert \"Transport\" in SYSTEM_PROMPT assert \"Mixer\" in SYSTEM_PROMPT",
+      "classification": "runtime_prompt_candidate"
+    },
+    {
+      "discovery_query": "SYSTEM_PROMPT",
+      "path": "tests/test_gemini_vision.py",
+      "url": "https://github.com/Hazy142/flstudio-ai-agent/blob/3248a11d68ce00a4ee4f3cffaac45a95640e3e35/tests/test_gemini_vision.py",
+      "repository": "Hazy142/flstudio-ai-agent",
+      "excerpt": "from dawmind.llm.gemini_client import ( VISION_SYSTEM_PROMPT, GeminiClient, def test_vision_system_prompt_content(): assert \"DAWMind\" in VISION_SYSTEM_PROMPT",
+      "classification": "runtime_prompt_candidate"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "docs/conversation-transcript-gemini-workspace-collaboration.md",
+      "url": "https://github.com/Hazy142/gemini-web-bridge/blob/9201a7890a7f020256e479316eee66d31035f33c/docs/conversation-transcript-gemini-workspace-collaboration.md",
+      "repository": "Hazy142/gemini-web-bridge",
+      "excerpt": "Stand **2. August 2026** entsteht vielmehr ein vollständiger **Agent-Stack**. Skills und MCP bleiben darin sinnvoll, decken aber nur zwei Schichten ab: ```text Skills / AGENTS.md → Wie soll gearbeitet werden? MCP → Welche Tools und Daten stehen bereit? A2A → Wie delegieren Agenten untereinander? AG-UI → Wie kommunizieren Agent und Frontend live?",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "AGENT.md",
+      "url": "https://github.com/Hazy142/genesis-delta-lambda-n-kindergarten/blob/7281ac781225cd2c3e0c5e4fd16ecb7ef796dfc3/AGENT.md",
+      "repository": "Hazy142/genesis-delta-lambda-n-kindergarten",
+      "excerpt": "# AGENT.md Canonical agent instructions live in [`AGENTS.md`](./AGENTS.md). This singular-name file exists for tooling that probes `AGENT.md`; it must not diverge from the canonical rules.",
+      "classification": "canonical_instruction_candidate"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "AGENTS.md",
+      "url": "https://github.com/Hazy142/genesis-delta-lambda-n-kindergarten/blob/7281ac781225cd2c3e0c5e4fd16ecb7ef796dfc3/AGENTS.md",
+      "repository": "Hazy142/genesis-delta-lambda-n-kindergarten",
+      "excerpt": "# AGENTS.md ## Mission Build a native, persistent developmental world for canonical `GENESIS-Δ-λ-n` lineages without collapsing World, Genesis, lineage, asset or GPU authority boundaries.",
+      "classification": "canonical_instruction_candidate"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "tools/validate_repo.py",
+      "url": "https://github.com/Hazy142/genesis-delta-lambda-n-kindergarten/blob/7281ac781225cd2c3e0c5e4fd16ecb7ef796dfc3/tools/validate_repo.py",
+      "repository": "Hazy142/genesis-delta-lambda-n-kindergarten",
+      "excerpt": " ROOT = Path(__file__).resolve().parents[1] REQUIRED = [ \"README.md\", \"AGENTS.md\", \"contracts/AUTHORITY-BOUNDARY.md\", \"contracts/LINEAGE-BINDING.md\", \"contracts/SENSOR-ABI.md\", \"contracts/RESIDENT-ABI.md\", \"contracts/COMPUTE-BACKEND.md\", \"contracts/ASSET-PIPELINE.md\", \"contracts/ENGINE-ASSET-BRIDGE.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "AGENT.md",
+      "url": "https://github.com/Hazy142/genesis-delta-lambda-n/blob/bec1ac3d4befd596514bc4e50a5292aebadf1d74/AGENT.md",
+      "repository": "Hazy142/genesis-delta-lambda-n",
+      "excerpt": "# AGENT.md Canonical agent instructions live in [`AGENTS.md`](AGENTS.md). Any automated contributor MUST read `AGENTS.md`, `LINEAGE-CONTRACT.md`, `AUTHORITY.md`, `STORAGE-CONTRACT.md` and `PUBLIC-EXPORT-CONTRACT.md` before mutating lineage records.",
+      "classification": "canonical_instruction_candidate"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "AGENTS.md",
+      "url": "https://github.com/Hazy142/genesis-delta-lambda-n/blob/bec1ac3d4befd596514bc4e50a5292aebadf1d74/AGENTS.md",
+      "repository": "Hazy142/genesis-delta-lambda-n",
+      "excerpt": "# AGENTS.md — GENESIS-Δ-λ-n private lineage laboratory These instructions apply repository-wide. ## Mission Preserve the canonical identity, ancestry and longitudinal evidence of GENESIS lineages without turning this repository into a copy of the Genesis implementation or a binary state dump.",
+      "classification": "canonical_instruction_candidate"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "AGENT.md",
+      "url": "https://github.com/Hazy142/genesis-delta-lambda/blob/aefca96fdbc04eff1be0c3934bc3c37fb81c6217/AGENT.md",
+      "repository": "Hazy142/genesis-delta-lambda",
+      "excerpt": "# AGENT.md Canonical repository-wide agent instructions live in [`AGENTS.md`](AGENTS.md). Any automated contributor MUST read and obey `AGENTS.md` before modifying this public observatory.",
+      "classification": "canonical_instruction_candidate"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "AGENTS.md",
+      "url": "https://github.com/Hazy142/genesis-delta-lambda/blob/aefca96fdbc04eff1be0c3934bc3c37fb81c6217/AGENTS.md",
+      "repository": "Hazy142/genesis-delta-lambda",
+      "excerpt": "# AGENTS.md — GENESIS-Δ-λ public observatory These instructions apply to every automated or human contributor operating in this repository. ## Mission Maintain an IP-safe, scientifically conservative, cryptographically anchored public record of GENESIS lineage research.",
+      "classification": "canonical_instruction_candidate"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "AGENTS.md",
+      "url": "https://github.com/Hazy142/hecht.accounting/blob/e36ec32ba64c4b9370632bc611245ea7e326fe48/AGENTS.md",
+      "repository": "Hazy142/hecht.accounting",
+      "excerpt": "# AGENTS.md — hecht.accounting **Role:** Senior FiBu Automation Engineer (DE GAAP / DATEV / ebootis) **Product:** Hecht.resonArch accounting automation **Authority:** Accounting / ledger truth only ## Mission priority",
+      "classification": "canonical_instruction_candidate"
+    },
+    {
+      "discovery_query": "SYSTEM_PROMPT",
+      "path": "src/hecht_accounting/agent/training/trainer/config.py",
+      "url": "https://github.com/Hazy142/hecht.accounting/blob/e36ec32ba64c4b9370632bc611245ea7e326fe48/src/hecht_accounting/agent/training/trainer/config.py",
+      "repository": "Hazy142/hecht.accounting",
+      "excerpt": " train_ratio: float = 0.9 seed: int = 1337 max_seq_length: int = 4096 system_prompt_key: Literal[\"from_examples\", \"default\"] = \"from_examples\" class LoraConfig(BaseModel):",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "systemPrompt",
+      "path": "meine_mods/LivingOrbis/master-specification-unified.md",
+      "url": "https://github.com/Hazy142/Hytale_Lab/blob/7f2fa940b79cbe08958b83edbd4f01dacb952d2c/meine_mods/LivingOrbis/master-specification-unified.md",
+      "repository": "Hazy142/Hytale_Lab",
+      "excerpt": " **Dynamic Prompt Injection:** ```java String systemPrompt = persona.generateSystemPrompt( currentContext, memory.getMemoryContext(), faction,",
+      "classification": "runtime_prompt_candidate"
+    },
+    {
+      "discovery_query": "systemPrompt",
+      "path": "meine_mods/LivingOrbis/research_synthesis.txt",
+      "url": "https://github.com/Hazy142/Hytale_Lab/blob/7f2fa940b79cbe08958b83edbd4f01dacb952d2c/meine_mods/LivingOrbis/research_synthesis.txt",
+      "repository": "Hazy142/Hytale_Lab",
+      "excerpt": "PersonaProfile detective = new PersonaProfile( archetype = Archetype.DETECTIVE, faction = Faction.TOWN, systemPrompt = \"Du bist ein Detektiv. Dein Ziel ist, die Mafia zu finden...\", traits = [\"analytical\", \"suspicious\", \"detail-oriented\"] ); Components:",
+      "classification": "runtime_prompt_candidate"
+    },
+    {
+      "discovery_query": "SYSTEM_PROMPT",
+      "path": "apps/slack-assistant/src/llm.ts",
+      "url": "https://github.com/Hazy142/nether-bridge/blob/eb266ce1cdeda73a4579c50519a163fe6da5c1b3/apps/slack-assistant/src/llm.ts",
+      "repository": "Hazy142/nether-bridge",
+      "excerpt": " const SYSTEM_PROMPT = `You are an assistant inside Slack. Help users with summaries, drafting, retrieval-oriented thinking, and concise action planning. role: \"system\", content: SYSTEM_PROMPT },",
+      "classification": "runtime_prompt_candidate"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "docs/ops/Perfektes Delegieren von Coding-Tasks an N asynchrone Agenten.md",
+      "url": "https://github.com/Hazy142/nether-bridge/blob/eb266ce1cdeda73a4579c50519a163fe6da5c1b3/docs/ops/Perfektes Delegieren von Coding-Tasks an N asynchrone Agenten.md",
+      "repository": "Hazy142/nether-bridge",
+      "excerpt": "| **Isolation** | Git Worktrees: kein Merge-Konflikt während der Arbeit | Sicheres paralleles Schreiben[^1] | | **Compound Learning** | `AGENTS.md` akkumuliert Patterns über Sessions | Jede Session verbessert die nächste[^1] | - [ ] Dependency-Graph aufgezeichnet (was blockiert was?) - [ ] `AGENTS.md` mit Projekt-Konventionen aktuell - [ ] Model Routing: Haiku für Exploration, Sonnet für Implementation, Opus für Architecture[^1]",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "systemPrompt",
+      "path": "src/agent.ts",
+      "url": "https://github.com/Hazy142/nLM-Peer-Agent/blob/0f8124005251021073ab9a3e0ddc41cf7e0af333/src/agent.ts",
+      "repository": "Hazy142/nLM-Peer-Agent",
+      "excerpt": " const notebookContent = await getNotebookContent(); const systemPrompt = buildSystemPrompt(notebookContent); options: { systemPrompt, ...(sessionId ? { resume: sessionId } : {}),",
+      "classification": "runtime_prompt_candidate"
+    },
+    {
+      "discovery_query": "AGENT_PROMPT",
+      "path": ".agent/jules-orchestrierung/AUTONOMOUS-AGENT-SYSTEM-PROMPT.md",
+      "url": "https://github.com/Hazy142/Quanten_Lab/blob/ef1da8873dc40a827f5e5d4e8f85382fc539ecf3/.agent/jules-orchestrierung/AUTONOMOUS-AGENT-SYSTEM-PROMPT.md",
+      "repository": "Hazy142/Quanten_Lab",
+      "excerpt": "import sys # Load this system prompt into memory AGENT_PROMPT = \"\"\"[COMPLETE SYSTEM PROMPT ABOVE]\"\"\" # Initialize agent print(\"🤖 Initializing Claude-Opus Autonomous Agent\") ",
+      "classification": "runtime_prompt_candidate"
+    },
+    {
+      "discovery_query": "SYSTEM_PROMPT",
+      "path": "tests/test_gateway.py",
+      "url": "https://github.com/Hazy142/resonarch-context-gateway/blob/b95820349a258033f6ea8349de1bfc9d6aeb25a1/tests/test_gateway.py",
+      "repository": "Hazy142/resonarch-context-gateway",
+      "excerpt": " second = self.g.compile_request(body, {}) self.assertEqual(first.session_id, second.session_id) def test_shared_system_prompt_does_not_merge_sessions(self): common = \"shared developer contract \" + (\"same \" * 100) body_a = { \"input\": [",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/02_Experimental_Data_RAW/PACKAGE_MANIFEST.json",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/02_Experimental_Data_RAW/PACKAGE_MANIFEST.json",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " \"authoritative_artifacts\": [ \"AGENTS.md\", \"ARBEITSSTAND_RSGT_2026-07-26.md\", { \"path\": \"AGENTS.md\", \"size_bytes\": 2388,",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/02_Experimental_Data_RAW/RSGT_PROJECT_CONTEXT.json",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/02_Experimental_Data_RAW/RSGT_PROJECT_CONTEXT.json",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " \"handoff_prompt\": \"CODEX_HANDOFF_PROMPT.md\", \"automatic_agent_guidance\": \"AGENTS.md\" }, \"authoritative_files\": [ \"AGENTS.md\", \"TRANSPORT_README.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/brain.docs.IONOS-GPT/01_rsgt_core_src/ARBEITSSTAND_RSGT_2026-07-26.md.csv",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/brain.docs.IONOS-GPT/01_rsgt_core_src/ARBEITSSTAND_RSGT_2026-07-26.md.csv",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "\"79\",\"\" \"80\",\"## Reproduzierbare Artefakte\" \"81\",\"\" \"82\",\"- Dauerhafte Codex-Regeln: `AGENTS.md`\" \"83\",\"- Rekonstruierter Chatverlauf: `CHATVERLAUF_RSGT.md`\" \"84\",\"- Startprompt für neue Chats: `CODEX_HANDOFF_PROMPT.md`\" \"85\",\"- Maschinenlesbarer Projektzustand: `RSGT_PROJECT_CONTEXT.json`\"",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/brain.docs.IONOS-GPT/01_rsgt_core_src/build_transport_package.py.csv",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/brain.docs.IONOS-GPT/01_rsgt_core_src/build_transport_package.py.csv",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "\"33\",\"}\" \"34\",\"\" \"35\",\"AUTHORITATIVE_ARTIFACTS = [\" \"36\",\" \"\"AGENTS.md\"\",\" \"37\",\" \"\"ARBEITSSTAND_RSGT_2026-07-26.md\"\",\" \"38\",\" \"\"CHATVERLAUF_RSGT.md\"\",\" \"39\",\" \"\"CODEX_HANDOFF_PROMPT.md\"\",\"",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/brain.docs.IONOS-GPT/01_rsgt_core_src/RSGT_PROJECT_CONTEXT.json.csv",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/brain.docs.IONOS-GPT/01_rsgt_core_src/RSGT_PROJECT_CONTEXT.json.csv",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "\"11\",\" \"\"handoff_prompt\"\": \"\"CODEX_HANDOFF_PROMPT.md\"\",\" \"12\",\" \"\"automatic_agent_guidance\"\": \"\"AGENTS.md\"\"\" \"13\",\" },\" \"175\",\" \"\"authoritative_files\"\": [\" \"176\",\" \"\"AGENTS.md\"\",\" \"177\",\" \"\"TRANSPORT_README.md\"\",\"",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/brain.docs.IONOS-GPT/01_rsgt_core_src/TRANSPORT_README.md.csv",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/brain.docs.IONOS-GPT/01_rsgt_core_src/TRANSPORT_README.md.csv",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "\"13\",\"- `PACKAGE_MANIFEST.json` und `SHA256SUMS.txt` zur Integritätsprüfung.\" \"14\",\"- einen rekonstruierten Chatverlauf und maschinenlesbaren Projektzustand;\" \"15\",\"- einen direkt einsetzbaren Startprompt für neue Codex- oder KI-Chats;\" \"16\",\"- `AGENTS.md` mit automatisch auffindbaren, dauerhaften Projektregeln.\" \"17\",\"\" \"18\",\"## Wichtigster Einstieg\" \"19\",\"\"",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/brain.docs.perplexity/01_rsgt_core_src/ARBEITSSTAND_RSGT_2026-07-26.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/brain.docs.perplexity/01_rsgt_core_src/ARBEITSSTAND_RSGT_2026-07-26.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " ## Reproduzierbare Artefakte - Dauerhafte Codex-Regeln: `AGENTS.md` - Rekonstruierter Chatverlauf: `CHATVERLAUF_RSGT.md` - Startprompt für neue Chats: `CODEX_HANDOFF_PROMPT.md` - Maschinenlesbarer Projektzustand: `RSGT_PROJECT_CONTEXT.json`",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/brain.docs.perplexity/01_rsgt_core_src/build_transport_package.py",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/brain.docs.perplexity/01_rsgt_core_src/build_transport_package.py",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "} AUTHORITATIVE_ARTIFACTS = [ \"AGENTS.md\", \"ARBEITSSTAND_RSGT_2026-07-26.md\", \"CHATVERLAUF_RSGT.md\", \"CODEX_HANDOFF_PROMPT.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/brain.docs.perplexity/01_rsgt_core_src/RSGT_PROJECT_CONTEXT.json",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/brain.docs.perplexity/01_rsgt_core_src/RSGT_PROJECT_CONTEXT.json",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " \"handoff_prompt\": \"CODEX_HANDOFF_PROMPT.md\", \"automatic_agent_guidance\": \"AGENTS.md\" }, \"authoritative_files\": [ \"AGENTS.md\", \"TRANSPORT_README.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/brain.docs.perplexity/01_rsgt_core_src/TRANSPORT_README.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/brain.docs.perplexity/01_rsgt_core_src/TRANSPORT_README.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "- `PACKAGE_MANIFEST.json` und `SHA256SUMS.txt` zur Integritätsprüfung. - einen rekonstruierten Chatverlauf und maschinenlesbaren Projektzustand; - einen direkt einsetzbaren Startprompt für neue Codex- oder KI-Chats; - `AGENTS.md` mit automatisch auffindbaren, dauerhaften Projektregeln. ## Wichtigster Einstieg ",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/build_transport_package.py",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/build_transport_package.py",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "} AUTHORITATIVE_ARTIFACTS = [ \"AGENTS.md\", \"ARBEITSSTAND_RSGT_2026-07-26.md\", \"CHATVERLAUF_RSGT.md\", \"CODEX_HANDOFF_PROMPT.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/ARBEITSSTAND_RSGT_2026-07-26.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/ARBEITSSTAND_RSGT_2026-07-26.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " ## Reproduzierbare Artefakte - Dauerhafte Codex-Regeln: `AGENTS.md` - Rekonstruierter Chatverlauf: `CHATVERLAUF_RSGT.md` - Startprompt für neue Chats: `CODEX_HANDOFF_PROMPT.md` - Maschinenlesbarer Projektzustand: `RSGT_PROJECT_CONTEXT.json`",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/build_transport_package.py",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/build_transport_package.py",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "} AUTHORITATIVE_ARTIFACTS = [ \"AGENTS.md\", \"ARBEITSSTAND_RSGT_2026-07-26.md\", \"CHATVERLAUF_RSGT.md\", \"CODEX_HANDOFF_PROMPT.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/CHATVERLAUF_RSGT.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/CHATVERLAUF_RSGT.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " Für die Fortsetzung eines neuen Chats sind zusätzlich maßgeblich: - `AGENTS.md` - `CODEX_HANDOFF_PROMPT.md` - `RSGT_PROJECT_CONTEXT.json` - `ARBEITSSTAND_RSGT_2026-07-26.md`",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/CODEX_HANDOFF_PROMPT.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/CODEX_HANDOFF_PROMPT.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "Arbeite aus der Wurzel des entpackten Projektordners. Lies vor jeder fachlichen Empfehlung oder Änderung diese Dateien vollständig: 1. `AGENTS.md` 2. `TRANSPORT_README.md` 3. `ARBEITSSTAND_RSGT_2026-07-26.md` 4. `RSGT_PROJECT_CONTEXT.json`",
+      "classification": "runtime_prompt_candidate"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/PACKAGE_MANIFEST.json",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/PACKAGE_MANIFEST.json",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " \"authoritative_artifacts\": [ \"AGENTS.md\", \"ARBEITSSTAND_RSGT_2026-07-26.md\", { \"path\": \"AGENTS.md\", \"size_bytes\": 2388,",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/RSGT_PROJECT_CONTEXT.json",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/RSGT_PROJECT_CONTEXT.json",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " \"handoff_prompt\": \"CODEX_HANDOFF_PROMPT.md\", \"automatic_agent_guidance\": \"AGENTS.md\" }, \"authoritative_files\": [ \"AGENTS.md\", \"TRANSPORT_README.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/SHA256SUMS.txt",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/SHA256SUMS.txt",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "443d8c728f7beeb1cca9b843512e8a6f0b2b4525d6422aae8c520b78c8411a7b AGENTS.md 252c9c8c4bd357a8bb423ebb96ec688c5234eea34d39a979f9d6335e0bbb9466 ARBEITSSTAND_RSGT_2026-07-26.md b7eb67903fee28abefca79b7d6cad8dcea8cdb776785b4253d1e6ed743b5bca0 CHATVERLAUF_RSGT.md 8022453fee76ab6eb427e0a6005494d85b3eb7982b25c0e9e62d13fd8181b140 CODEX_HANDOFF_PROMPT.md c94e4e807379e188200c920fe08be66fb006314f04d79cab991c29782f66e2b5 RSGT-0.2_Bericht.md 1b4e188bbbe427eb6d5e5f43477ea222d52aa456986a378a274dac3b617608c8 RSGT_Analyse_v2/RSGT_Evidenzanalyse_v2.ipynb 13363c50797fb8bf80ceeeb26e68bb93a991fce5e1c785259c0daf53b1ffc7b0 RSGT_Analyse_v2/RSGT_Evidenzbericht_v2.html",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/TRANSPORT_README.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/03_Analysis_and_Reproducibility/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/TRANSPORT_README.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "- `PACKAGE_MANIFEST.json` und `SHA256SUMS.txt` zur Integritätsprüfung. - einen rekonstruierten Chatverlauf und maschinenlesbaren Projektzustand; - einen direkt einsetzbaren Startprompt für neue Codex- oder KI-Chats; - `AGENTS.md` mit automatisch auffindbaren, dauerhaften Projektregeln. ## Wichtigster Einstieg ",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/04_IP_and_Publications/ARBEITSSTAND_RSGT_2026-07-26.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/04_IP_and_Publications/ARBEITSSTAND_RSGT_2026-07-26.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " ## Reproduzierbare Artefakte - Dauerhafte Codex-Regeln: `AGENTS.md` - Rekonstruierter Chatverlauf: `CHATVERLAUF_RSGT.md` - Startprompt für neue Chats: `CODEX_HANDOFF_PROMPT.md` - Maschinenlesbarer Projektzustand: `RSGT_PROJECT_CONTEXT.json`",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/04_IP_and_Publications/CHATVERLAUF_RSGT.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/04_IP_and_Publications/CHATVERLAUF_RSGT.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " Für die Fortsetzung eines neuen Chats sind zusätzlich maßgeblich: - `AGENTS.md` - `CODEX_HANDOFF_PROMPT.md` - `RSGT_PROJECT_CONTEXT.json` - `ARBEITSSTAND_RSGT_2026-07-26.md`",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/04_IP_and_Publications/CODEX_HANDOFF_PROMPT.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/04_IP_and_Publications/CODEX_HANDOFF_PROMPT.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "Arbeite aus der Wurzel des entpackten Projektordners. Lies vor jeder fachlichen Empfehlung oder Änderung diese Dateien vollständig: 1. `AGENTS.md` 2. `TRANSPORT_README.md` 3. `ARBEITSSTAND_RSGT_2026-07-26.md` 4. `RSGT_PROJECT_CONTEXT.json`",
+      "classification": "runtime_prompt_candidate"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/04_IP_and_Publications/TRANSPORT_README.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/04_IP_and_Publications/TRANSPORT_README.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "- `PACKAGE_MANIFEST.json` und `SHA256SUMS.txt` zur Integritätsprüfung. - einen rekonstruierten Chatverlauf und maschinenlesbaren Projektzustand; - einen direkt einsetzbaren Startprompt für neue Codex- oder KI-Chats; - `AGENTS.md` mit automatisch auffindbaren, dauerhaften Projektregeln. ## Wichtigster Einstieg ",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/Cryptographic_Manifest.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/aktueller.wissenschaftlich.verifizierter.stand.fiberfield-rsgt/ResonArch.FIBERFIELD_RSGT_State_2026-07/Cryptographic_Manifest.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "| `kaggle_rsgt/kernel-metadata.json` | `3147f7acef213b501cc1c287dd88b53f751a579e0c287ea43967bf3f28000b40` | | `kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/AGENTS.md` | `443d8c728f7beeb1cca9b843512e8a6f0b2b4525d6422aae8c520b78c8411a7b` | | `kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/ARBEITSSTAND_RSGT_2026-07-26.md` | `252c9c8c4bd357a8bb423ebb96ec688c5234eea34d39a979f9d6335e0bbb9466` | |---|---| | `AGENTS.md` | `443d8c728f7beeb1cca9b843512e8a6f0b2b4525d6422aae8c520b78c8411a7b` | | `ARBEITSSTAND_RSGT_2026-07-26.md` | `252c9c8c4bd357a8bb423ebb96ec688c5234eea34d39a979f9d6335e0bbb9466` |",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "brain.docs.IONOS-GPT/01_rsgt_core_src/ARBEITSSTAND_RSGT_2026-07-26.md.csv",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/brain.docs.IONOS-GPT/01_rsgt_core_src/ARBEITSSTAND_RSGT_2026-07-26.md.csv",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "\"79\",\"\" \"80\",\"## Reproduzierbare Artefakte\" \"81\",\"\" \"82\",\"- Dauerhafte Codex-Regeln: `AGENTS.md`\" \"83\",\"- Rekonstruierter Chatverlauf: `CHATVERLAUF_RSGT.md`\" \"84\",\"- Startprompt für neue Chats: `CODEX_HANDOFF_PROMPT.md`\" \"85\",\"- Maschinenlesbarer Projektzustand: `RSGT_PROJECT_CONTEXT.json`\"",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "brain.docs.IONOS-GPT/01_rsgt_core_src/build_transport_package.py.csv",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/brain.docs.IONOS-GPT/01_rsgt_core_src/build_transport_package.py.csv",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "\"33\",\"}\" \"34\",\"\" \"35\",\"AUTHORITATIVE_ARTIFACTS = [\" \"36\",\" \"\"AGENTS.md\"\",\" \"37\",\" \"\"ARBEITSSTAND_RSGT_2026-07-26.md\"\",\" \"38\",\" \"\"CHATVERLAUF_RSGT.md\"\",\" \"39\",\" \"\"CODEX_HANDOFF_PROMPT.md\"\",\"",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "brain.docs.IONOS-GPT/01_rsgt_core_src/RSGT_PROJECT_CONTEXT.json.csv",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/brain.docs.IONOS-GPT/01_rsgt_core_src/RSGT_PROJECT_CONTEXT.json.csv",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "\"11\",\" \"\"handoff_prompt\"\": \"\"CODEX_HANDOFF_PROMPT.md\"\",\" \"12\",\" \"\"automatic_agent_guidance\"\": \"\"AGENTS.md\"\"\" \"13\",\" },\" \"175\",\" \"\"authoritative_files\"\": [\" \"176\",\" \"\"AGENTS.md\"\",\" \"177\",\" \"\"TRANSPORT_README.md\"\",\"",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "brain.docs.IONOS-GPT/01_rsgt_core_src/TRANSPORT_README.md.csv",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/brain.docs.IONOS-GPT/01_rsgt_core_src/TRANSPORT_README.md.csv",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "\"13\",\"- `PACKAGE_MANIFEST.json` und `SHA256SUMS.txt` zur Integritätsprüfung.\" \"14\",\"- einen rekonstruierten Chatverlauf und maschinenlesbaren Projektzustand;\" \"15\",\"- einen direkt einsetzbaren Startprompt für neue Codex- oder KI-Chats;\" \"16\",\"- `AGENTS.md` mit automatisch auffindbaren, dauerhaften Projektregeln.\" \"17\",\"\" \"18\",\"## Wichtigster Einstieg\" \"19\",\"\"",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "brain.docs.perplexity/01_rsgt_core_src/ARBEITSSTAND_RSGT_2026-07-26.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/brain.docs.perplexity/01_rsgt_core_src/ARBEITSSTAND_RSGT_2026-07-26.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " ## Reproduzierbare Artefakte - Dauerhafte Codex-Regeln: `AGENTS.md` - Rekonstruierter Chatverlauf: `CHATVERLAUF_RSGT.md` - Startprompt für neue Chats: `CODEX_HANDOFF_PROMPT.md` - Maschinenlesbarer Projektzustand: `RSGT_PROJECT_CONTEXT.json`",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "brain.docs.perplexity/01_rsgt_core_src/build_transport_package.py",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/brain.docs.perplexity/01_rsgt_core_src/build_transport_package.py",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "} AUTHORITATIVE_ARTIFACTS = [ \"AGENTS.md\", \"ARBEITSSTAND_RSGT_2026-07-26.md\", \"CHATVERLAUF_RSGT.md\", \"CODEX_HANDOFF_PROMPT.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "brain.docs.perplexity/01_rsgt_core_src/RSGT_PROJECT_CONTEXT.json",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/brain.docs.perplexity/01_rsgt_core_src/RSGT_PROJECT_CONTEXT.json",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " \"handoff_prompt\": \"CODEX_HANDOFF_PROMPT.md\", \"automatic_agent_guidance\": \"AGENTS.md\" }, \"authoritative_files\": [ \"AGENTS.md\", \"TRANSPORT_README.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "brain.docs.perplexity/01_rsgt_core_src/TRANSPORT_README.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/brain.docs.perplexity/01_rsgt_core_src/TRANSPORT_README.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "- `PACKAGE_MANIFEST.json` und `SHA256SUMS.txt` zur Integritätsprüfung. - einen rekonstruierten Chatverlauf und maschinenlesbaren Projektzustand; - einen direkt einsetzbaren Startprompt für neue Codex- oder KI-Chats; - `AGENTS.md` mit automatisch auffindbaren, dauerhaften Projektregeln. ## Wichtigster Einstieg ",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/ARBEITSSTAND_RSGT_2026-07-26.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/ARBEITSSTAND_RSGT_2026-07-26.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " ## Reproduzierbare Artefakte - Dauerhafte Codex-Regeln: `AGENTS.md` - Rekonstruierter Chatverlauf: `CHATVERLAUF_RSGT.md` - Startprompt für neue Chats: `CODEX_HANDOFF_PROMPT.md` - Maschinenlesbarer Projektzustand: `RSGT_PROJECT_CONTEXT.json`",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/build_transport_package.py",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/build_transport_package.py",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "} AUTHORITATIVE_ARTIFACTS = [ \"AGENTS.md\", \"ARBEITSSTAND_RSGT_2026-07-26.md\", \"CHATVERLAUF_RSGT.md\", \"CODEX_HANDOFF_PROMPT.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/CHATVERLAUF_RSGT.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/CHATVERLAUF_RSGT.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " Für die Fortsetzung eines neuen Chats sind zusätzlich maßgeblich: - `AGENTS.md` - `CODEX_HANDOFF_PROMPT.md` - `RSGT_PROJECT_CONTEXT.json` - `ARBEITSSTAND_RSGT_2026-07-26.md`",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/CODEX_HANDOFF_PROMPT.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/CODEX_HANDOFF_PROMPT.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "Arbeite aus der Wurzel des entpackten Projektordners. Lies vor jeder fachlichen Empfehlung oder Änderung diese Dateien vollständig: 1. `AGENTS.md` 2. `TRANSPORT_README.md` 3. `ARBEITSSTAND_RSGT_2026-07-26.md` 4. `RSGT_PROJECT_CONTEXT.json`",
+      "classification": "runtime_prompt_candidate"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/PACKAGE_MANIFEST.json",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/PACKAGE_MANIFEST.json",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " \"authoritative_artifacts\": [ \"AGENTS.md\", \"ARBEITSSTAND_RSGT_2026-07-26.md\", { \"path\": \"AGENTS.md\", \"size_bytes\": 2388,",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/RSGT_PROJECT_CONTEXT.json",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/RSGT_PROJECT_CONTEXT.json",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " \"handoff_prompt\": \"CODEX_HANDOFF_PROMPT.md\", \"automatic_agent_guidance\": \"AGENTS.md\" }, \"authoritative_files\": [ \"AGENTS.md\", \"TRANSPORT_README.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/SHA256SUMS.txt",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/SHA256SUMS.txt",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "443d8c728f7beeb1cca9b843512e8a6f0b2b4525d6422aae8c520b78c8411a7b AGENTS.md 252c9c8c4bd357a8bb423ebb96ec688c5234eea34d39a979f9d6335e0bbb9466 ARBEITSSTAND_RSGT_2026-07-26.md b7eb67903fee28abefca79b7d6cad8dcea8cdb776785b4253d1e6ed743b5bca0 CHATVERLAUF_RSGT.md 8022453fee76ab6eb427e0a6005494d85b3eb7982b25c0e9e62d13fd8181b140 CODEX_HANDOFF_PROMPT.md c94e4e807379e188200c920fe08be66fb006314f04d79cab991c29782f66e2b5 RSGT-0.2_Bericht.md 1b4e188bbbe427eb6d5e5f43477ea222d52aa456986a378a274dac3b617608c8 RSGT_Analyse_v2/RSGT_Evidenzanalyse_v2.ipynb 13363c50797fb8bf80ceeeb26e68bb93a991fce5e1c785259c0daf53b1ffc7b0 RSGT_Analyse_v2/RSGT_Evidenzbericht_v2.html",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/TRANSPORT_README.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/kaggle_rsgt/output/RSGT-0.2.1_complete_2026-07-28/TRANSPORT_README.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "- `PACKAGE_MANIFEST.json` und `SHA256SUMS.txt` zur Integritätsprüfung. - einen rekonstruierten Chatverlauf und maschinenlesbaren Projektzustand; - einen direkt einsetzbaren Startprompt für neue Codex- oder KI-Chats; - `AGENTS.md` mit automatisch auffindbaren, dauerhaften Projektregeln. ## Wichtigster Einstieg ",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "RSGT-0.2.1_complete_2026-07-28/RSGT-0.2.1_complete_2026-07-28/ARBEITSSTAND_RSGT_2026-07-26.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/RSGT-0.2.1_complete_2026-07-28/RSGT-0.2.1_complete_2026-07-28/ARBEITSSTAND_RSGT_2026-07-26.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " ## Reproduzierbare Artefakte - Dauerhafte Codex-Regeln: `AGENTS.md` - Rekonstruierter Chatverlauf: `CHATVERLAUF_RSGT.md` - Startprompt für neue Chats: `CODEX_HANDOFF_PROMPT.md` - Maschinenlesbarer Projektzustand: `RSGT_PROJECT_CONTEXT.json`",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "RSGT-0.2.1_complete_2026-07-28/RSGT-0.2.1_complete_2026-07-28/build_transport_package.py",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/RSGT-0.2.1_complete_2026-07-28/RSGT-0.2.1_complete_2026-07-28/build_transport_package.py",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "} AUTHORITATIVE_ARTIFACTS = [ \"AGENTS.md\", \"ARBEITSSTAND_RSGT_2026-07-26.md\", \"CHATVERLAUF_RSGT.md\", \"CODEX_HANDOFF_PROMPT.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "RSGT-0.2.1_complete_2026-07-28/RSGT-0.2.1_complete_2026-07-28/CHATVERLAUF_RSGT.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/RSGT-0.2.1_complete_2026-07-28/RSGT-0.2.1_complete_2026-07-28/CHATVERLAUF_RSGT.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " Für die Fortsetzung eines neuen Chats sind zusätzlich maßgeblich: - `AGENTS.md` - `CODEX_HANDOFF_PROMPT.md` - `RSGT_PROJECT_CONTEXT.json` - `ARBEITSSTAND_RSGT_2026-07-26.md`",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "RSGT-0.2.1_complete_2026-07-28/RSGT-0.2.1_complete_2026-07-28/CODEX_HANDOFF_PROMPT.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/RSGT-0.2.1_complete_2026-07-28/RSGT-0.2.1_complete_2026-07-28/CODEX_HANDOFF_PROMPT.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "Arbeite aus der Wurzel des entpackten Projektordners. Lies vor jeder fachlichen Empfehlung oder Änderung diese Dateien vollständig: 1. `AGENTS.md` 2. `TRANSPORT_README.md` 3. `ARBEITSSTAND_RSGT_2026-07-26.md` 4. `RSGT_PROJECT_CONTEXT.json`",
+      "classification": "runtime_prompt_candidate"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "RSGT-0.2.1_complete_2026-07-28/RSGT-0.2.1_complete_2026-07-28/PACKAGE_MANIFEST.json",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/RSGT-0.2.1_complete_2026-07-28/RSGT-0.2.1_complete_2026-07-28/PACKAGE_MANIFEST.json",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " \"authoritative_artifacts\": [ \"AGENTS.md\", \"ARBEITSSTAND_RSGT_2026-07-26.md\", { \"path\": \"AGENTS.md\", \"size_bytes\": 2388,",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "RSGT-0.2.1_complete_2026-07-28/RSGT-0.2.1_complete_2026-07-28/RSGT_PROJECT_CONTEXT.json",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/RSGT-0.2.1_complete_2026-07-28/RSGT-0.2.1_complete_2026-07-28/RSGT_PROJECT_CONTEXT.json",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " \"handoff_prompt\": \"CODEX_HANDOFF_PROMPT.md\", \"automatic_agent_guidance\": \"AGENTS.md\" }, \"authoritative_files\": [ \"AGENTS.md\", \"TRANSPORT_README.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "RSGT-0.2.1_complete_2026-07-28/RSGT-0.2.1_complete_2026-07-28/SHA256SUMS.txt",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/RSGT-0.2.1_complete_2026-07-28/RSGT-0.2.1_complete_2026-07-28/SHA256SUMS.txt",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "443d8c728f7beeb1cca9b843512e8a6f0b2b4525d6422aae8c520b78c8411a7b AGENTS.md 252c9c8c4bd357a8bb423ebb96ec688c5234eea34d39a979f9d6335e0bbb9466 ARBEITSSTAND_RSGT_2026-07-26.md b7eb67903fee28abefca79b7d6cad8dcea8cdb776785b4253d1e6ed743b5bca0 CHATVERLAUF_RSGT.md 8022453fee76ab6eb427e0a6005494d85b3eb7982b25c0e9e62d13fd8181b140 CODEX_HANDOFF_PROMPT.md c94e4e807379e188200c920fe08be66fb006314f04d79cab991c29782f66e2b5 RSGT-0.2_Bericht.md 1b4e188bbbe427eb6d5e5f43477ea222d52aa456986a378a274dac3b617608c8 RSGT_Analyse_v2/RSGT_Evidenzanalyse_v2.ipynb 13363c50797fb8bf80ceeeb26e68bb93a991fce5e1c785259c0daf53b1ffc7b0 RSGT_Analyse_v2/RSGT_Evidenzbericht_v2.html",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "RSGT-0.2.1_complete_2026-07-28/RSGT-0.2.1_complete_2026-07-28/TRANSPORT_README.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/RSGT-0.2.1_complete_2026-07-28/RSGT-0.2.1_complete_2026-07-28/TRANSPORT_README.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "- `PACKAGE_MANIFEST.json` und `SHA256SUMS.txt` zur Integritätsprüfung. - einen rekonstruierten Chatverlauf und maschinenlesbaren Projektzustand; - einen direkt einsetzbaren Startprompt für neue Codex- oder KI-Chats; - `AGENTS.md` mit automatisch auffindbaren, dauerhaften Projektregeln. ## Wichtigster Einstieg ",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "shareable-fiberfield-v4/RSGT-0.2.1_complete_2026-07-28/ARBEITSSTAND_RSGT_2026-07-26.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/shareable-fiberfield-v4/RSGT-0.2.1_complete_2026-07-28/ARBEITSSTAND_RSGT_2026-07-26.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " ## Reproduzierbare Artefakte - Dauerhafte Codex-Regeln: `AGENTS.md` - Rekonstruierter Chatverlauf: `CHATVERLAUF_RSGT.md` - Startprompt für neue Chats: `CODEX_HANDOFF_PROMPT.md` - Maschinenlesbarer Projektzustand: `RSGT_PROJECT_CONTEXT.json`",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "shareable-fiberfield-v4/RSGT-0.2.1_complete_2026-07-28/build_transport_package.py",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/shareable-fiberfield-v4/RSGT-0.2.1_complete_2026-07-28/build_transport_package.py",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "} AUTHORITATIVE_ARTIFACTS = [ \"AGENTS.md\", \"ARBEITSSTAND_RSGT_2026-07-26.md\", \"CHATVERLAUF_RSGT.md\", \"CODEX_HANDOFF_PROMPT.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "shareable-fiberfield-v4/RSGT-0.2.1_complete_2026-07-28/CHATVERLAUF_RSGT.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/shareable-fiberfield-v4/RSGT-0.2.1_complete_2026-07-28/CHATVERLAUF_RSGT.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " Für die Fortsetzung eines neuen Chats sind zusätzlich maßgeblich: - `AGENTS.md` - `CODEX_HANDOFF_PROMPT.md` - `RSGT_PROJECT_CONTEXT.json` - `ARBEITSSTAND_RSGT_2026-07-26.md`",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "shareable-fiberfield-v4/RSGT-0.2.1_complete_2026-07-28/CODEX_HANDOFF_PROMPT.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/shareable-fiberfield-v4/RSGT-0.2.1_complete_2026-07-28/CODEX_HANDOFF_PROMPT.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "Arbeite aus der Wurzel des entpackten Projektordners. Lies vor jeder fachlichen Empfehlung oder Änderung diese Dateien vollständig: 1. `AGENTS.md` 2. `TRANSPORT_README.md` 3. `ARBEITSSTAND_RSGT_2026-07-26.md` 4. `RSGT_PROJECT_CONTEXT.json`",
+      "classification": "runtime_prompt_candidate"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "shareable-fiberfield-v4/RSGT-0.2.1_complete_2026-07-28/PACKAGE_MANIFEST.json",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/shareable-fiberfield-v4/RSGT-0.2.1_complete_2026-07-28/PACKAGE_MANIFEST.json",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " \"authoritative_artifacts\": [ \"AGENTS.md\", \"ARBEITSSTAND_RSGT_2026-07-26.md\", { \"path\": \"AGENTS.md\", \"size_bytes\": 2388,",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "shareable-fiberfield-v4/RSGT-0.2.1_complete_2026-07-28/RSGT_PROJECT_CONTEXT.json",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/shareable-fiberfield-v4/RSGT-0.2.1_complete_2026-07-28/RSGT_PROJECT_CONTEXT.json",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": " \"handoff_prompt\": \"CODEX_HANDOFF_PROMPT.md\", \"automatic_agent_guidance\": \"AGENTS.md\" }, \"authoritative_files\": [ \"AGENTS.md\", \"TRANSPORT_README.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "shareable-fiberfield-v4/RSGT-0.2.1_complete_2026-07-28/SHA256SUMS.txt",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/shareable-fiberfield-v4/RSGT-0.2.1_complete_2026-07-28/SHA256SUMS.txt",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "443d8c728f7beeb1cca9b843512e8a6f0b2b4525d6422aae8c520b78c8411a7b AGENTS.md 252c9c8c4bd357a8bb423ebb96ec688c5234eea34d39a979f9d6335e0bbb9466 ARBEITSSTAND_RSGT_2026-07-26.md b7eb67903fee28abefca79b7d6cad8dcea8cdb776785b4253d1e6ed743b5bca0 CHATVERLAUF_RSGT.md 8022453fee76ab6eb427e0a6005494d85b3eb7982b25c0e9e62d13fd8181b140 CODEX_HANDOFF_PROMPT.md c94e4e807379e188200c920fe08be66fb006314f04d79cab991c29782f66e2b5 RSGT-0.2_Bericht.md 1b4e188bbbe427eb6d5e5f43477ea222d52aa456986a378a274dac3b617608c8 RSGT_Analyse_v2/RSGT_Evidenzanalyse_v2.ipynb 13363c50797fb8bf80ceeeb26e68bb93a991fce5e1c785259c0daf53b1ffc7b0 RSGT_Analyse_v2/RSGT_Evidenzbericht_v2.html",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "shareable-fiberfield-v4/RSGT-0.2.1_complete_2026-07-28/TRANSPORT_README.md",
+      "url": "https://github.com/Hazy142/resonArch-FiberField/blob/f8ee14d3ca6f9514608b831dfbdda2bfc6a176e8/shareable-fiberfield-v4/RSGT-0.2.1_complete_2026-07-28/TRANSPORT_README.md",
+      "repository": "Hazy142/resonArch-FiberField",
+      "excerpt": "- `PACKAGE_MANIFEST.json` und `SHA256SUMS.txt` zur Integritätsprüfung. - einen rekonstruierten Chatverlauf und maschinenlesbaren Projektzustand; - einen direkt einsetzbaren Startprompt für neue Codex- oder KI-Chats; - `AGENTS.md` mit automatisch auffindbaren, dauerhaften Projektregeln. ## Wichtigster Einstieg ",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "docs/conversations/2026-08-02-gemini-devflow-full-chat.md",
+      "url": "https://github.com/Hazy142/resonArch.devFlow/blob/a4afe07dd64c225680f4eedf4ba31d68f151b909/docs/conversations/2026-08-02-gemini-devflow-full-chat.md",
+      "repository": "Hazy142/resonArch.devFlow",
+      "excerpt": "```text Skills / AGENTS.md → Wie soll gearbeitet werden? MCP → Welche Tools und Daten stehen bereit? ├── .codex/agents/ ├── AGENTS.md └── .geminiignore",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "packages/cli/src/init.test.ts",
+      "url": "https://github.com/Hazy142/resonArch.devFlow/blob/a4afe07dd64c225680f4eedf4ba31d68f151b909/packages/cli/src/init.test.ts",
+      "repository": "Hazy142/resonArch.devFlow",
+      "excerpt": " ); await writeFile(path.join(root, \"AGENTS.md\"), \"# Existing rules\\n\\nKeep this.\\n\"); const agents = await readFile(path.join(root, \"AGENTS.md\"), \"utf8\"); assert.match(agents, /Keep this\\./);",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "packages/cli/src/init.ts",
+      "url": "https://github.com/Hazy142/resonArch.devFlow/blob/a4afe07dd64c225680f4eedf4ba31d68f151b909/packages/cli/src/init.ts",
+      "repository": "Hazy142/resonArch.devFlow",
+      "excerpt": " if (starts.length !== 1 || ends.length !== 1 || ends[0]! < starts[0]!) { throw new Error(\"AGENTS.md template has invalid generated markers.\"); } throw new Error( \"AGENTS.md has invalid Devflow markers; expected no markers or exactly one ordered pair.\", );",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "README.md",
+      "url": "https://github.com/Hazy142/resonArch.devFlow/blob/a4afe07dd64c225680f4eedf4ba31d68f151b909/README.md",
+      "repository": "Hazy142/resonArch.devFlow",
+      "excerpt": " `devflow init` detects common Node, Python, Rust, Go, .NET, and Godot project markers. It creates a thin project-local configuration, installs the reusable Codex agent templates, and merges only the generated Devflow section into an existing `AGENTS.md`. .geminiignore AGENTS.md ```",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": ".jules.PUSH-ANLEITUNG.md",
+      "url": "https://github.com/Hazy142/resonarch.hecht/blob/3e4a367376fbf20548a0cad17d3b5d21a4aaddb9/.jules.PUSH-ANLEITUNG.md",
+      "repository": "Hazy142/resonarch.hecht",
+      "excerpt": "resonarch.hecht/ ├── AGENTS.md ← Repo-Root (Jules liest dies automatisch) └── .jules/ # Dateien aus diesem Paket hierher kopieren (AGENTS.md und .jules/ Ordner) cp /pfad/zu/diesem/paket/AGENTS.md .",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": ".jules/knowledge/knowledge-export-viewer-architecture.md",
+      "url": "https://github.com/Hazy142/resonarch.hecht/blob/3e4a367376fbf20548a0cad17d3b5d21a4aaddb9/.jules/knowledge/knowledge-export-viewer-architecture.md",
+      "repository": "Hazy142/resonarch.hecht",
+      "excerpt": "- Base64 Data URIs verwenden: `<iframe src=\"data:application/pdf;base64,...\">` für In-UI-Vorschau ohne Netzwerkabhängigkeit. - Keine temporären Dateien für Previews auf die Festplatte schreiben. - DIN A4 Hochformat, 15mm Ränder, Kopf- + Fußzeile (siehe AGENTS.md). ## XLSX Preview - SheetJS (`xlsx.js`) verwenden: `XLSX.utils.sheet_to_html(sheet)` um Excel als",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": ".jules/knowledge/knowledge-open-gates-map.md",
+      "url": "https://github.com/Hazy142/resonarch.hecht/blob/3e4a367376fbf20548a0cad17d3b5d21a4aaddb9/.jules/knowledge/knowledge-open-gates-map.md",
+      "repository": "Hazy142/resonarch.hecht",
+      "excerpt": " gegen `legacy-reference/decrypted/tool-XX/`. Alle sichtbaren Werte, Warnungen und Tabellenreihenfolgen müssen übereinstimmen. - **export-qa:** Generiere PDF + DOCX + XLSX für das Tool. Validiere visuell und via `pnpm run test:exports`. Gate gilt nur bei DIN-A4-Konformität nach AGENTS.md-Standard. - **rounding-signoff:** Jede numerische Ausgabezelle in UI UND Export muss den Original-Rundungsregeln entsprechen. Prüfen gegen Golden Cases in `src/features/[tool-id]/*.test.ts`.",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "AGENTS.md",
+      "url": "https://github.com/Hazy142/resonarch.hecht/blob/3e4a367376fbf20548a0cad17d3b5d21a4aaddb9/AGENTS.md",
+      "repository": "Hazy142/resonarch.hecht",
+      "excerpt": "# AGENTS.md — resonarch.hecht Legacy / Migration Oracle ## Repository role This repository is the preserved pre-authority-separated HECHT engineering implementation and an **active migration oracle**. It is no longer the target production authority for new engineering calculation semantics. Production authority boundaries:",
+      "classification": "canonical_instruction_candidate"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "docs/CODEX-SPARK-5.3-E3-NATIVE-MIRROR-ARENA.md",
+      "url": "https://github.com/Hazy142/rsgt-engine/blob/8d5ded446cac1046572c01530d496d2fd401b957/docs/CODEX-SPARK-5.3-E3-NATIVE-MIRROR-ARENA.md",
+      "repository": "Hazy142/rsgt-engine",
+      "excerpt": "Führe am Anfang exakt diese Schritte aus: 1. Lies diese Auftragsdatei vollständig genau einmal. 2. Lies AGENTS.md vollständig genau einmal. 3. Führe git status --short genau einmal aus. Der Baum kann uncommitted oder vollständig untracked sein. Nutze niemals git clean, git reset, checkout oder Restore zum Verwerfen vorhandener Dateien.",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "tests/test_release_plan_tools.py",
+      "url": "https://github.com/Hazy142/rsgt-engine/blob/8d5ded446cac1046572c01530d496d2fd401b957/tests/test_release_plan_tools.py",
+      "repository": "Hazy142/rsgt-engine",
+      "excerpt": " self._run(\"git\", \"init\", cwd=self.source) self._run(\"git\", \"config\", \"user.email\", \"release@test.invalid\", cwd=self.source) self._run(\"git\", \"config\", \"user.name\", \"Release Test\", cwd=self.source) (self.source / \"AGENTS.md\").write_text(\"fixture\\n\", encoding=\"utf-8\", newline=\"\\n\") (self.source / \"CMakeLists.txt\").write_text(\"project(fixture)\\n\", encoding=\"utf-8\", newline=\"\\n\") (self.source / \"include\").mkdir() (self.source / \"include\" / \"rsgt_engine.h\").write_text(\"engine-header\\n\", encoding=\"utf-8\", newline=\"\\n\")",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "tests/test_sdk_release_tools.py",
+      "url": "https://github.com/Hazy142/rsgt-engine/blob/8d5ded446cac1046572c01530d496d2fd401b957/tests/test_sdk_release_tools.py",
+      "repository": "Hazy142/rsgt-engine",
+      "excerpt": " self.assertEqual(run(\"git\", \"config\", \"user.name\", \"SDK Test\", cwd=self.source).returncode, 0) (self.source / \"AGENTS.md\").write_text(\"test\\n\", encoding=\"utf-8\") (self.source / \"CMakeLists.txt\").write_text(\"project(test)\\n\", encoding=\"utf-8\") \"--platform-proof\", str(proof), \"--third-party-notices\", str(self.source / \"AGENTS.md\"), )",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "tools/sdk_release_common.py",
+      "url": "https://github.com/Hazy142/rsgt-engine/blob/8d5ded446cac1046572c01530d496d2fd401b957/tools/sdk_release_common.py",
+      "repository": "Hazy142/rsgt-engine",
+      "excerpt": " SOURCE_FILES = { \".gitignore\", \"AGENTS.md\", \"CMakeLists.txt\", \"README.md\", \"THIRD_PARTY_NOTICES.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "GENESIS-SPARK-HANDOFF.md",
+      "url": "https://github.com/Hazy142/rsgt-genesis/blob/161ae3c2ed47b8eb1104c0836c8f19512503e441/GENESIS-SPARK-HANDOFF.md",
+      "repository": "Hazy142/rsgt-genesis",
+      "excerpt": " 1. `AGENTS.md` lesen. 2. `docs/architecture/GENESIS-V1.md` und 3. `tasks/GENESIS-SPARK-TASKS.yaml` nach Abhängigkeiten bearbeiten. 4. Vor jedem Abschluss die Python-Gates aus `AGENTS.md` ausführen; bei C11-Code zusätzlich die vollständige native Suite.",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "tasks/GENESIS-SPARK-TASKS.yaml",
+      "url": "https://github.com/Hazy142/rsgt-genesis/blob/161ae3c2ed47b8eb1104c0836c8f19512503e441/tasks/GENESIS-SPARK-TASKS.yaml",
+      "repository": "Hazy142/rsgt-genesis",
+      "excerpt": " - tasks/GENESIS-SPARK-TASKS.yaml - AGENTS.md acceptance_commands: - uv.lock - AGENTS.md acceptance_commands:",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "AGENTS.md",
+      "url": "https://github.com/Hazy142/rsgt-solver-sdk/blob/bb086d7105a755bb4eae3c123527221c7b706a13/AGENTS.md",
+      "repository": "Hazy142/rsgt-solver-sdk",
+      "excerpt": "# AGENTS.md — rsgt-solver-sdk ## Mission Maintain portable, versioned, content-addressed contracts and verification tooling for an RSGT solver federation. This repository is a contract SDK, not a numerical solver or an authority over physical state. ## Authority boundary",
+      "classification": "canonical_instruction_candidate"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "scripts/run_local_gate.ps1",
+      "url": "https://github.com/Hazy142/rsgt-solver-sdk/blob/bb086d7105a755bb4eae3c123527221c7b706a13/scripts/run_local_gate.ps1",
+      "repository": "Hazy142/rsgt-solver-sdk",
+      "excerpt": " $requiredFiles = @( 'AGENTS.md', 'CMakeLists.txt', $cmakeText = [System.IO.File]::ReadAllText((Join-Path $gitTop 'CMakeLists.txt')) $agentsText = [System.IO.File]::ReadAllText((Join-Path $gitTop 'AGENTS.md')) $packagerText = [System.IO.File]::ReadAllText((Join-Path $gitTop 'tools\\package_candidate.py'))",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "tests/packaging/test_windows_gate_entrypoint.ps1",
+      "url": "https://github.com/Hazy142/rsgt-solver-sdk/blob/bb086d7105a755bb4eae3c123527221c7b706a13/tests/packaging/test_windows_gate_entrypoint.ps1",
+      "repository": "Hazy142/rsgt-solver-sdk",
+      "excerpt": " $trackedPath = Join-Path $fixtureRepo 'AGENTS.md' $stagedPath = Join-Path $fixtureRepo 'README.md' $dirtyLines = @($dirtyBefore | ForEach-Object { [string]$_ }) if ($dirtyLines -notcontains ' M AGENTS.md' -or $dirtyLines -notcontains 'M README.md' -or",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "tools/neutrality_scan.py",
+      "url": "https://github.com/Hazy142/rsgt-solver-sdk/blob/bb086d7105a755bb4eae3c123527221c7b706a13/tools/neutrality_scan.py",
+      "repository": "Hazy142/rsgt-solver-sdk",
+      "excerpt": " if parts and parts[0] == \"docs\": return True return len(parts) == 1 and relative.name.casefold() in { \"agents.md\", \"contributing.md\", \"license\", \"provenance.md\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "README.md",
+      "url": "https://github.com/Hazy142/rsgt-world-model/blob/57c2aa9da8ecaa99b5595d50adaae81896870bb7/README.md",
+      "repository": "Hazy142/rsgt-world-model",
+      "excerpt": " Für Codex Spark ist der Einstieg vollständig vorgegeben: 1. `AGENTS.md` lesen, 2. `CODEX-SPARK-HANDOFF.md` ausführen, 3. Tasks in `tasks/IMPLEMENTATION-TASKS.yaml` nach Abhängigkeiten abarbeiten, 4. nach jedem Task den dort genannten Akzeptanzbefehl und die globale Quality",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "scripts/validate_project.py",
+      "url": "https://github.com/Hazy142/rsgt-world-model/blob/57c2aa9da8ecaa99b5595d50adaae81896870bb7/scripts/validate_project.py",
+      "repository": "Hazy142/rsgt-world-model",
+      "excerpt": " \"KTS-33 Coupling Lattice.md\", } BASE_REQUIRED_FILES = ( \"AGENTS.md\", \"CODEX-SPARK-HANDOFF.md\", \"ROADMAP.md\", \"pyproject.toml\",",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "SYSTEM_PROMPT",
+      "path": "src/sentinel/llm/prompts.py",
+      "url": "https://github.com/Hazy142/sentinel-agent/blob/a5d1bdb6a961471ebe96b8fe69a736c2303254d5/src/sentinel/llm/prompts.py",
+      "repository": "Hazy142/sentinel-agent",
+      "excerpt": " from __future__ import annotations SENTINEL_SYSTEM_PROMPT = \"\"\"\\ You are the Sentinel Agent for Nether Bridge — an AI-native knowledge infrastructure and retrieval engine (NBRE). You have deep knowledge of the NBRE architecture: ",
+      "classification": "runtime_prompt_candidate"
+    },
+    {
+      "discovery_query": "SYSTEM_PROMPT",
+      "path": "src/sentinel/llm/vertex.py",
+      "url": "https://github.com/Hazy142/sentinel-agent/blob/a5d1bdb6a961471ebe96b8fe69a736c2303254d5/src/sentinel/llm/vertex.py",
+      "repository": "Hazy142/sentinel-agent",
+      "excerpt": "from sentinel.config import VertexAIConfig from sentinel.llm.prompts import SENTINEL_SYSTEM_PROMPT from sentinel.llm.tools import get_tool_declarations model_name=self._config.model, system_instruction=SENTINEL_SYSTEM_PROMPT, tools=tools,",
+      "classification": "runtime_prompt_candidate"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": ".claude/skills/coding-workflow/SKILL.md",
+      "url": "https://github.com/Hazy142/synology-desktop-client/blob/8db8c4d8fb85337676d8abb4c694dd8d39ee4919/.claude/skills/coding-workflow/SKILL.md",
+      "repository": "Hazy142/synology-desktop-client",
+      "excerpt": "## Code Quality - Run tests before pushing. Fix failures before opening a PR. - Add tests for new functionality and bug fixes. If the repo has a test suite, follow its patterns. - Run the project's linter and fix any issues. Check CLAUDE.md/AGENTS.md for specific lint/test commands. - Do not leave debugging code, commented-out blocks, or TODOs. - Follow the repo's existing patterns for code style, naming conventions, and file organization.",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": ".claude/skills/INSTRUCTIONS.md",
+      "url": "https://github.com/Hazy142/synology-desktop-client/blob/8db8c4d8fb85337676d8abb4c694dd8d39ee4919/.claude/skills/INSTRUCTIONS.md",
+      "repository": "Hazy142/synology-desktop-client",
+      "excerpt": "After cloning any repository, immediately check for and read these files at the repo root: - `CLAUDE.md` — Claude Code instructions and project conventions - `AGENTS.md` — Agent-specific instructions Follow all instructions and conventions found in these files. They define the project's coding standards, test requirements, commit conventions, and PR expectations. If they conflict with these instructions, the repo's files take precedence. ",
+      "classification": "reference_or_derivative"
+    },
+    {
+      "discovery_query": "AGENTS.md",
+      "path": "CLAUDE.md",
+      "url": "https://github.com/Hazy142/synology-desktop-client/blob/8db8c4d8fb85337676d8abb4c694dd8d39ee4919/CLAUDE.md",
+      "repository": "Hazy142/synology-desktop-client",
+      "excerpt": "After cloning any repository, immediately check for and read these files at the repo root: - `CLAUDE.md` — Claude Code instructions and project conventions - `AGENTS.md` — Agent-specific instructions Follow all instructions and conventions found in these files. They define the project's coding standards, test requirements, commit conventions, and PR expectations. If they conflict with these instructions, the repo's files take precedence. ",
+      "classification": "canonical_instruction_candidate"
+    },
+    {
+      "discovery_query": "systemPrompt",
+      "path": "src/services/PerplexityClient.ts",
+      "url": "https://github.com/Hazy142/VSCode_Extension-integrated-Perplexity-Agent/blob/83c490b64a0911d3843be14d2989b876363dc300/src/services/PerplexityClient.ts",
+      "repository": "Hazy142/VSCode_Extension-integrated-Perplexity-Agent",
+      "excerpt": " try { const systemPrompt = await this.generateToolPrompt(); const messages: ChatCompletionMessageParam[] = [ { role: 'system', content: systemPrompt }, { role: 'user', content: query }, ]; ",
+      "classification": "runtime_prompt_candidate"
+    }
+  ]
+}

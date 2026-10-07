@@ -13,14 +13,14 @@
     "additionalProperties": true
   },
   "capabilities": [
-    "code:read"
+    "code:write"
   ],
   "authority_scope": [
     "workspace"
   ],
-  "risk_class": "R0",
-  "side_effect": "none",
-  "idempotency": "pure",
+  "risk_class": "R1",
+  "side_effect": "local",
+  "idempotency": "conditional",
   "network": "forbidden",
   "receipt": "required",
   "default_timeout_ms": 30000,

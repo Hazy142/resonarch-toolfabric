@@ -83,42 +83,77 @@ export interface ReadPlaneOptions {
 const IMPLEMENTED = new Set([
   "registry.list",
   "registry.describe",
+  "capability.snapshot",
+  "capability.resolve",
+  "provider.list",
+  "provider.health",
+  "model.catalog",
+  "model.route",
   "instructions.discover",
   "instructions.resolve",
-  "context.pack",
-  "memory.get",
-  "memory.search_exact",
-  "network.authorize",
-  "web.fetch",
-  "web.search",
-  "source.compare",
-  "research.bundle",
-  "claim.classify",
   "policy.compile",
-  "secret.scan",
-  "license.inspect",
-  "vulnerability.search",
-  "sandbox.boundary",
-  "receipt.verify",
-  "report.render",
-  "provider.health",
+  "context.capture",
+  "context.canonicalize",
+  "context.budget",
+  "context.pack",
+  "context.diff",
+  "fs.list",
+  "fs.stat",
+  "fs.read",
+  "fs.read_many",
+  "fs.search",
+  "process.output",
+  "process.list",
+  "env.snapshot",
+  "command.which",
+  "port.probe",
+  "git.status",
+  "git.diff",
+  "git.log",
+  "forge.repo",
+  "ci.status",
+  "ci.logs",
   "code.symbols",
+  "code.search",
+  "code.references",
   "code.dependencies",
   "code.ast_query",
   "code.diagnostics",
-  "code.references",
-  "code.search",
   "test.discover",
-  "fs.read",
-  "fs.read_many",
-  "fs.list",
-  "fs.stat",
-  "fs.search",
-  "git.status",
-  "git.log",
-  "git.diff",
-  "env.snapshot",
-  "command.which",
+  "gate.evaluate",
+  "web.search",
+  "web.fetch",
+  "docs.resolve",
+  "package.resolve",
+  "license.inspect",
+  "vulnerability.search",
+  "source.compare",
+  "research.bundle",
+  "task.decompose",
+  "task.graph",
+  "task.status",
+  "task.handoff",
+  "escalation.route",
+  "memory.get",
+  "memory.search_exact",
+  "memory.search_semantic",
+  "policy.check",
+  "capability.request",
+  "approval.request",
+  "secret.scan",
+  "network.authorize",
+  "action.classify",
+  "sandbox.boundary",
+  "hash.compute",
+  "manifest.create",
+  "receipt.verify",
+  "attestation.verify",
+  "claim.classify",
+  "json.validate",
+  "schema.validate",
+  "structured.diff",
+  "artifact.fetch",
+  "report.render"
 ]);
 
 function deadlineBudget(deadline: string, defaultMs: number): number {
@@ -238,7 +273,7 @@ export class ReadPlaneRuntime {
       if (!descriptor) throw new RuntimeExecutionError("TOOL_NOT_FOUND", `unknown tool: ${call.tool?.id ?? ""}`, "denied");
       if (call.tool.version !== descriptor.version) throw new RuntimeExecutionError("TOOL_VERSION_MISMATCH", "tool version does not match registry", "denied");
       const timeoutMs = deadlineBudget(call.deadline, descriptor.default_timeout_ms);
-      if (descriptor.side_effect !== "none" && descriptor.side_effect !== "projection") {
+      if (descriptor.side_effect !== "none") {
         throw new RuntimeExecutionError("P1_WRITE_FORBIDDEN", `${descriptor.id} is not permitted by the P1 read plane`, "denied");
       }
       if (!IMPLEMENTED.has(descriptor.id)) {
@@ -400,7 +435,7 @@ export class ReadPlaneRuntime {
           output = await commandWhich(call.arguments);
           break;
         default:
-          throw new RuntimeExecutionError("P1_TOOL_NOT_IMPLEMENTED", `${descriptor.id} is not implemented`);
+          throw new RuntimeExecutionError("UNSUPPORTED", `${descriptor.id} is declared but its executor is unsupported or incomplete in this environment`);
       }
 
       const canonicalBytes = new TextEncoder().encode(canonicalJson(output));

@@ -89,40 +89,11 @@ export function reportRender(input: Record<string, unknown>): Record<string, unk
 }
 
 export function providerHealth(input: Record<string, unknown>, networkBroker: NetworkReadBroker): Record<string, unknown> {
-  return {
-    status: "healthy",
-    providers: [
-      { id: "local_fs", status: "healthy", type: "filesystem" },
-      { id: "local_git", status: "healthy", type: "repository" },
-      { id: "memory_exact", status: "healthy", type: "retrieval" },
-      { id: "network_broker", status: networkBroker.hasPolicy ? "active" : "disabled", type: "network" },
-    ],
-    timestamp: new Date().toISOString(),
-  };
+  throw new RuntimeExecutionError("UNSUPPORTED", "provider.health cannot accurately measure health without synthetic claims");
 }
 
 export function webSearch(input: Record<string, unknown>, networkBroker: NetworkReadBroker): Record<string, unknown> {
-  if (typeof input.query !== "string" || input.query.trim().length === 0) {
-    throw new RuntimeExecutionError("INVALID_ARGUMENT", "web.search requires a non-empty query string", "denied");
-  }
-  const query = input.query.trim();
-  const maxResults = typeof input.max_results === "number" && Number.isInteger(input.max_results)
-    ? Math.max(1, Math.min(50, input.max_results))
-    : 10;
-
-  return {
-    query,
-    max_results: maxResults,
-    hits: [
-      {
-        title: `Search result for: ${query}`,
-        url: `https://example.com/search?q=${encodeURIComponent(query)}`,
-        snippet: `Structured search summary for "${query}" within host authorization boundary.`,
-      },
-    ],
-    total_hits: 1,
-    searched_at: new Date().toISOString(),
-  };
+  throw new RuntimeExecutionError("UNSUPPORTED", "web.search lacks a concrete search provider in this environment");
 }
 
 export function sourceCompare(input: Record<string, unknown>): Record<string, unknown> {
@@ -283,36 +254,11 @@ export async function vulnerabilitySearch(
   boundary: WorkspaceBoundary,
   input: Record<string, unknown>,
 ): Promise<Record<string, unknown>> {
-  const root = await boundary.resolveExisting(pathArgument(input));
-  let checkedCount = 0;
-  const vulnerabilities: Array<{ package: string; severity: string; advisory: string }> = [];
-
-  const packageJsonPath = join(root, "package.json");
-  try {
-    const info = await stat(packageJsonPath);
-    if (info.isFile()) {
-      const content = JSON.parse(await readFile(packageJsonPath, "utf8")) as Record<string, unknown>;
-      const deps = { ...(content.dependencies as Record<string, string> ?? {}), ...(content.devDependencies as Record<string, string> ?? {}) };
-      checkedCount = Object.keys(deps).length;
-    }
-  } catch {}
-
-  return {
-    path: boundary.relative(root),
-    checked_dependencies_count: checkedCount,
-    vulnerabilities,
-    has_vulnerabilities: vulnerabilities.length > 0,
-  };
+  throw new RuntimeExecutionError("UNSUPPORTED", "vulnerability.search requires an advisory source which is unavailable");
 }
 
 export function sandboxBoundary(boundary: WorkspaceBoundary): Record<string, unknown> {
-  return {
-    workspace_root: boundary.root,
-    isolated: true,
-    network_restricted: true,
-    write_plane_active: false,
-    max_files: 5000,
-  };
+  throw new RuntimeExecutionError("UNSUPPORTED", "sandbox.boundary cannot guarantee isolation dynamically");
 }
 
 export function receiptVerify(input: Record<string, unknown>): Record<string, unknown> {
