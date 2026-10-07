@@ -1,1 +1,0 @@
-{"call":{"arguments":"{\"shell\":\"powershell\",\"cmd\":\"git status\"}","call_id":"valid_call","name":"exec_command","type":"function_call"},"output":{"call_id":"valid_call","output":"ok","type":"function_call_output"}}

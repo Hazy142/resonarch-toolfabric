@@ -1,1 +1,0 @@
-{"call":{"arguments":"{\"shell\":\"powershell\",\"cmd\":\"cd \"D:/repo\"; git status\"}","call_id":"broken_call","name":"exec_command","type":"function_call"},"output":{"call_id":"broken_call","output":"historical result","type":"function_call_output"}}

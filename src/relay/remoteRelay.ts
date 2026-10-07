@@ -340,11 +340,15 @@ export class RemoteRelayClient{
         if(!envelope.ok)fail("REMOTE_ERROR");
         entry.resolve(cloneBounded(envelope.payload,this.config.max_payload_bytes!));
         this.remove(entry);
+        this.pump();
       }catch(error){
         this.finish(entry,error instanceof RemoteRelayError?error:new RemoteRelayError("INVALID_ENVELOPE"));
       }
-    },()=>{
-      if(this.pending.get(entry.envelope.request_id)===entry)this.finish(entry,new RemoteRelayError("RELAY_OFFLINE"));
+    },(error)=>{
+      if(this.pending.get(entry.envelope.request_id)===entry){
+        const relayErr=error instanceof RemoteRelayError?error:new RemoteRelayError("RELAY_OFFLINE");
+        this.finish(entry,relayErr);
+      }
     });
   }
 
@@ -385,7 +389,7 @@ export class RemoteRelayClient{
   }
 }
 
-export type RemoteRelayHandler=(payload:unknown)=>unknown|Promise<unknown>;
+export type RemoteRelayHandler=(payload:unknown,signal?:AbortSignal)=>unknown|Promise<unknown>;
 
 export class InMemoryRemoteRelayReference implements RemoteRelayTransport{
   private session: string|undefined;
@@ -409,17 +413,33 @@ export class InMemoryRemoteRelayReference implements RemoteRelayTransport{
     if(this.active>=this.maxInFlight)fail("IN_FLIGHT_LIMIT");
     this.active+=1;
     try{
-      const payload=await this.handler(cloneBounded(request.payload,MAX_PAYLOAD_BYTES));
-      if(signal.aborted)fail("CANCELLED");
-      return {
-        schema:REMOTE_RELAY_RESPONSE_SCHEMA,
-        kind:"response",
-        route_id:request.route_id,
-        session_id:request.session_id,
-        request_id:request.request_id,
-        ok:true,
-        payload:cloneBounded(payload,MAX_PAYLOAD_BYTES),
-      };
+      const handlerPromise=Promise.resolve().then(()=>this.handler(cloneBounded(request.payload,MAX_PAYLOAD_BYTES),signal));
+      let abortListener:(()=>void)|undefined;
+      const abortPromise=new Promise<never>((_,reject)=>{
+        if(signal.aborted){
+          reject(new RemoteRelayError("CANCELLED"));
+          return;
+        }
+        abortListener=()=>reject(new RemoteRelayError("CANCELLED"));
+        signal.addEventListener("abort",abortListener,{once:true});
+      });
+      try{
+        const payload=await Promise.race([handlerPromise,abortPromise]);
+        if(signal.aborted)fail("CANCELLED");
+        return {
+          schema:REMOTE_RELAY_RESPONSE_SCHEMA,
+          kind:"response",
+          route_id:request.route_id,
+          session_id:request.session_id,
+          request_id:request.request_id,
+          ok:true,
+          payload:cloneBounded(payload,MAX_PAYLOAD_BYTES),
+        };
+      }finally{
+        if(abortListener){
+          signal.removeEventListener("abort",abortListener);
+        }
+      }
     }finally{
       this.active-=1;
     }
@@ -434,6 +454,10 @@ export class InMemoryRemoteRelayReference implements RemoteRelayTransport{
 
   lifecycle(event:RemoteRelayLifecycle):void{
     assertRemoteRelayEnvelope(event);
+    if(this.lifecycleEvents.length>=256){
+      this.lifecycleEvents.shift();
+    }
     this.lifecycleEvents.push(event);
   }
 }
+

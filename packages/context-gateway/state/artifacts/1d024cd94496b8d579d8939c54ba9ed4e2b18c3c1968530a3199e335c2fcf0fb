@@ -1,1 +1,0 @@
-{"call":{"arguments":"{}","call_id":"call_1","name":"safe_tool","type":"function_call"},"output":{"call_id":"call_1","output":"TOOL_RESULT_MUST_SURVIVE","type":"function_call_output"}}

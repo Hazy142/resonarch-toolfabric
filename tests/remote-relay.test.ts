@@ -37,6 +37,8 @@ function deferred<T>():{promise:Promise<T>;resolve(value:T):void;reject(error:un
 class DeferredTransport implements RemoteRelayTransport{
   readonly requests:RemoteRelayRequest[]=[];
   readonly responses:Array<ReturnType<typeof deferred<unknown>>>=[];
+  readonly lifecycleEvents:import("../src/relay/remoteRelay.js").RemoteRelayLifecycle[]=[];
+
   async connect():Promise<void>{}
   async send(request:RemoteRelayRequest):Promise<unknown>{
     this.requests.push(request);
@@ -45,6 +47,9 @@ class DeferredTransport implements RemoteRelayTransport{
     return result.promise;
   }
   disconnect():void{}
+  lifecycle(event:import("../src/relay/remoteRelay.js").RemoteRelayLifecycle):void{
+    this.lifecycleEvents.push(event);
+  }
 }
 
 function response(request:RemoteRelayRequest,payload:unknown,patch:Partial<RemoteRelayResponse>={}):RemoteRelayResponse{
@@ -80,7 +85,7 @@ test("endpoint and credential configuration fail closed",async()=>{
   }
   assert.throws(()=>validateRemoteRelayConfig({...config,token:"plaintext"} as RemoteRelayConfig),{code:"INVALID_CONFIG"});
   assert.throws(()=>validateRemoteRelayConfig({...config,endpoint:"http://127.0.0.1"}),{code:"INVALID_CONFIG"});
-  assert.equal(validateRemoteRelayConfig({...config,endpoint:"ws://127.0.0.1:8080",allow_loopback:true}).endpoint,"ws://127.0.0.1:8080/");
+  assert.equal(validateRemoteRelayConfig({...config,endpoint:"ws://127.0.0.1:8080",allow_loopback:true}).endpoint,"ws://127.0.0.1:8080");
   const invalidCredential=client(new InMemoryRemoteRelayReference(),{},()=>"bad\ncredential");
   await assert.rejects(invalidCredential.connect(),{code:"INVALID_CREDENTIAL"});
 });
@@ -127,7 +132,7 @@ test("in-memory reference echoes bounded payloads with bound route, session, and
   const relay=client(transport);
   await relay.connect();
   const session=relay.sessionId;
-  assert.equal(await relay.request("round-trip",{text:"hello"}),JSON.stringify({echo:{text:"hello"}}));
+  assert.deepEqual(await relay.request("round-trip",{text:"hello"}),{echo:{text:"hello"}});
   assert.equal(relay.sessionId,session);
   assert.deepEqual(transport.lifecycleEvents.map(event=>event.state),["connected"]);
   await relay.disconnect();
@@ -169,11 +174,11 @@ test("in-flight and queued work remain bounded and queued requests dispatch in o
   assert.equal(relay.queuedCount,1);
   await assert.rejects(relay.request("third",{}),{code:"QUEUE_FULL"});
   transport.responses[0]!.resolve(response(transport.requests[0]!,{n:1}));
-  assert.equal(await first,JSON.stringify({n:1}));
+  assert.deepEqual(await first,{n:1});
   await new Promise(resolve=>setImmediate(resolve));
   assert.deepEqual(transport.requests.map(request=>request.request_id),["first","second"]);
   transport.responses[1]!.resolve(response(transport.requests[1]!,{n:2}));
-  assert.equal(await second,JSON.stringify({n:2}));
+  assert.deepEqual(await second,{n:2});
   assert.equal(relay.inFlightCount,0);
   assert.equal(relay.queuedCount,0);
   await relay.disconnect();
@@ -189,10 +194,10 @@ test("cancellation and timeout clean pending state and reject late completion",a
   assert.equal(relay.inFlightCount,0);
   transport.responses[0]!.resolve(response(transport.requests[0]!,{late:true}));
 
-  const timedOut=relay.request("time-out",{ },5);
+  const timedOut=relay.request("time-out",{},5);
   await assert.rejects(timedOut,{code:"TIMEOUT"});
   assert.equal(relay.inFlightCount,0);
-  assert.deepEqual(transport.lifecycleEvents?.map(event=>event.state),undefined);
+  assert.deepEqual(transport.lifecycleEvents.map(event=>event.state),["connected","cancelled","timed_out"]);
   assert.equal(relay.cancel("time-out"),false);
   await relay.disconnect();
 });
@@ -211,7 +216,7 @@ test("disconnect/reconnect uses a new session and never replays old requests",as
   assert.equal(transport.requests.length,2);
   transport.responses[0]!.resolve(response(transport.requests[0]!,{stale:true}));
   transport.responses[1]!.resolve(response(transport.requests[1]!,{current:true}));
-  assert.equal(await current,JSON.stringify({current:true}));
+  assert.deepEqual(await current,{current:true});
   assert.deepEqual(transport.requests.map(request=>request.request_id),["old-request","new-request"]);
   await relay.disconnect();
 });
@@ -226,6 +231,33 @@ test("reference counterpart enforces its in-flight ceiling",async()=>{
   const second=relay.request("bounded-2",{});
   await assert.rejects(second,{code:"IN_FLIGHT_LIMIT"});
   blocked.resolve({done:true});
-  assert.equal(await first,JSON.stringify({done:true}));
+  assert.deepEqual(await first,{done:true});
   await relay.disconnect();
 });
+
+test("successful completion pumps queued requests immediately without stalling",async()=>{
+  const transport=new DeferredTransport();
+  const relay=client(transport,{max_in_flight:1,max_queue:1});
+  await relay.connect();
+  const req1=relay.request("req-1",{a:1});
+  const req2=relay.request("req-2",{a:2});
+  assert.equal(relay.inFlightCount,1);
+  assert.equal(relay.queuedCount,1);
+  assert.equal(transport.requests.length,1);
+  assert.equal(transport.requests[0]!.request_id,"req-1");
+
+  transport.responses[0]!.resolve(response(transport.requests[0]!,{result:1}));
+  assert.deepEqual(await req1,{result:1});
+
+  assert.equal(transport.requests.length,2);
+  assert.equal(transport.requests[1]!.request_id,"req-2");
+  assert.equal(relay.inFlightCount,1);
+  assert.equal(relay.queuedCount,0);
+
+  transport.responses[1]!.resolve(response(transport.requests[1]!,{result:2}));
+  assert.deepEqual(await req2,{result:2});
+  assert.equal(relay.inFlightCount,0);
+  assert.equal(relay.queuedCount,0);
+  await relay.disconnect();
+});
+

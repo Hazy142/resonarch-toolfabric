@@ -11,12 +11,12 @@ authority boundaries, risk classes, receipts, and verification gates.
 ## Status
 
 **Early implementation / contracts + execution preview.** The architecture defines 112 backend
-primitives and 20 standard user tools. P1A–P1D now provide real read-only execution for
+primitives and 20 standard user tools. P1A–P1E now provide real read-only execution for
 filesystem, Git, environment, registry, instruction resolution, TypeScript/JavaScript symbol
 inspection, dependency/test discovery, deterministic context packing, immutable exact/lexical
-memory retrieval, and explicitly authorized content-addressed HTTPS fetches. The full
-`P1_READ_PLANE_PASS` gate is not yet claimed, and production readiness remains gated by the
-normative conformance plan.
+memory retrieval, explicitly authorized content-addressed HTTPS fetches, and an opt-in
+contract-bounded remote relay transport client. The full `P1_READ_PLANE_PASS` gate is not yet
+claimed, and production readiness remains gated by the normative conformance plan.
 
 ## Core ideas
 
@@ -27,6 +27,15 @@ normative conformance plan.
 - uncertain is a first-class state when a side effect cannot be reconstructed;
 - provider adapters project one canonical contract into MCP, OpenAI-compatible, Anthropic, Gemini, CLI, or local runtimes;
 - completion claims require evidence on the exact revision being claimed.
+
+## Remote Relay Architecture
+
+ToolFabric includes an opt-in execution transport client (`RemoteRelayClient`) and in-memory reference counterpart (`InMemoryRemoteRelayReference`) under `src/relay/remoteRelay.ts`.
+
+- **Contract-Bounded**: Enforces typed versioned envelope schemas (`request/v1`, `response/v1`, `lifecycle/v1`).
+- **Opt-In Security**: Disabled by default (`enabled: false`) with no default hosted endpoint or secret defaults. Loopback transports require explicit opt-in.
+- **Flow Control & Bounds**: Strict payload bounds (max 1 MB), in-flight ceilings, request queues with backpressure, and session-isolated request tracking.
+- **Reference & Documentation**: See [docs/architecture/15-p1-remote-relay.md](docs/architecture/15-p1-remote-relay.md) for full protocol specification and custom counterpart implementation guidelines.
 
 ## Development
 
