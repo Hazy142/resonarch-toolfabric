@@ -3,7 +3,7 @@ import path from "node:path";
 const source=JSON.parse(fs.readFileSync("contracts/tools/registry.source.json","utf8"));
 const risks=new Set(["forge.merge"]);
 const networkReads=new Set(["web.search","web.fetch","docs.resolve","package.resolve","vulnerability.search"]);
-const networkContractV2=new Set([...networkReads,"network.authorize","code.edit","code.format","report.render","fs.write","fs.patch","fs.move"]);
+const networkContractV2=new Set([...networkReads,"network.authorize","code.edit","code.format","report.render","fs.write","fs.patch","fs.move","git.branch","git.worktree","git.commit"]);
 const r2=new Set(["forge.issue","forge.pr","forge.review","ci.rerun",...networkReads,"attestation.sign"]);
 const mutatingPrefixes=["fs.write","fs.patch","fs.move","process.start","process.input","process.stop","git.branch","git.worktree","git.commit","git.rebase","git.merge","test.run","test.target","test.coverage","lint.run","typecheck.run","build.run","task.claim","task.dispatch","review.dispatch","session.state","ledger.append","memory.put","history.compact","checkpoint.resume","secret.redact","receipt.create","benchmark.record","archive.pack","archive.unpack","artifact.store","code.edit","code.format","report.render"];
 function risk(id){if(risks.has(id))return "R3";if(r2.has(id))return "R2";if(mutatingPrefixes.some(x=>id.startsWith(x)))return "R1";return "R0";}
@@ -11,6 +11,9 @@ function effect(id,r){if(networkReads.has(id)||id==="network.authorize")return "
 function capabilities(id,r){
  if(networkReads.has(id))return ["network:web_read"];
  if(id==="network.authorize")return ["network:authorize"];
+ if(id==="git.branch")return ["git:branch"];
+ if(id==="git.worktree")return ["git:worktree"];
+ if(id==="git.commit")return ["git:commit"];
  return [id.split(".")[0]+(r==="R0"?":read":":write")];
 }
 function idempotency(id,r){
@@ -21,6 +24,9 @@ function inputSchema(id){
  if(id==="fs.write")return {type:"object",additionalProperties:false,required:["path","content"],properties:{path:{type:"string",minLength:1},content:{type:"string"}}};
  if(id==="fs.patch")return {type:"object",additionalProperties:false,required:["path","old_text","new_text"],properties:{path:{type:"string",minLength:1},old_text:{type:"string",minLength:1},new_text:{type:"string"},expected_replacements:{type:"integer",minimum:1,maximum:1000}}};
  if(id==="fs.move")return {type:"object",additionalProperties:false,required:["source","destination"],properties:{source:{type:"string",minLength:1},destination:{type:"string",minLength:1}}};
+ if(id==="git.branch")return {type:"object",additionalProperties:false,required:["name"],properties:{repo_path:{type:"string",minLength:1},name:{type:"string",minLength:1,maxLength:128}}};
+ if(id==="git.worktree")return {type:"object",additionalProperties:false,required:["branch","path"],properties:{repo_path:{type:"string",minLength:1},branch:{type:"string",minLength:1,maxLength:128},path:{type:"string",minLength:1}}};
+ if(id==="git.commit")return {type:"object",additionalProperties:false,required:["message","paths"],properties:{repo_path:{type:"string",minLength:1},message:{type:"string",minLength:1,maxLength:8192},paths:{type:"array",minItems:1,maxItems:256,items:{type:"string",minLength:1}}}};
  return {type:"object",additionalProperties:true};
 }
 const descriptors=[];

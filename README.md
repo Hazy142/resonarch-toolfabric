@@ -16,8 +16,10 @@ filesystem, Git, environment, registry, instruction resolution, TypeScript/JavaS
 inspection, dependency/test discovery, deterministic context packing, immutable exact/lexical
 memory retrieval, and explicitly authorized content-addressed HTTPS fetches. P1E adds the
 remote-relay contract/client foundation and deterministic in-memory reference counterpart;
-real network transports remain a subsequent slice. The full `P1_READ_PLANE_PASS` gate is not yet
-claimed, and production readiness remains gated by the normative conformance plan.
+real network transports remain a subsequent slice. `P1_READ_BOUNDARY_PASS` is claimed, while the
+full `P1_READ_PLANE_PASS` remains open. P2A implements the bounded filesystem-mutation kernel and
+P2B implements local Git branch/worktree/commit isolation; neither slice claims
+`P2_LOCAL_ACTION_PASS`. Production readiness remains gated by the normative conformance plan.
 
 ## Core ideas
 

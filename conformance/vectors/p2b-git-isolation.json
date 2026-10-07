@@ -1,0 +1,44 @@
+{
+  "schema": "resonarch.toolfabric.conformance-vector/v1",
+  "id": "p2b-git-isolation",
+  "implemented_tools": [
+    "git.branch",
+    "git.worktree",
+    "git.commit"
+  ],
+  "required_behaviors": [
+    "git.branch git.worktree and git.commit require distinct host-owned capabilities",
+    "host-approved approval_ref is required by default before intent",
+    "git.branch binds current repository HEAD and branch absence",
+    "git.worktree binds branch revision and target absence",
+    "git.commit binds expected HEAD and an observed selected-path snapshot",
+    "git.commit is restricted to an isolated linked worktree",
+    "repository worktree paths and Git metadata remain inside the canonical workspace boundary",
+    "linked worktrees are isolated outside the source worktree",
+    "hooks system/global config recursive submodules and inherited GIT environment overrides are disabled or bounded",
+    "configured clean smudge or process filters fail closed before checkout or add",
+    "per-surface leases and fencing tokens are revalidated before mutation",
+    "intent receipt is emitted before the first repository side effect",
+    "git.commit commits only declared paths through a temporary index and compare-and-swap ref update while preserving unrelated staged state",
+    "host-owned Git identity is required for commit creation",
+    "deadlines bound every Git subprocess and cancel before unstarted mutations",
+    "ambiguous outcomes are reconciled to succeeded failed or uncertain without blind retry",
+    "completion receipts chain to the exact intent receipt",
+    "branch worktree commit fixture produces one verifiable task receipt chain"
+  ],
+  "claims": [
+    "P2B_GIT_ISOLATION_SLICE"
+  ],
+  "non_claims": [
+    "P2_LOCAL_ACTION_PASS",
+    "P2_WRITE_PLANE_PASS",
+    "P1_READ_PLANE_PASS",
+    "git.rebase",
+    "git.merge",
+    "remote Git operations",
+    "process lifecycle execution",
+    "crash-durable receipt ledger",
+    "exactly-once repository mutation semantics",
+    "production readiness"
+  ]
+}

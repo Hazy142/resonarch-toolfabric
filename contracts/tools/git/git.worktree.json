@@ -1,19 +1,38 @@
 {
   "schema": "resonarch.toolfabric.tool/v1",
   "id": "git.worktree",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "title": "git.worktree",
   "summary": "Canonical ToolFabric primitive: git.worktree.",
   "input_schema": {
     "type": "object",
-    "additionalProperties": true
+    "additionalProperties": false,
+    "required": [
+      "branch",
+      "path"
+    ],
+    "properties": {
+      "repo_path": {
+        "type": "string",
+        "minLength": 1
+      },
+      "branch": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      },
+      "path": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
   },
   "output_schema": {
     "type": "object",
     "additionalProperties": true
   },
   "capabilities": [
-    "git:write"
+    "git:worktree"
   ],
   "authority_scope": [
     "workspace"
