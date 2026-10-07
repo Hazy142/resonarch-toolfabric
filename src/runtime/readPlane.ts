@@ -21,22 +21,15 @@ import {
   type NetworkReadTransport,
 } from "./networkRead.js";
 import {
-  claimClassify,
   codeAstQuery,
   codeDiagnostics,
   codeReferences,
   codeSearch,
   licenseInspect,
   policyCompile,
-  providerHealth,
   receiptVerify,
-  reportRender,
   researchBundle,
-  sandboxBoundary,
   secretScan,
-  sourceCompare,
-  vulnerabilitySearch,
-  webSearch,
 } from "./readExtensions.js";
 import {isWithinPath, WorkspaceBoundary} from "./workspace.js";
 
@@ -79,75 +72,6 @@ export interface ReadPlaneOptions {
   networkReadPolicy?: NetworkReadPolicy;
   networkTransport?: NetworkReadTransport;
 }
-
-const IMPLEMENTED = new Set([
-  "registry.list",
-  "registry.describe",
-  "capability.snapshot",
-  "capability.resolve",
-  "provider.list",
-  "model.catalog",
-  "model.route",
-  "instructions.discover",
-  "instructions.resolve",
-  "policy.compile",
-  "context.capture",
-  "context.canonicalize",
-  "context.budget",
-  "context.pack",
-  "context.diff",
-  "fs.list",
-  "fs.stat",
-  "fs.read",
-  "fs.read_many",
-  "fs.search",
-  "process.output",
-  "process.list",
-  "env.snapshot",
-  "command.which",
-  "port.probe",
-  "git.status",
-  "git.diff",
-  "git.log",
-  "forge.repo",
-  "ci.status",
-  "ci.logs",
-  "code.symbols",
-  "code.search",
-  "code.references",
-  "code.dependencies",
-  "code.ast_query",
-  "code.diagnostics",
-  "test.discover",
-  "gate.evaluate",
-  "web.fetch",
-  "docs.resolve",
-  "package.resolve",
-  "license.inspect",
-  "research.bundle",
-  "task.decompose",
-  "task.graph",
-  "task.status",
-  "task.handoff",
-  "escalation.route",
-  "memory.get",
-  "memory.search_exact",
-  "memory.search_semantic",
-  "policy.check",
-  "capability.request",
-  "approval.request",
-  "secret.scan",
-  "network.authorize",
-  "action.classify",
-  "hash.compute",
-  "manifest.create",
-  "receipt.verify",
-  "attestation.verify",
-  "json.validate",
-  "schema.validate",
-  "structured.diff",
-  "artifact.fetch"
-]);
 
 function deadlineBudget(deadline: string, defaultMs: number): number {
   const parsed = Date.parse(deadline);
@@ -269,9 +193,6 @@ export class ReadPlaneRuntime {
       if (descriptor.side_effect !== "none") {
         throw new RuntimeExecutionError("P1_WRITE_FORBIDDEN", `${descriptor.id} is not permitted by the P1 read plane`, "denied");
       }
-      if (!IMPLEMENTED.has(descriptor.id)) {
-        throw new RuntimeExecutionError("P1_TOOL_NOT_IMPLEMENTED", `${descriptor.id} is not implemented in this P1 slice`);
-      }
 
       const boundary = await WorkspaceBoundary.create(call.scope.workspace_root);
       await assertArtifactStoreOutsideWorkspace(boundary.root, this.artifactStore.root);
@@ -334,23 +255,8 @@ export class ReadPlaneRuntime {
           output = inlineText === null ? {source} : {source, text: inlineText};
           break;
         }
-        case "report.render":
-          output = reportRender(call.arguments);
-          break;
-        case "provider.health":
-          output = providerHealth(call.arguments, this.network);
-          break;
-        case "web.search":
-          output = webSearch(call.arguments, this.network);
-          break;
-        case "source.compare":
-          output = sourceCompare(call.arguments);
-          break;
         case "research.bundle":
           output = researchBundle(call.arguments);
-          break;
-        case "claim.classify":
-          output = claimClassify(call.arguments);
           break;
         case "policy.compile":
           output = policyCompile(call.arguments);
@@ -360,12 +266,6 @@ export class ReadPlaneRuntime {
           break;
         case "license.inspect":
           output = await licenseInspect(boundary, call.arguments);
-          break;
-        case "vulnerability.search":
-          output = await vulnerabilitySearch(boundary, call.arguments);
-          break;
-        case "sandbox.boundary":
-          output = sandboxBoundary(boundary);
           break;
         case "receipt.verify":
           output = receiptVerify(call.arguments);
