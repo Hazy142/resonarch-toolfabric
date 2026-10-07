@@ -1,7 +1,7 @@
 {
   "schema": "resonarch.toolfabric.tool/v1",
   "id": "code.format",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "title": "code.format",
   "summary": "Canonical ToolFabric primitive: code.format.",
   "input_schema": {

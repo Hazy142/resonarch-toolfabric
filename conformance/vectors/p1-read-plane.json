@@ -32,6 +32,7 @@
     "environment secrets redacted"
   ],
   "non_claims": [
+    "P1_READ_PLANE_PASS",
     "P2_LOCAL_ACTION_PASS",
     "production readiness"
   ]

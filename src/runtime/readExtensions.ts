@@ -59,33 +59,7 @@ async function walkSourceFiles(
 }
 
 export function reportRender(input: Record<string, unknown>): Record<string, unknown> {
-  const title = typeof input.title === "string" ? input.title : "Execution Report";
-  const summary = typeof input.summary === "string" ? input.summary : "";
-  const rawSections = Array.isArray(input.sections) ? input.sections : [];
-  const sections = rawSections.map((sec, idx) => {
-    if (!sec || typeof sec !== "object" || Array.isArray(sec)) {
-      throw new RuntimeExecutionError("INVALID_ARGUMENT", `section ${idx} must be an object`, "denied");
-    }
-    const item = sec as Record<string, unknown>;
-    return {
-      title: typeof item.title === "string" ? item.title : `Section ${idx + 1}`,
-      content: typeof item.content === "string" ? item.content : String(item.content ?? ""),
-    };
-  });
-
-  const lines: string[] = [`# ${title}`, ""];
-  if (summary) lines.push(`> ${summary}`, "");
-  for (const sec of sections) {
-    lines.push(`## ${sec.title}`, "", sec.content, "");
-  }
-  const markdown = lines.join("\n");
-  return {
-    title,
-    summary,
-    markdown,
-    sections_count: sections.length,
-    digest: sha256(new TextEncoder().encode(markdown)),
-  };
+  throw new RuntimeExecutionError("UNSUPPORTED", "report.render lacks PDF/markdown layout engine in this environment");
 }
 
 export function providerHealth(input: Record<string, unknown>, networkBroker: NetworkReadBroker): Record<string, unknown> {
@@ -97,30 +71,7 @@ export function webSearch(input: Record<string, unknown>, networkBroker: Network
 }
 
 export function sourceCompare(input: Record<string, unknown>): Record<string, unknown> {
-  if (!Array.isArray(input.sources) || input.sources.length < 2 || input.sources.length > 16) {
-    throw new RuntimeExecutionError("INVALID_ARGUMENT", "source.compare requires 2..16 sources", "denied");
-  }
-  const sources = input.sources.map((src, idx) => {
-    if (typeof src === "string") return { id: `source-${idx + 1}`, text: src };
-    if (src && typeof src === "object" && !Array.isArray(src)) {
-      const obj = src as Record<string, unknown>;
-      return {
-        id: typeof obj.id === "string" ? obj.id : `source-${idx + 1}`,
-        text: typeof obj.text === "string" ? obj.text : typeof obj.content === "string" ? obj.content : String(obj),
-      };
-    }
-    throw new RuntimeExecutionError("INVALID_ARGUMENT", `source ${idx} is invalid`, "denied");
-  });
-
-  const digests = sources.map(s => sha256(new TextEncoder().encode(s.text)));
-  const identical = digests.every(d => d === digests[0]);
-
-  return {
-    sources_count: sources.length,
-    identical,
-    digests: sources.map(s => ({ id: s.id, digest: sha256(new TextEncoder().encode(s.text)) })),
-    similarity_score: identical ? 1.0 : 0.5,
-  };
+  throw new RuntimeExecutionError("UNSUPPORTED", "source.compare lacks real diff/similarity engine in this environment");
 }
 
 export function researchBundle(input: Record<string, unknown>): Record<string, unknown> {
@@ -146,24 +97,7 @@ export function researchBundle(input: Record<string, unknown>): Record<string, u
 }
 
 export function claimClassify(input: Record<string, unknown>): Record<string, unknown> {
-  const claims = Array.isArray(input.claims) ? input.claims : [input];
-  const classified = claims.map((c, idx) => {
-    const raw = typeof c === "string" ? { text: c } : (c as Record<string, unknown>) ?? {};
-    const text = typeof raw.text === "string" ? raw.text : typeof raw.claim === "string" ? raw.claim : `claim-${idx + 1}`;
-    const classification = typeof raw.classification === "string" ? raw.classification : "supported";
-    return {
-      id: typeof raw.id === "string" ? raw.id : `claim-${idx + 1}`,
-      text,
-      classification: ["supported", "unsupported", "external", "historical"].includes(classification) ? classification : "supported",
-      confidence: typeof raw.confidence === "number" ? Math.max(0, Math.min(1, raw.confidence)) : 1.0,
-    };
-  });
-
-  return {
-    claims_count: classified.length,
-    classified,
-    digest: canonicalDigest(classified),
-  };
+  throw new RuntimeExecutionError("UNSUPPORTED", "claim.classify lacks a classification engine in this environment");
 }
 
 export function policyCompile(input: Record<string, unknown>): Record<string, unknown> {

@@ -30,6 +30,7 @@
     "canonical direct binding to the context gateway sqlite store",
     "durable generic memory database behind memory primitives",
     "semantic retrieval",
+    "P1_READ_PLANE_PASS",
     "production readiness"
   ]
 }

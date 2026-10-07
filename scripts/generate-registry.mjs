@@ -3,11 +3,11 @@ import path from "node:path";
 const source=JSON.parse(fs.readFileSync("contracts/tools/registry.source.json","utf8"));
 const risks=new Set(["forge.merge"]);
 const networkReads=new Set(["web.search","web.fetch","docs.resolve","package.resolve","vulnerability.search"]);
-const networkContractV2=new Set([...networkReads,"network.authorize"]);
+const networkContractV2=new Set([...networkReads,"network.authorize","code.edit","code.format","report.render"]);
 const r2=new Set(["forge.issue","forge.pr","forge.review","ci.rerun",...networkReads,"attestation.sign"]);
-const mutatingPrefixes=["fs.write","fs.patch","fs.move","process.start","process.input","process.stop","git.branch","git.worktree","git.commit","git.rebase","git.merge","test.run","test.target","test.coverage","lint.run","typecheck.run","build.run","task.claim","task.dispatch","review.dispatch","session.state","ledger.append","memory.put","history.compact","checkpoint.resume","secret.redact","receipt.create","benchmark.record","archive.pack","archive.unpack","artifact.store","code.edit","code.format"];
+const mutatingPrefixes=["fs.write","fs.patch","fs.move","process.start","process.input","process.stop","git.branch","git.worktree","git.commit","git.rebase","git.merge","test.run","test.target","test.coverage","lint.run","typecheck.run","build.run","task.claim","task.dispatch","review.dispatch","session.state","ledger.append","memory.put","history.compact","checkpoint.resume","secret.redact","receipt.create","benchmark.record","archive.pack","archive.unpack","artifact.store","code.edit","code.format","report.render"];
 function risk(id){if(risks.has(id))return "R3";if(r2.has(id))return "R2";if(mutatingPrefixes.some(x=>id.startsWith(x)))return "R1";return "R0";}
-function effect(id,r){if(networkReads.has(id)||id==="network.authorize")return "none";if(r==="R0")return "none";if(id.startsWith("fs."))return "filesystem";if(id.startsWith("process."))return "process";if(id.startsWith("git.")||id.startsWith("forge.")||id.startsWith("ci."))return "repository";if(id==="attestation.sign"||id==="artifact.store")return "external";return "local";}
+function effect(id,r){if(networkReads.has(id)||id==="network.authorize")return "none";if(r==="R0")return "none";if(id==="report.render")return "projection";if(id.startsWith("fs."))return "filesystem";if(id.startsWith("process."))return "process";if(id.startsWith("git.")||id.startsWith("forge.")||id.startsWith("ci."))return "repository";if(id==="attestation.sign"||id==="artifact.store")return "external";return "local";}
 function capabilities(id,r){
  if(networkReads.has(id))return ["network:web_read"];
  if(id==="network.authorize")return ["network:authorize"];

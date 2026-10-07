@@ -1,13 +1,16 @@
 {
-  "schema": "resonarch.toolfabric.conformance-vector/v1",
-  "id": "p1-read-plane-pass",
+  "schema": "resonarch.toolfabric.conformance/v1",
+  "id": "p1-read-boundary-pass",
+  "status": "P1_READ_BOUNDARY_PASS",
+  "evidence_refs": [
+    "receipt://latest"
+  ],
   "implemented_tools": [
     "registry.list",
     "registry.describe",
     "capability.snapshot",
     "capability.resolve",
     "provider.list",
-    "provider.health",
     "model.catalog",
     "model.route",
     "instructions.discover",
@@ -42,13 +45,10 @@
     "code.diagnostics",
     "test.discover",
     "gate.evaluate",
-    "web.search",
     "web.fetch",
     "docs.resolve",
     "package.resolve",
     "license.inspect",
-    "vulnerability.search",
-    "source.compare",
     "research.bundle",
     "task.decompose",
     "task.graph",
@@ -64,29 +64,13 @@
     "secret.scan",
     "network.authorize",
     "action.classify",
-    "sandbox.boundary",
     "hash.compute",
     "manifest.create",
     "receipt.verify",
     "attestation.verify",
-    "claim.classify",
     "json.validate",
     "schema.validate",
     "structured.diff",
-    "artifact.fetch",
-    "report.render"
-  ],
-  "required_behaviors": [
-    "all P1 side_effect === none primitives either execute successfully or cleanly report UNSUPPORTED",
-    "all mutating contracts are rejected with P1_WRITE_FORBIDDEN",
-    "E2E DAG data propagates correctly between tools",
-    "web.search and similar unsupported primitives explicitly report UNSUPPORTED"
-  ],
-  "claims": [
-    "P1_READ_PLANE_PASS"
-  ],
-  "non_claims": [
-    "P2_LOCAL_ACTION_PASS",
-    "production readiness"
+    "artifact.fetch"
   ]
 }

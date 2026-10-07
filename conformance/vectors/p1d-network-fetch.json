@@ -30,6 +30,7 @@
     "credentialed HTTP",
     "private network access",
     "redirect following",
+    "P1_READ_PLANE_PASS",
     "P2 mutation capability",
     "production readiness"
   ]

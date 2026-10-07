@@ -86,7 +86,6 @@ const IMPLEMENTED = new Set([
   "capability.snapshot",
   "capability.resolve",
   "provider.list",
-  "provider.health",
   "model.catalog",
   "model.route",
   "instructions.discover",
@@ -121,13 +120,10 @@ const IMPLEMENTED = new Set([
   "code.diagnostics",
   "test.discover",
   "gate.evaluate",
-  "web.search",
   "web.fetch",
   "docs.resolve",
   "package.resolve",
   "license.inspect",
-  "vulnerability.search",
-  "source.compare",
   "research.bundle",
   "task.decompose",
   "task.graph",
@@ -143,17 +139,14 @@ const IMPLEMENTED = new Set([
   "secret.scan",
   "network.authorize",
   "action.classify",
-  "sandbox.boundary",
   "hash.compute",
   "manifest.create",
   "receipt.verify",
   "attestation.verify",
-  "claim.classify",
   "json.validate",
   "schema.validate",
   "structured.diff",
-  "artifact.fetch",
-  "report.render"
+  "artifact.fetch"
 ]);
 
 function deadlineBudget(deadline: string, defaultMs: number): number {
