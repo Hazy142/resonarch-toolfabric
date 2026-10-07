@@ -14,4 +14,3 @@ docs/sources/agent-prompt-discovery.generated.json
 __pycache__/
 *.pyc
 packages/context-gateway/state/artifacts/
-

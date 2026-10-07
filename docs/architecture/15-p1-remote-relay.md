@@ -79,12 +79,19 @@ Failed responses include an `error` object with standard code (`code`) and messa
 
 States include `connected`, `disconnected`, `cancelled`, and `timed_out`.
 
-## Transport Security & Configuration
+## Transport Security & Credential Isolation
 
-Configuration validation (`validateRemoteRelayConfig`) enforces strict security boundaries:
+Configuration and transport boundaries enforce strict security hygiene:
 
-- **Protocols**: `https:`, `wss:`, or `http:`/`ws:` (loopback only when `allow_loopback: true` is set).
-- **Credentials**: Passed via dynamic provider function (`RelayCredentialProvider`). Credentials are sanitized (disallowing line breaks and null bytes) and never embedded in URLs, query strings, or envelope bodies.
+- **Protocols**: `https:`, `wss:`, or `http:`/`ws:` (loopback only when `allow_loopback: true` is explicitly configured).
+- **Credentials & Sanitization**: Credentials are provided dynamically via `RelayCredentialProvider`. They are sanitized (no newlines or null bytes) and never embedded in URLs, query strings, or envelope bodies.
+- **Credential Scope Separation**:
+  1. *Website / Account credentials*: Authenticate users to external services; managed separately.
+  2. *Relay / Tunnel Device credentials*: Authenticate the local runtime or device to the relay endpoint.
+  3. *MCP Client credentials*: Authenticate client agents to MCP servers.
+- **TLS Termination & E2EE**: Intermediate TLS termination on relay servers or proxies exposes unencrypted payload content to the relay operator unless end-to-end payload encryption (E2EE) is applied as a separate layer.
+- **Local Independence**: Local ToolFabric execution operates 100% independently without requiring any remote relay endpoint or hosted cloud infrastructure.
+- **Hosted Test Relays & OAuth**: OAuth flow, automated provisioning, and quota/benchmark-gated hosted test access belong in private service repositories, not in this public open-source runtime repository.
 - **Resource Limits**:
   - `max_payload_bytes`: Default 64 KB, absolute maximum 1 MB.
   - `max_in_flight`: Default 8, absolute maximum 64.
@@ -115,7 +122,7 @@ The repository ships `InMemoryRemoteRelayReference` as a lightweight in-memory t
 
 To implement a custom remote relay counterpart (e.g., a standalone Node.js / Python WebSocket relay server):
 
-1. **Protocol Handshake**: Validate the connecting client's `credential`, `route_id`, and issue a unique `session_id`. Return a `connected` lifecycle notification.
+1. **Session Identity**: The `RemoteRelayClient` establishes a fresh `session_id` per connection (via `newSessionId`) and passes it during `transport.connect(connection)`. The counterpart binds its state to `route_id` and `session_id`.
 2. **Envelope Validation**: Assert all incoming payloads adhere to `resonarch.toolfabric.remote-relay.request/v1`. Reject unknown schemas with `UNSUPPORTED_VERSION` and malformed json with `INVALID_ENVELOPE`.
 3. **Correlation**: Preserve the client's `route_id`, `session_id`, and `request_id` in the corresponding response envelope.
 4. **Cancellation**: Support signal cancellation for long-running operations. If the client disconnects or sends a cancellation signal, stop downstream execution.
@@ -126,6 +133,7 @@ To implement a custom remote relay counterpart (e.g., a standalone Node.js / Pyt
 P1E does not claim:
 
 - Production readiness of hosted remote endpoints.
+- Real network HTTP/WSS transport implementations (which remain a subsequent slice).
 - Automatic network failover or automatic session resumption.
 - Activation of mutating write-plane capabilities.
 - Direct integration with unverified third-party relay proxies.
