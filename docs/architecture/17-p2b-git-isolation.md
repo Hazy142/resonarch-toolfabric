@@ -55,7 +55,7 @@ For every Git subprocess the runtime:
 - forces literal pathspec semantics;
 - forbids protocol requests originating from user input.
 
-Checkout/add-capable operations also inspect effective local configuration, including local include files. Any configured clean/smudge/process filter driver fails closed with `UNSAFE_GIT_FILTER_CONFIG`. This prevents repository-controlled filter commands from becoming an execution side channel during `git.worktree` or `git.commit`.
+Checkout/add-capable operations also inspect effective local configuration, including local include files. Any configured clean/smudge/process filter driver fails closed with `UNSAFE_GIT_FILTER_CONFIG`. The filter check is repeated after intent and immediately before checkout/add-capable mutation, closing the in-runtime configuration TOCTOU window. This prevents repository-controlled filter commands from becoming an execution side channel during `git.worktree` or `git.commit`.
 
 ## Expected-state contracts
 
@@ -200,6 +200,7 @@ The P2B fixture suite uses real temporary Git repositories and linked worktrees.
 - isolated linked-worktree creation;
 - nested target denial;
 - direct and included filter-driver denial;
+- filter configuration introduced after intent denies checkout and commit before filter execution, preserving branch and index state;
 - selected-path-only commit;
 - detached-HEAD denial;
 - expected-state drift after intent;
