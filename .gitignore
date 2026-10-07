@@ -1,4 +1,4 @@
-﻿node_modules/
+node_modules/
 dist/
 coverage/
 *.log
@@ -11,3 +11,6 @@ coverage/
 /artifacts/
 evidence/local/
 docs/sources/agent-prompt-discovery.generated.json
+__pycache__/
+*.pyc
+packages/context-gateway/state/artifacts/
