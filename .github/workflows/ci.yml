@@ -19,6 +19,13 @@ jobs:
       - run: npm run check
       - name: Generated-tree cleanliness
         run: git diff --exit-code
+      - name: Retain local-action execution evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2c-local-action-${{ matrix.os }}
+          path: evidence/local/p2c*
+          if-no-files-found: error
 
   gateway:
     strategy:

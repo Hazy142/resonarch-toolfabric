@@ -1,27 +1,39 @@
 {
   "schema": "resonarch.toolfabric.tool/v1",
   "id": "process.start",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "title": "process.start",
   "summary": "Canonical ToolFabric primitive: process.start.",
   "input_schema": {
     "type": "object",
-    "additionalProperties": true
+    "additionalProperties": false,
+    "required": [
+      "plan_id"
+    ],
+    "properties": {
+      "plan_id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      }
+    }
   },
   "output_schema": {
     "type": "object",
     "additionalProperties": true
   },
   "capabilities": [
-    "process:write"
+    "process:start",
+    "process:host_execution"
   ],
   "authority_scope": [
-    "workspace"
+    "workspace",
+    "host_user"
   ],
-  "risk_class": "R1",
+  "risk_class": "R2",
   "side_effect": "process",
-  "idempotency": "conditional",
-  "network": "forbidden",
+  "idempotency": "non_idempotent",
+  "network": "optional",
   "receipt": "required",
   "default_timeout_ms": 30000,
   "max_output_bytes": 1048576

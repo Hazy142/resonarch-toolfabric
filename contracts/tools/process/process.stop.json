@@ -1,19 +1,28 @@
 {
   "schema": "resonarch.toolfabric.tool/v1",
   "id": "process.stop",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "title": "process.stop",
   "summary": "Canonical ToolFabric primitive: process.stop.",
   "input_schema": {
     "type": "object",
-    "additionalProperties": true
+    "additionalProperties": false,
+    "required": [
+      "session_id"
+    ],
+    "properties": {
+      "session_id": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
   },
   "output_schema": {
     "type": "object",
     "additionalProperties": true
   },
   "capabilities": [
-    "process:write"
+    "process:stop"
   ],
   "authority_scope": [
     "workspace"

@@ -19,7 +19,11 @@ remote-relay contract/client foundation and deterministic in-memory reference co
 real network transports remain a subsequent slice. `P1_READ_BOUNDARY_PASS` is claimed, while the
 full `P1_READ_PLANE_PASS` remains open. P2A implements the bounded filesystem-mutation kernel and
 P2B implements local Git branch/worktree/commit isolation; neither slice claims
-`P2_LOCAL_ACTION_PASS`. Production readiness remains gated by the normative conformance plan.
+`P2_LOCAL_ACTION_PASS`. P2C adds host-approved process lifecycle and real test execution, with an
+isolated change -> failing test -> patch -> passing test -> commit receipt fixture. Host-user
+execution is explicitly authorized and is not an OS filesystem/network sandbox. See
+[the P2C contract and evidence boundaries](docs/architecture/18-p2c-process-lifecycle.md).
+Production readiness remains gated by the normative conformance plan.
 
 ## Core ideas
 

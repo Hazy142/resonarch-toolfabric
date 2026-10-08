@@ -1,12 +1,13 @@
 {
   "schema": "resonarch.toolfabric.tool/v1",
   "id": "process.list",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "title": "process.list",
   "summary": "Canonical ToolFabric primitive: process.list.",
   "input_schema": {
     "type": "object",
-    "additionalProperties": true
+    "additionalProperties": false,
+    "properties": {}
   },
   "output_schema": {
     "type": "object",
@@ -20,7 +21,7 @@
   ],
   "risk_class": "R0",
   "side_effect": "none",
-  "idempotency": "pure",
+  "idempotency": "conditional",
   "network": "forbidden",
   "receipt": "required",
   "default_timeout_ms": 30000,
