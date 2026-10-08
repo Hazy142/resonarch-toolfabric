@@ -63,15 +63,21 @@ export class HardenedJobRuntime {
       ||!config.SecurityOpt?.some((value:string)=>value.startsWith("no-new-privileges"))
       ||canonicalDigest([...(config.CapAdd??[])].map((cap:string)=>cap.replace(/^CAP_/,"")).sort())!==canonicalDigest(caps)
       ||canonicalDigest(config.Tmpfs)!==canonicalDigest(tmpfs)||config.PidsLimit!==64||config.Memory!==268435456||config.NanoCpus!==1000000000
-      ||container.Mounts.length!==1||container.Mounts.some((mount:any)=>mount.Type!=="volume"||mount.Destination!=="/state")) {
+      ||container.Mounts.length!==1||container.Mounts.some((mount:any)=>mount.Type!=="volume"||mount.Destination!=="/state"
+        ||mount.Name!==this.attemptStem(operation,attempt)+"-state"||mount.RW!==true)) {
       throw new RuntimeExecutionError("ISOLATION_POLICY_DRIFT","container isolation policy differs from approved profile","denied");
     }
+  }
+  private attemptStem(operation:string,attempt:number):string{return "tf-job-"+this.backendOperation(operation).slice(7)+"-"+attempt;}
+  private validateVolume(volume:any,operation:string,capsule:SealedCapsule,attempt:number):void {
+    for(const [key,value]of Object.entries(this.labels(operation,capsule,attempt,"state")))if(volume.Labels?.[key]!==value)throw new RuntimeExecutionError("VOLUME_IDENTITY_CONFLICT","state volume is not owned","denied");
+    if(volume.Name!==this.attemptStem(operation,attempt)+"-state"||volume.Driver!=="local"||Object.keys(volume.Options??{}).length)throw new RuntimeExecutionError("VOLUME_POLICY_DRIFT","state volume must be a private local volume without host mount options","denied");
   }
   private async ensureVolume(name:string,operation:string,capsule:SealedCapsule,attempt:number):Promise<void> {
     const labels=this.labels(operation,capsule,attempt,"state");
     await this.options.backend.command(["volume","create",...this.labelArgs(labels),name]);
     const volume=JSON.parse(await this.options.backend.command(["volume","inspect",name]))[0];
-    for(const [key,value]of Object.entries(labels))if(volume.Labels?.[key]!==value)throw new RuntimeExecutionError("VOLUME_IDENTITY_CONFLICT","state volume is not owned","denied");
+    this.validateVolume(volume,operation,capsule,attempt);
   }
   private async readResult(volume:string,operation:string,capsule:SealedCapsule,attempt:number):Promise<any> {
     const reader="tf-reader-"+randomUUID();
@@ -105,7 +111,7 @@ export class HardenedJobRuntime {
         let record=this.journal.get(operation)!;
         const attempt=Number(record.payload.attempt??0);
         if(attempt>=maximum)throw new RuntimeExecutionError("ISOLATED_RETRY_BUDGET_EXCEEDED","isolated retry budget exhausted");
-        const stem="tf-job-"+this.backendOperation(operation).slice(7)+"-"+attempt;
+        const stem=this.attemptStem(operation,attempt);
         const volume=stem+"-state";
         if(!record.payload.intent_receipt) {
           const intent=createReceipt({schema:"resonarch.toolfabric.receipt/v1",receipt_id:operation+":intent",trace_id:sha256(operation),task_id:operation,
@@ -166,7 +172,9 @@ export class HardenedJobRuntime {
         const execution=await this.readResult(volume,operation,capsule,attempt);
         await this.phase("result_collected",operation);
         if(execution.state==="incomplete"||execution.state==="uncertain") {
-          this.journal.update(operation,lease,"uncertain",{attempt:attempt+1,last_attempt_reason:execution.reason??"BROKER_INTERRUPTED"});
+          const history=this.journal.get(operation)!.payload.attempt_history as unknown[]|undefined;
+          this.journal.update(operation,lease,"uncertain",{attempt:attempt+1,last_attempt_reason:execution.reason??"BROKER_INTERRUPTED",
+            attempt_history:[...(history??[]),{attempt,container_id:container.Id,container_name:stem,volume_name:volume,execution,namespace_stopped:true}]});
           continue; // Only after inspected non-running namespace; all provisional effects remain private.
         }
         const artifacts:string[]=[];
@@ -204,23 +212,22 @@ export class HardenedJobRuntime {
   async cleanup(operation:string,capsule:SealedCapsule):Promise<void> {
     const record=this.journal.get(operation);
     if(record?.state!=="published")throw new RuntimeExecutionError("OPERATION_NOT_PUBLISHED","cleanup requires a durable published result","denied");
-    const id=record.payload.container_id as string|undefined;
-    if(id) {
-      const container=await this.options.backend.inspectContainer(id);
+    const finalAttempt=Number(record.payload.attempt);
+    if(!Number.isInteger(finalAttempt)||finalAttempt<0||finalAttempt>2)throw new RuntimeExecutionError("INVALID_ATTEMPT_IDENTITY","cleanup attempt is outside the bounded profile","denied");
+    // Derive every possible owned identity, including interrupted/recovered legacy attempts.
+    // Negative attempt evidence remains authenticated in SQLite after backend deletion.
+    for(let attempt=0;attempt<=finalAttempt;attempt++) {
+      const stem=this.attemptStem(operation,attempt),volume=stem+"-state";
+      const container=await this.options.backend.inspectContainer(stem);
       if(container) {
-        this.validateOwned(container,operation,capsule,Number(record.payload.attempt));
+        this.validateOwned(container,operation,capsule,attempt);
         if(container.State.Running)throw new RuntimeExecutionError("PUBLISHED_CONTAINER_STILL_RUNNING","published namespace is not quiescent","denied");
         await this.options.backend.command(["rm",container.Id]);
       }
-    }
-    const volume=record.payload.volume_name as string|undefined;
-    if(volume) {
       let object:any;
       try{object=JSON.parse(await this.options.backend.command(["volume","inspect",volume]))[0];}
-      catch(error){if(error instanceof RuntimeExecutionError&&/No such volume/i.test(error.message))return;throw error;}
-      for(const [key,value]of Object.entries(this.labels(operation,capsule,Number(record.payload.attempt),"state"))) {
-        if(object.Labels?.[key]!==value)throw new RuntimeExecutionError("VOLUME_IDENTITY_CONFLICT","cleanup target is not owned","denied");
-      }
+      catch(error){if(error instanceof RuntimeExecutionError&&/No such volume/i.test(error.message))continue;throw error;}
+      this.validateVolume(object,operation,capsule,attempt);
       await this.options.backend.command(["volume","rm",volume]);
     }
   }

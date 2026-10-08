@@ -23,10 +23,12 @@ async function retainEvidence(name:string,runtime:HardenedJobRuntime,operation:s
   await copyFile(database,join(directory,"operations.sqlite"));
   evidenceCases.push({name,operation,namespace,controller_platform:process.platform,node:process.version,capsule_digest:capsule.digest,image_id:capsule.image_id,
     input_digest:capsule.input_digest,backend:capsule.backend,outcome,publication_count:1,receipts_verified:verifyChain(outcome.receipts),blob_digests:blobDigests,
-    journal_sha256:sha256(await readFile(join(directory,"operations.sqlite"))),...extra});
+    journal_sha256:sha256(await readFile(join(directory,"operations.sqlite"))),private_attempt_history:record.payload.attempt_history??[],...extra});
   const runtimeHashes:Record<string,string>={};
   for(const area of ["runtime","evidence"]){for(const file of await readdir("dist/src/"+area)){if(file.endsWith(".js"))runtimeHashes[area+"/"+file]=sha256(await readFile("dist/src/"+area+"/"+file));}}
   for(const file of ["capsuleRunner.cjs","capsuleReader.cjs"])runtimeHashes[file]=sha256(await readFile("src/runtime/"+file));
+  runtimeHashes["windowsSnapshotHost.cs"]=sha256(await readFile("src/runtime/windowsSnapshotHost.cs"));
+  if(process.platform==="win32")runtimeHashes["native/toolfabric-snapshot-host.exe"]=sha256(await readFile("dist/native/toolfabric-snapshot-host.exe"));
   await writeFile("evidence/local/p2d-proof.json",JSON.stringify({schema:"resonarch.toolfabric.hardened-execution-evidence/v1",runtime_hashes:runtimeHashes,
     cases:evidenceCases,execution_target:"linux/amd64",exactly_once_scope:"durable-result-publication",fixture_key_byte:9},null,2)+"\n");
 }
@@ -119,16 +121,22 @@ test("hardened safe recomputation after killed private attempt publishes only on
   const root=await mkdtemp(join(tmpdir(),"toolfabric-recompute-"));const input=join(root,"input");await mkdir(input);
   await writeFile(join(input,"app.cjs"),'setTimeout(()=>console.log("recomputed safely"),1500);');
   const engine=backend();const capsule=await sealCapsule(engine,input,join(root,"context"),{executable:"/usr/local/bin/node",argv:["/input/app.cjs"],max_runtime_ms:5000});
-  let killed=false;
+  let killed=false;const attempts:Array<{id:string;volume:string}>=[];
   const r=HardenedJobRuntime.open({backend:engine,state_directory:join(root,"state"),artifact_directory:join(root,"artifacts"),namespace:"recompute",signing_key:Buffer.alloc(32,9),capsules:[capsule],
     authority:{capabilities:["test:run","process:host_execution","process:isolated_execution"],approved_refs:["approval:fixture"]},on_phase:async(phase,record)=>{
+      if(phase==="backend_started")attempts.push({id:record.payload.container_id as string,volume:record.payload.volume_name as string});
       if(phase==="backend_started"&&!killed){killed=true;await engine.command(["kill",record.payload.container_id as string]);}
     }});t.after(()=>r.close());
   const outcome=await r.run("recompute",capsule,"approval:fixture");assert.equal(outcome.status,"succeeded");assert.equal(outcome.publication_count,1);
   assert.equal(outcome.execution.attempt,1);assert.equal(r.journal.get("recompute")!.publication_count,1);
+  const history=r.journal.get("recompute")!.payload.attempt_history as any[];assert.equal(history.length,1);assert.equal(history[0].namespace_stopped,true);assert.equal(history[0].attempt,0);
   assert.equal(Buffer.from(r.readArtifact("recompute",outcome.stdout_ref)).toString(),"recomputed safely\n");
   await r.cleanup("recompute",capsule);
-  await retainEvidence("safe-recomputation",r,"recompute",capsule,outcome,{private_attempt_killed:true,final_attempt:1});
+  assert.equal(attempts.length,2);
+  for(const attempt of attempts){assert.equal(await engine.inspectContainer(attempt.id),null);await assert.rejects(engine.command(["volume","inspect",attempt.volume]),/No such volume/i);}
+  await r.cleanup("recompute",capsule);
+  assert.equal((await r.run("recompute",capsule,"approval:fixture")).result_digest,outcome.result_digest);
+  await retainEvidence("safe-recomputation",r,"recompute",capsule,outcome,{private_attempt_killed:true,final_attempt:1,all_attempts_removed:attempts});
 });
 
 test("hardened collectors preserve complete confirmed output and leave an unrelated namespace alive",{skip:!live},async t=>{
