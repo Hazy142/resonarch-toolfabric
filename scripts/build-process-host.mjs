@@ -13,4 +13,9 @@ if (process.platform === "win32") {
     {stdio: "inherit", windowsHide: true, timeout: 30_000, shell: false});
   if (compiled.error) throw compiled.error;
   if (compiled.status !== 0) throw new Error("WINDOWS_PROCESS_HOST_BUILD_FAILED");
+  const snapshot = spawnSync(compiler, ["/nologo", "/target:exe", "/platform:anycpu", "/optimize+", "/reference:System.Web.Extensions.dll",
+    `/out:${resolve("dist/native/toolfabric-snapshot-host.exe")}`, resolve("src/runtime/windowsSnapshotHost.cs")],
+    {stdio:"inherit",windowsHide:true,timeout:30_000,shell:false});
+  if(snapshot.error)throw snapshot.error;
+  if(snapshot.status!==0)throw new Error("WINDOWS_SNAPSHOT_HOST_BUILD_FAILED");
 }

@@ -17,6 +17,9 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run check
+      - name: Real hardened Linux execution gates
+        if: runner.os == 'Linux'
+        run: npm run check:hardened
       - name: Generated-tree cleanliness
         run: git diff --exit-code
       - name: Retain local-action execution evidence
@@ -25,6 +28,13 @@ jobs:
         with:
           name: p2c-local-action-${{ matrix.os }}
           path: evidence/local/p2c*
+          if-no-files-found: error
+      - name: Retain hardened execution and recovery evidence
+        if: always() && runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2d-hardened-linux
+          path: evidence/local/p2d*
           if-no-files-found: error
 
   gateway:

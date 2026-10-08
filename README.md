@@ -25,6 +25,14 @@ execution is explicitly authorized and is not an OS filesystem/network sandbox. 
 [the P2C contract and evidence boundaries](docs/architecture/18-p2c-process-lifecycle.md).
 Production readiness remains gated by the normative conformance plan.
 
+P2D adds a separate hardened sealed Linux-container batch profile with authenticated SQLite
+crash recovery and exactly-once result publication. Windows controllers use WSL; Linux
+controllers use the local Docker engine. Pre-existing userland is bound to immutable image
+and input identities, with no guest network or host workspace mounts. Run `npm run check:hardened`
+for real isolation/recovery gates. See [P2D](docs/architecture/19-p2d-durable-isolated-execution.md)
+for the explicit publication semantics and trusted-platform limits. This does not extend the
+same assurances to the P2C host-user profile or claim native Windows application sandboxing.
+
 ## Core ideas
 
 - workflows are not security boundaries;
