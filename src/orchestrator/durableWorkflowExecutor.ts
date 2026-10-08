@@ -1,11 +1,12 @@
 import {randomUUID} from "node:crypto";
+import {reconcileFileEvidence,assertEvidence,type StepEvidence} from "./stepReconciliation.js";
 import {canonicalDigest,canonicalJson} from "../contracts/canonical.js";
 import {OperationJournal} from "../evidence/operationJournal.js";
 import type {Receipt} from "../evidence/receipt.js";
 import {RuntimeExecutionError} from "../runtime/errors.js";
 import type {ToolCall,ToolResult} from "../runtime/readPlane.js";
 
-export interface WorkflowStep {id:string;call:ToolCall;depends_on:string[];}
+export interface WorkflowStep {id:string;call:ToolCall;depends_on:string[];reconciliation?:StepEvidence;}
 export interface WorkflowDefinition {id:string;steps:WorkflowStep[];}
 export interface WorkflowExecution {workflow_id:string;state:"completed"|"blocked"|"uncertain";completed:string[];blocked_step?:string;results:Record<string,ToolResult>;receipts:Record<string,Receipt[]>;}
 export type WorkflowStepHandler=(call:ToolCall)=>Promise<{result:ToolResult;receipts:Receipt[]}>;
@@ -22,6 +23,7 @@ function validate(def:WorkflowDefinition):void {
   for(const step of def.steps){
     if(!step.id||step.id.length>100||seen.has(step.id)||!Array.isArray(step.depends_on)||step.depends_on.some(x=>!seen.has(x)))throw new RuntimeExecutionError("INVALID_WORKFLOW_DAG","steps must have unique ids and earlier dependencies","denied");
     seen.add(step.id);
+    if(step.reconciliation)assertEvidence(step.reconciliation);
     const c=step.call;
     if(c?.schema!=="resonarch.toolfabric.call/v1"||!c.task_id||!c.trace_id||!c.call_id||!c.scope?.workspace_root||!c.tool?.version||!c.tool.id)throw new RuntimeExecutionError("INVALID_WORKFLOW_CALL","all calls must be fully bound","denied");
     if(task===undefined)task=c.task_id;
@@ -61,11 +63,15 @@ export class DurableWorkflowExecutor {
         if(prior.result.status!=="succeeded")return {workflow_id:def.id,state:prior.result.status==="uncertain"?"uncertain":"blocked",completed,blocked_step:step.id,results,receipts};
         completed.push(step.id);continue;
       }
-      // A claimed/started operation cannot safely be replayed. Only freshly reserved reads
-      // can be retried; mutations always require explicit reconciliation after ambiguity.
-      const mutating=MUTATING.has(step.call.tool.id);
-      if(!reservation.created&&(mutating||reservation.record.state!=="reserved"))return {workflow_id:def.id,state:"uncertain",completed,blocked_step:step.id,results,receipts};
-      if(!reservation.created)continue; // fail-closed on previously admitted read
+      // Never redispatch an admitted mutation without independently proven reconciliation.
+      if(!reservation.created){
+        if(reservation.record.state==="started"&&step.reconciliation){
+          await reconcileFileEvidence(step.call,step.reconciliation);
+          // Evidence alone cannot replace the runtime result/receipt: remain uncertain.
+          return {workflow_id:def.id,state:"uncertain",completed,blocked_step:step.id,results,receipts};
+        }
+        return {workflow_id:def.id,state:"uncertain",completed,blocked_step:step.id,results,receipts};
+      }
       const handler=this.options.handlers[step.call.tool.id];
       if(!handler)throw new RuntimeExecutionError("WORKFLOW_TOOL_UNAVAILABLE","missing host-registered handler for "+step.call.tool.id,"denied");
       const lease=this.options.journal.claim(op,this.owner,120000);
