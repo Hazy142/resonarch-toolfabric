@@ -17,6 +17,7 @@ import {ProcessSessions} from "./processSessions.js";
 
 export interface ProcessLifecycleOptions {
   workspace_root: string;
+  registry_root?: string;
   artifact_root: string;
   plans: readonly BoundProcessPlan[];
   authority: MutationAuthority;
@@ -29,7 +30,8 @@ export interface ProcessLifecycleOptions {
   after_mutation?: (context: {tool_id: string}) => void | Promise<void>;
 }
 
-const TOOLS = new Set(["process.start", "process.input", "process.output", "process.stop", "process.list", "test.run"]);
+export const PROCESS_LIFECYCLE_TOOL_IDS: ReadonlySet<string> = new Set(["process.start", "process.input", "process.output", "process.stop", "process.list", "test.run"]);
+const TOOLS: ReadonlySet<string> = PROCESS_LIFECYCLE_TOOL_IDS;
 const MUTATIONS = new Set(["process.start", "process.input", "process.stop", "test.run"]);
 
 function assertDeadline(call: ToolCall): void {
@@ -105,7 +107,7 @@ export class ProcessLifecycleRuntime {
       const path = await realpath(options.windows_host_path ?? resolve("dist/native/toolfabric-process-host.exe"));
       windowsHost = {path, digest: await processFileDigest(path)};
     }
-    return new ProcessLifecycleRuntime(options, boundary.root, await loadRegistry("contracts/tools"),
+    return new ProcessLifecycleRuntime(options, boundary.root, await loadRegistry(options.registry_root ?? "contracts/tools"),
       new ProcessSessions(windowsHost, options.max_active_sessions, options.max_retained_sessions), artifactRoot);
   }
 

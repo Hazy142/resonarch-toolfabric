@@ -38,7 +38,8 @@ import type {ToolCall, ToolResult} from "./readPlane.js";
 import type {MutationAuthority} from "./writePlane.js";
 import {WorkspaceBoundary, isWithinPath} from "./workspace.js";
 
-const P2B_TOOLS = new Set(["git.branch", "git.worktree", "git.commit"]);
+export const GIT_ISOLATION_TOOL_IDS: ReadonlySet<string> = new Set(["git.branch", "git.worktree", "git.commit"]);
+const P2B_TOOLS: ReadonlySet<string> = GIT_ISOLATION_TOOL_IDS;
 const SHA256 = /^sha256:[0-9a-f]{64}$/;
 
 export interface GitMutationHookContext {
@@ -49,6 +50,7 @@ export interface GitMutationHookContext {
 
 export interface GitIsolationOptions {
   authority: MutationAuthority;
+  registry_root?: string;
   identity?: GitIdentity;
   worker_id?: string;
   lease_book?: LeaseBook;
@@ -139,7 +141,7 @@ export class GitIsolationRuntime {
   }
 
   static async create(options: GitIsolationOptions): Promise<GitIsolationRuntime> {
-    return new GitIsolationRuntime(await loadRegistry("contracts/tools"), options);
+    return new GitIsolationRuntime(await loadRegistry(options.registry_root ?? "contracts/tools"), options);
   }
 
   async execute(call: ToolCall): Promise<ExecutedGitMutation> {
