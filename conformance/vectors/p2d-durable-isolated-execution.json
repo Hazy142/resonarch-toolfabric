@@ -1,0 +1,18 @@
+{
+  "schema":"resonarch.toolfabric.conformance-vector/v1",
+  "id":"p2d-durable-isolated-execution",
+  "required_behaviors":[
+    "host-registered immutable capsules and explicit authority approvals precede durable admission",
+    "whole input snapshot image rootfs and backend identity bind the readable userland domain",
+    "application UID10001 with zero effective capabilities cannot access host brokers network private control state or modify inputs",
+    "detached descendants remain in the owned PID namespace and are terminated before output sealing",
+    "SQLite WAL FULL authenticated operations event chain and blobs survive actual controller termination",
+    "unique semantic operation keys ownership and fencing permit only one immutable logical result publication",
+    "controller SIGKILL boundaries recover existing owned work or cached completion without duplicate publication",
+    "only confirmed stopped private attempts may be safely recomputed in a new namespace",
+    "negative terminal results raw streams output files receipt chains and durable blobs remain retained",
+    "unrelated host namespaces are preserved and owned cleanup does not destroy the cached published result"
+  ],
+  "claims":["P2D_ISOLATED_BATCH_EXECUTION_PROFILE","P2D_DURABLE_CONTROLLER_RECOVERY","P2D_EXACTLY_ONCE_RESULT_PUBLICATION","P2D_SEALED_USERLAND_DEPENDENCIES"],
+  "non_claims":["exactly-one physical program execution","native Windows application sandbox","interactive stdin exactly-once protocol","arbitrary external exactly-once side effects","compromised trusted kernel daemon or storage","physical power-loss experiment","general workflow executor","installed MCP server","production release authority"]
+}
