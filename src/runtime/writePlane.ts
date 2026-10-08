@@ -20,7 +20,8 @@ import {
 } from "./fsMutation.js";
 import {WorkspaceBoundary} from "./workspace.js";
 
-const P2A_TOOLS = new Set(["fs.write", "fs.patch", "fs.move"]);
+export const WRITE_PLANE_TOOL_IDS: ReadonlySet<string> = new Set(["fs.write", "fs.patch", "fs.move"]);
+const P2A_TOOLS: ReadonlySet<string> = WRITE_PLANE_TOOL_IDS;
 const SHA256 = /^sha256:[0-9a-f]{64}$/;
 
 export interface MutationAuthority {
@@ -37,6 +38,7 @@ export interface MutationHookContext {
 
 export interface WritePlaneOptions {
   authority: MutationAuthority;
+  registry_root?: string;
   worker_id?: string;
   lease_book?: LeaseBook;
   fs_ops?: MutationFsOps;
@@ -153,7 +155,7 @@ export class WritePlaneRuntime {
   }
 
   static async create(options: WritePlaneOptions): Promise<WritePlaneRuntime> {
-    return new WritePlaneRuntime(await loadRegistry("contracts/tools"), options);
+    return new WritePlaneRuntime(await loadRegistry(options.registry_root ?? "contracts/tools"), options);
   }
 
   async execute(call: ToolCall): Promise<ExecutedMutation> {

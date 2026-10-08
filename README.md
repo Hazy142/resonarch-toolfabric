@@ -33,6 +33,13 @@ for real isolation/recovery gates. See [P2D](docs/architecture/19-p2d-durable-is
 for the explicit publication semantics and trusted-platform limits. This does not extend the
 same assurances to the P2C host-user profile or claim native Windows application sandboxing.
 
+P3A adds a durable sequential workflow executor with authenticated journal replay and fail-closed
+recovery of interrupted mutations. P3B exposes the implemented ToolFabric runtimes through the
+official MCP TypeScript SDK v2: modern 2026-07-28 stdio and Streamable HTTP, deterministic tool
+discovery, host-bound capability/approval gates, and canonical results plus receipts. HTTP remains
+loopback-only until authenticated remote serving is implemented. See
+[the P3B MCP execution surface](docs/architecture/20-p3b-mcp-runtime.md).
+
 ## Core ideas
 
 - workflows are not security boundaries;

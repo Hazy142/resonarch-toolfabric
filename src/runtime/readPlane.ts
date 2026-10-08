@@ -33,6 +33,40 @@ import {
 } from "./readExtensions.js";
 import {isWithinPath, WorkspaceBoundary} from "./workspace.js";
 
+export const READ_PLANE_TOOL_IDS: ReadonlySet<string> = new Set([
+  "registry.list",
+  "registry.describe",
+  "instructions.discover",
+  "instructions.resolve",
+  "context.pack",
+  "memory.get",
+  "memory.search_exact",
+  "network.authorize",
+  "web.fetch",
+  "research.bundle",
+  "policy.compile",
+  "secret.scan",
+  "license.inspect",
+  "receipt.verify",
+  "code.symbols",
+  "code.dependencies",
+  "code.ast_query",
+  "code.diagnostics",
+  "code.references",
+  "code.search",
+  "test.discover",
+  "fs.read",
+  "fs.read_many",
+  "fs.list",
+  "fs.stat",
+  "fs.search",
+  "git.status",
+  "git.log",
+  "git.diff",
+  "env.snapshot",
+  "command.which",
+]);
+
 export interface ToolCall {
   schema: "resonarch.toolfabric.call/v1";
   call_id: string;
